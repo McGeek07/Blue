@@ -91,6 +91,10 @@ public class Region3f extends Box3f {
 		return new Region3f(this);
 	}
 	
+	public static Region3f parseRegion3f(String str) {
+		return Box3f.parseBox3f(new Region3f(), str);
+	}
+	
 	public static class Mutable extends Region3f {
 		private static final long 
 			serialVersionUID = 1L;
@@ -160,6 +164,10 @@ public class Region3f extends Box3f {
 		@Override
 		public Region3f.Mutable copy() {
 			return new Region3f.Mutable(this);
+		}
+		
+		public static Region3f.Mutable parseRegion3f(String str) {
+			return Box3f.parseBox3f(new Region3f.Mutable(), str);
 		}
 	}
 }

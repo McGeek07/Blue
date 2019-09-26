@@ -7,6 +7,10 @@ import blue.util.Copyable;
 public abstract class Vector implements Serializable, Copyable<Vector> {
 	private static final long 
 		serialVersionUID = 1L;
+	public static final int
+		X = 0,
+		Y = 1,
+		Z = 2;
 	
 	public float x() { return 0f; }
 	public float y() { return 0f; }

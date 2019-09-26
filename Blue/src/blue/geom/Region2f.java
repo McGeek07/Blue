@@ -85,6 +85,10 @@ public class Region2f extends Box2f {
 		return new Region2f(this);
 	}
 	
+	public static Region2f parseRegion2f(String str) {
+		return Box2f.parseBox2f(new Region2f(), str);
+	}
+	
 	public static class Mutable extends Region2f {
 		private static final long 
 			serialVersionUID = 1L;
@@ -154,6 +158,10 @@ public class Region2f extends Box2f {
 		@Override
 		public Region2f.Mutable copy() {
 			return new Region2f.Mutable(this);
+		}
+		
+		public static Region2f.Mutable parseRegion2f(String str) {
+			return Box2f.parseBox2f(new Region2f.Mutable(), str);
 		}
 	}
 }
