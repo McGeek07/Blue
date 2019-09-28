@@ -42,6 +42,15 @@ public class Vector3f extends Vector {
 	}
 	
 	@Override
+	public float get(int j) {
+		switch(j) {
+			case X: return x;
+			case Y: return y;
+		}
+		return 0f;
+	}
+	
+	@Override
 	public Vector3f copy() {
 		return new Vector3f(this);
 	}

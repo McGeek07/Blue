@@ -10,6 +10,22 @@ public class Shell {
 		return config;
 	}
 	
+	public void init() {
+		onInit();
+	}
+	
+	public void exit() {
+		onExit();
+	}
+	
+	public void attach() {
+		onAttach();
+	}
+	
+	public void detach() {
+		onDetach();
+	}
+	
 	public void onInit() { }
 	public void onExit() { }
 	public void onAttach() { }

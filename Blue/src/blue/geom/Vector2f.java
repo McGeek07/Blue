@@ -32,6 +32,15 @@ public class Vector2f extends Vector {
 	public float y() {
 		return this.y;
 	}
+	
+	@Override
+	public float get(int j) {
+		switch(j) {
+			case X: return x;
+			case Y: return y;
+		}
+		return 0f;
+	}
 
 	@Override
 	public Vector2f copy() {

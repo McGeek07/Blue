@@ -16,6 +16,8 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 	public float y() { return 0f; }
 	public float z() { return 0f; }	
 	
+	public abstract float get(int j);
+	
 	public static int compare(Vector2f a, Vector2f b) {
 		float tmp;
 		if((tmp = a.x - b.x) != 0) return tmp > 0 ? 1 : -1;

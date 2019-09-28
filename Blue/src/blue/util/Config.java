@@ -8,7 +8,7 @@ public class Config {
 	
 	public Config(Object... args) {
 		int length = args.length - (args.length & 1);
-		for(int i = 0; i < length; i ++) {
+		for(int i = 0; i < length; i += 2) {
 			int 
 				a = i + 0,
 				b = i + 1;
@@ -17,17 +17,20 @@ public class Config {
 	}
 	
 	public void set(Object key, Object val) {
+		String
+			_key = key != null ? "" + key : null,
+			_val = val != null ? "" + val : null;
 		index.put(
-				"" + key,
-				"" + val
+				_key,
+				_val
 				);
 	}
 	
-	public int getInt(Object key) {
-		return getInt(key, 0);
+	public int getInteger(Object key) {
+		return getInteger(key, 0);
 	}
 	
-	public int getInt(Object key, int alt) {
+	public int getInteger(Object key, int alt) {
 		return Util.stringToInt(get(key), alt);
 	}
 	
@@ -61,9 +64,17 @@ public class Config {
 	
 	public boolean getBoolean(Object key, boolean alt) {
 		return Util.stringToBoolean(get(key), alt);
+	}	
+
+	public String get(Object key) {
+		return get(key, null);
 	}
 	
-	public String get(Object key) {
-		return index.get("" + key);
+	public String get(Object key, Object alt) {
+		String 
+			_key = key != null ? "" + key : null,
+			_alt = alt != null ? "" + alt : null,
+			_val = index.get(_key);
+		return _val != null ? _val : _alt;
 	}
 }

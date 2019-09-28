@@ -8,18 +8,38 @@ import blue.geom.Vector2f;
 
 public class Scene implements Renderable, Updateable {
 	
-
+	public void init() {
+		onInit();
+	}
+	
+	public void exit() {
+		onExit();
+	}
+	
+	public void attach() {
+		onAttach();
+	}
+	
+	public void detach() {
+		onDetach();
+	}
 	
 	@Override
 	public void render(RenderContext context) {
-		
-	}
+		context = context.push();
+		onRender(context);
+		context = context.pop();
+	}	
 
 	@Override
 	public void update(UpdateContext context) {
-		
+		context = context.push();
+		onUpdate(context);
+		context = context.pop();
 	}
 	
+	public void onRender(RenderContext context) { }
+	public void onUpdate(UpdateContext context) { }	
 	public void onInit() { }
 	public void onExit() { }
 	public void onAttach() { }
