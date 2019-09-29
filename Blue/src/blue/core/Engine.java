@@ -1,12 +1,21 @@
 package blue.core;
 
-import blue.core.event.Event;
-import blue.core.event.Event.Broker;
-import blue.core.event.Event.Dispatcher;
-import blue.core.event.Event.Handle;
-import blue.core.event.Event.Listener;
+import java.awt.Graphics2D;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+
+import blue.Blue;
+import blue.core.render.RenderContext;
+import blue.core.update.UpdateContext;
+import blue.geom.Layout;
+import blue.geom.Region2f;
+import blue.geom.Vector;
 import blue.geom.Vector2f;
+import blue.geom.Vector4f;
 import blue.util.Config;
+import blue.util.Util;
 
 public final class Engine implements Runnable {	
 	protected static final long
@@ -15,17 +24,10 @@ public final class Engine implements Runnable {
 	protected static final Engine
 		INSTANCE = new Engine();
 	
-	protected final Broker
-		broker;
-	protected final Handle
-		handle;
-	protected final Dispatcher
-		dispatcher;
-	
-	protected Stage
-		stage;
-	protected Shell
-		shell;
+	protected final Canvas
+		canvas = new Canvas(this);
+	protected final Window
+		window = new Window(this);
 	protected Scene
 		scene;
 
@@ -37,9 +39,17 @@ public final class Engine implements Runnable {
 	
 	protected final Config
 		config = new Config(
+				BUFFER_BACKGROUND, canvas.buffer_background,
+				CANVAS_BACKGROUND, canvas.canvas_background,
+				CANVAS_W, canvas.canvas_w,
+				CANVAS_H, canvas.canvas_h,
 				THREAD_ASYNC, thread_async,
 				THREAD_FPS, thread_fps,
-				THREAD_TPS, thread_tps
+				THREAD_TPS, thread_tps,
+				WINDOW_AOT, window.window_aot,
+				WINDOW_BORDER, window.window_border,
+				WINDOW_DEVICE, window.window_device,
+				WINDOW_LAYOUT, window.window_layout
 				);
 	
 	protected Thread
@@ -54,14 +64,7 @@ public final class Engine implements Runnable {
 		t_dt;
 	
 	private Engine() {
-		this.broker = new Broker();
-		this.handle = new Handle();
-		this.dispatcher = new Dispatcher(
-				this.broker,
-				this.handle
-				);
-		this.onSetStage(new Stage());
-		this.onSetShell(new Shell());
+		//do nothing
 	}
 	
 	public static void init() {
@@ -78,80 +81,22 @@ public final class Engine implements Runnable {
 		}
 	}
 	
-	public static <T extends Event> boolean addListener(Class<T> type, Listener<T> listener) {
-		return INSTANCE.handle.add(type, listener);
+	public static void show() {
+		
 	}
 	
-	public static <T extends Event> boolean delListener(Class<T> type, Listener<T> listener) {
-		return INSTANCE.handle.del(type, listener);
-	}
-	
-	public static <T extends Event> void attachListener(Class<T> type, Listener<T> listener) {
-		INSTANCE.handle.attach(type, listener);
-	}
-	
-	public static <T extends Event> void detachListener(Class<T> type, Listener<T> listener) {
-		INSTANCE.handle.detach(type, listener);
-	}
-	
-	public static boolean addHandle(Handle handle) {
-		return INSTANCE.broker.add(handle);
-	}
-	
-	public static boolean delHandle(Handle handle) {
-		return INSTANCE.broker.del(handle);
-	}
-	
-	public static void attachHandle(Handle handle) {
-		INSTANCE.broker.attach(handle);
-	}
-	
-	public static void detachHandle(Handle handle) {
-		INSTANCE.broker.detach(handle);
-	}
-	
-	public static boolean addBroker(Broker broker) {
-		return INSTANCE.broker.add(broker);
-	}
-	
-	public static boolean delBroker(Broker broker) {
-		return INSTANCE.broker.del(broker);
-	}
-	
-	public static void attachBroker(Broker broker) {
-		INSTANCE.broker.attach(broker);
-	}
-	
-	public static void detachBroker(Broker broker) {
-		INSTANCE.broker.detach(broker);
-	}
-	
-	public static <T extends Event> void queue(T event) {
-		INSTANCE.dispatcher.queue(event);
-	}
-	
-	public static <T extends Event> void flush(T event) {
-		INSTANCE.dispatcher.flush(event);
-	}
-	
-	public static void setStage(Stage stage) {
-		INSTANCE.onSetStage(stage);
-	}
-	
-	public static void setShell(Shell shell) {
-		INSTANCE.onSetShell(shell);
+	public static void hide() {
+		
 	}
 	
 	public static void setScene(Scene scene) {
-		INSTANCE.onSetScene(scene);
-	}
-	
-	public static Stage getStage() {
-		return INSTANCE.stage;
-	}
-	
-	public static Shell getShell() {
-		return INSTANCE.shell;
+		if(INSTANCE.scene != scene) {
+			if(INSTANCE.scene != null)
+				INSTANCE.scene.detach();
+			INSTANCE.scene = scene;
+			if(INSTANCE.scene != null)
+				INSTANCE.scene.attach();
+		}
 	}
 	
 	public static Scene getScene() {
@@ -162,64 +107,48 @@ public final class Engine implements Runnable {
 		return INSTANCE.config;
 	}
 	
-	public void onSetStage(Stage stage) {
-		if(this.stage != stage) {
-			if(this.stage != null)
-				this.stage.detach();
-			this.stage = stage;
-			if(this.stage != null)
-				this.stage.attach();
-		}
-	}
-	
-	public void onSetShell(Shell shell) {
-		if(this.shell != shell) {
-			if(this.shell != null)
-				this.shell.detach();
-			this.shell = shell;
-			if(this.shell != null)
-				this.shell.attach();
-		}
-	}
-	
-	public void onSetScene(Scene scene) {
-		if(this.scene != scene) {
-			if(this.scene != null)
-				this.scene.detach();
-			this.scene = scene;
-			if(this.scene != null)
-				this.scene.attach();
-		}
-	}
-	
 	public void pollInputs() {
-		Input.poll();
+		Input.INSTANCE.poll();
 	}
 	public void pollEvents() {
-		broker.flushPending();
+		Event.INSTANCE.poll();
 	}	
 	
 	public void update(double t, double dt, double fixed_dt) {
 		pollInputs();
 		pollEvents();
+		canvas.update(t, dt, fixed_dt);
 	}
 	
 	public void render(double t, double dt, double fixed_dt) {
-		
+		canvas.render(t, dt, fixed_dt);
 	}
 	
 	public void onInit() {
+		canvas.buffer_background = Vector4f.parseVector4f(config.get(BUFFER_BACKGROUND, canvas.buffer_background));
+		canvas.canvas_background = Vector4f.parseVector4f(config.get(CANVAS_BACKGROUND, canvas.canvas_background));
+		canvas.canvas_w = config.getInteger(CANVAS_W, canvas.canvas_w);
+		canvas.canvas_h = config.getInteger(CANVAS_H, canvas.canvas_h);
+		
 		thread_async = config.getBoolean(THREAD_ASYNC, thread_async);
 		thread_fps = config.getInteger(THREAD_FPS, thread_fps);
 		thread_tps = config.getInteger(THREAD_TPS, thread_tps);
 		
-		if(stage != null) stage.init();
-		if(shell != null) shell.init();
-		if(scene != null) scene.init();		
+		window.window_aot = config.getBoolean(WINDOW_AOT, window.window_aot);
+		window.window_border = config.getBoolean(WINDOW_BORDER, window.window_border);		
+		window.window_device = config.getInteger(WINDOW_DEVICE, window.window_device);
+		window.window_layout = Layout.parseLayout(config.get(WINDOW_LAYOUT, window.window_layout));		
+		window.window_title = config.get(WINDOW_TITLE, window.window_title);
+		
+		canvas.onInit();
+		window.onInit();
+		if(scene != null)
+			scene.onInit();
 	}
 	
 	public void onExit() {
-		
+		window.onExit();
+		canvas.onExit();
 	}
 	
 	public void onMouseMoved(Vector2f mouse) { 
@@ -357,8 +286,241 @@ public final class Engine implements Runnable {
 		}
 	}
 	
+	private static class Window {
+		protected java.awt.Frame
+			component;			
+		protected Engine
+			engine;	
+		protected boolean
+			window_aot    = true,
+			window_border = true;
+		protected int
+			window_device = 0;
+		protected Layout
+			window_layout = Layout.DEFAULT;
+		protected String
+			window_title = Blue.VERSION.toString();
+		
+		public Window(Engine engine) {
+			this.engine = engine;
+		}
+		
+		public void onInit() {
+			if(component != null)
+				component.dispose();
+			
+			component = new java.awt.Frame();
+			
+			Region2f a, b;
+			if(window_border)
+				a = Util.getMaximumWindowRegion(window_device);
+			else 
+				a = Util.getMaximumScreenRegion(window_device);
+			b = window_layout.region(a);
+			
+			component.setBounds(
+					(int)b.x(), (int)b.y(),
+					(int)b.w(), (int)b.h()
+					);
+			component.setAlwaysOnTop( window_aot   );
+			component.setUndecorated(!window_border);			
+			component.setIgnoreRepaint(true);
+			component.setTitle(window_title);
+			
+			component.add(engine.canvas.component);
+			component.addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowClosing(WindowEvent we) {
+					Engine.exit();
+				}
+			});
+			
+			component.setVisible(true);			
+		}
+		
+		public void onExit() {
+			if(component != null)
+				component.dispose();
+		}
+	}
+	
+	private static class Canvas {
+		protected java.awt.Canvas
+			component;	
+		protected Engine
+			engine;	
+		
+		public Vector4f
+			buffer_background = new Vector4f(0f, 0f, 0f, 1f),
+			canvas_background = new Vector4f(0f, 0f, 0f, 1f);			
+		public int
+			canvas_w,
+			canvas_h;
+		
+		protected java.awt.Color
+			buffer_color,
+			canvas_color;
+		protected BufferedImage
+			canvas;
+		protected Graphics2D
+			buffer_gfx,
+			canvas_gfx;
+		
+		protected final RenderContext
+			render_context = new RenderContext();
+		protected final UpdateContext
+			update_context = new UpdateContext();
+		
+		public Canvas(Engine engine) {
+			this.engine = engine;
+		}
+		
+		public void onInit() {				
+			component = new java.awt.Canvas();
+			component.setIgnoreRepaint(true );
+			
+			buffer_color = Vector.toColor4f(buffer_background);
+			canvas_color = Vector.toColor4f(canvas_background);
+			
+			if(canvas_w > 0 && canvas_h > 0) {
+				canvas = new BufferedImage(
+						canvas_w,
+						canvas_h,
+						BufferedImage.TYPE_INT_ARGB
+						);
+			} else
+				canvas = null;
+			
+			component.addKeyListener(Input.INSTANCE);
+			component.addMouseListener(Input.INSTANCE);
+			component.addMouseWheelListener(Input.INSTANCE);
+			component.addMouseMotionListener(Input.INSTANCE);			
+		}
+		
+		public void onExit() {
+			
+		}	
+		
+		protected BufferStrategy
+			buffer;
+		public void render(double t, double dt, double fixed_dt) {
+			int
+				buffer_w = this.component.getWidth() ,
+				buffer_h = this.component.getHeight();	
+			
+			render_context.t  = t ;
+			render_context.dt = dt;
+			render_context.fixed_dt = fixed_dt;
+			
+			if(buffer == null || buffer.contentsLost()) {
+				component.createBufferStrategy(2);
+				buffer = component.getBufferStrategy();
+			}
+			
+			if(canvas != null) {
+				render_context.region.set(
+						canvas_w,
+						canvas_h
+						);				
+				buffer_gfx = (Graphics2D)buffer.getDrawGraphics();
+				canvas_gfx = (Graphics2D)canvas.createGraphics() ;				
+				render_context.g2D = canvas_gfx;
+				
+				canvas_gfx.setColor(canvas_color);
+				canvas_gfx.fillRect(
+						0, 0,
+						canvas_w,
+						canvas_h
+						);
+				
+				if(engine.scene != null) engine.scene.render(render_context);	
+				
+				buffer_gfx.setColor(buffer_color);
+				buffer_gfx.fillRect(
+						0, 0,
+						buffer_w,
+						buffer_h
+						);
+				float scale = Math.min(
+						buffer_w,
+						buffer_h
+						);				
+				this.buffer_gfx.translate(
+						buffer_w / 2,
+						buffer_h / 2
+						);
+				this.buffer_gfx.scale(
+						scale,
+						scale
+						);
+				this.buffer_gfx.drawImage(
+						this.canvas,
+						null,
+						- canvas_w / 2,
+						- canvas_h / 2
+						);
+
+				canvas_gfx.dispose();
+				buffer_gfx.dispose();
+				buffer.show();
+			} else {
+				render_context.region.set(
+						buffer_w,
+						buffer_h
+						);
+				buffer_gfx = (Graphics2D)buffer.getDrawGraphics();
+				render_context.g2D = buffer_gfx;
+				
+				buffer_gfx.setColor(buffer_color);
+				buffer_gfx.fillRect(
+						0, 0,
+						buffer_w,
+						buffer_h
+						);
+				
+				if(engine.scene != null) engine.scene.render(render_context);
+				
+				buffer_gfx.dispose();
+				buffer.show();
+			}		
+		}
+		
+		public void update(double t, double dt, double fixed_dt) {
+			int
+				buffer_w = component.getWidth() ,
+				buffer_h = component.getHeight();
+			
+			update_context.t  = t ;
+			update_context.dt = dt;
+			update_context.fixed_dt = fixed_dt;
+			
+			if(canvas != null) {
+				update_context.region.set(
+						canvas_w,
+						canvas_h
+						);
+				if(engine.scene != null) engine.scene.update(update_context);
+			} else {
+				render_context.region.set(
+						buffer_w,
+						buffer_h
+						);
+				if(engine.scene != null) engine.scene.update(update_context);
+			}			
+		}
+	}
+	
 	public static final String
+		BUFFER_BACKGROUND = "buffer-background",
+		CANVAS_BACKGROUND = "canvas-background",
+		CANVAS_W = "canvas-w",
+		CANVAS_H = "canvas-h",
 		THREAD_ASYNC = "thread-async",
 		THREAD_FPS = "thread-fps",
-		THREAD_TPS = "thread-tps";
+		THREAD_TPS = "thread-tps",
+		WINDOW_AOT = "window-aot",
+		WINDOW_BORDER = "window-border",
+		WINDOW_DEVICE = "window-device",
+		WINDOW_LAYOUT = "window-layout",
+		WINDOW_TITLE = "window-title";
 }

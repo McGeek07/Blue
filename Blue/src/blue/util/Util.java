@@ -1,5 +1,6 @@
 package blue.util;
 
+import java.awt.Color;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -9,11 +10,17 @@ import java.awt.Toolkit;
 
 import blue.geom.Bounds2f;
 import blue.geom.Region2f;
+import blue.geom.Vector3f;
 
 public final class Util {
 	
 	private Util() {
 		//do nothing
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> Class<T> typeOf(T t) {
+		return (Class<T>)t.getClass();
 	}
 	
 	public static int stringToInt(String str) {

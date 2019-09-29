@@ -20,13 +20,6 @@ public class Matrix2f extends Matrix<Vector2f> {
 	}
 	
 	public Matrix2f(
-			Matrix2f m2
-			) {
-		this.v0.set(m2.v0);
-		this.v1.set(m2.v1);
-	}
-	
-	public Matrix2f(
 			Vector r0,
 			Vector r1
 			) {
@@ -65,6 +58,16 @@ public class Matrix2f extends Matrix<Vector2f> {
 				get(0, j),
 				get(1, j)
 				);
+	}
+	
+	@Override
+	public int m() {
+		return 2;
+	}
+	
+	@Override
+	public int n() {
+		return 2;
 	}
 	
 	public static Matrix2f identity() {

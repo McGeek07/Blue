@@ -8,14 +8,6 @@ import blue.geom.Vector2f;
 
 public class Scene implements Renderable, Updateable {
 	
-	public void init() {
-		onInit();
-	}
-	
-	public void exit() {
-		onExit();
-	}
-	
 	public void attach() {
 		onAttach();
 	}
@@ -39,7 +31,7 @@ public class Scene implements Renderable, Updateable {
 	}
 	
 	public void onRender(RenderContext context) { }
-	public void onUpdate(UpdateContext context) { }	
+	public void onUpdate(UpdateContext context) { }
 	public void onInit() { }
 	public void onExit() { }
 	public void onAttach() { }

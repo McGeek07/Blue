@@ -11,4 +11,6 @@ public abstract class Matrix<T extends Vector> implements Serializable, Copyable
 	public abstract float get(int i, int j);
 	public abstract T row(int i);
 	public abstract T col(int j);
+	public int m() { return 0; }
+	public int n() { return 0; }
 }

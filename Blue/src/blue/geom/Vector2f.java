@@ -34,12 +34,8 @@ public class Vector2f extends Vector {
 	}
 	
 	@Override
-	public float get(int j) {
-		switch(j) {
-			case X: return x;
-			case Y: return y;
-		}
-		return 0f;
+	public int n() {
+		return 2;
 	}
 
 	@Override
@@ -50,21 +46,6 @@ public class Vector2f extends Vector {
 	@Override
 	public String toString() {
 		return toString(this, "%s");
-	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if(o instanceof Vector2f) return this.equals((Vector2f)o);
-		if(o instanceof Vector3f) return this.equals((Vector3f)o);
-		return false;
-	}
-	
-	public boolean equals(Vector2f v) {
-		return Vector.compare(this, v) == 0;
-	}
-	
-	public boolean equals(Vector3f v) {
-		return Vector.compare(this, v) == 0;
 	}
 	
 	public static String toString(Vector2f v2, String format) {

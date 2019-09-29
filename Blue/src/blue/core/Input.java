@@ -37,11 +37,11 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		//do nothing
 	}
 	
-	public static void poll() {
-		INSTANCE.pollMouse();
-		INSTANCE.pollWheel();
-		INSTANCE.pollKeys();
-		INSTANCE.pollBtns();
+	public void poll() {
+		pollMouse();
+		pollWheel();
+		pollKeys();
+		pollBtns();
 	}
 	
 	public void pollMouse() {

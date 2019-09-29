@@ -8,7 +8,5 @@ public class Debug {
 		//do nothing
 	}
 	
-	public static void log(int log, Object... msg) {
-		
-	}
+	
 }
