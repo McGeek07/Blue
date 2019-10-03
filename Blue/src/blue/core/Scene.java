@@ -18,16 +18,12 @@ public class Scene implements Renderable, Updateable {
 	
 	@Override
 	public void render(RenderContext context) {
-		context = context.push();
 		onRender(context);
-		context = context.pop();
 	}	
 
 	@Override
 	public void update(UpdateContext context) {
-		context = context.push();
 		onUpdate(context);
-		context = context.pop();
 	}
 	
 	public void onRender(RenderContext context) { }

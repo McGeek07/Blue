@@ -1,14 +1,23 @@
 package blue.core;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
 
 import blue.Blue;
 import blue.core.render.RenderContext;
+import blue.core.render.Renderable;
 import blue.core.update.UpdateContext;
+import blue.core.update.Updateable;
+import blue.geom.Bounds2f;
 import blue.geom.Layout;
 import blue.geom.Region2f;
 import blue.geom.Vector;
@@ -17,7 +26,7 @@ import blue.geom.Vector4f;
 import blue.util.Config;
 import blue.util.Util;
 
-public final class Engine implements Runnable {	
+public final class Engine implements Runnable, Renderable, Updateable {
 	protected static final long
 		ONE_SECOND = 1000000000,
 		ONE_MILLIS =    1000000;
@@ -32,6 +41,8 @@ public final class Engine implements Runnable {
 		scene;
 
 	protected boolean
+		debug = true;
+	protected boolean
 		thread_async = true;
 	protected int
 		thread_fps = 60,
@@ -39,10 +50,11 @@ public final class Engine implements Runnable {
 	
 	protected final Config
 		config = new Config(
-				BUFFER_BACKGROUND, canvas.buffer_background,
 				CANVAS_BACKGROUND, canvas.canvas_background,
-				CANVAS_W, canvas.canvas_w,
-				CANVAS_H, canvas.canvas_h,
+				CANVAS_FOREGROUND, canvas.canvas_foreground,
+				CANVAS_GFX_AA, canvas.canvas_gfx_aa,
+				CANVAS_GFX_NB, canvas.canvas_gfx_nb,
+				DEBUG, debug,
 				THREAD_ASYNC, thread_async,
 				THREAD_FPS, thread_fps,
 				THREAD_TPS, thread_tps,
@@ -56,12 +68,21 @@ public final class Engine implements Runnable {
 		thread;	
 	protected boolean
 		running;
+	
+	protected boolean
+		debug_metrics = true;
+	protected Font
+		debug_font = new Font("Monospaced", Font.PLAIN, 14);
+	protected Color
+		debug_background = new Color(0f, 0f, 0f, .8f),
+		debug_foreground = new Color(1f, 1f, 1f, .8f);
+	
 	protected int
 		fps,
 		tps;
 	protected double
-		f_dt,
-		t_dt;
+		f_ms,
+		t_ms;
 	
 	private Engine() {
 		//do nothing
@@ -82,11 +103,11 @@ public final class Engine implements Runnable {
 	}
 	
 	public static void show() {
-		
+		INSTANCE.window.onShow();
 	}
 	
 	public static void hide() {
-		
+		INSTANCE.window.onHide();
 	}
 	
 	public static void setScene(Scene scene) {
@@ -99,12 +120,36 @@ public final class Engine implements Runnable {
 		}
 	}
 	
+	public static Config getConfig() {
+		return INSTANCE.config;
+	}
+	
 	public static Scene getScene() {
 		return INSTANCE.scene;
 	}
 	
-	public static Config getConfig() {
-		return INSTANCE.config;
+	public static Region2f getCanvasRegion() {
+		return INSTANCE.canvas.getRegion();
+	}
+	
+	public static Bounds2f getCanvasBounds() {
+		return INSTANCE.canvas.getBounds();
+	}
+	
+	public static Region2f getWindowRegion() {
+		return INSTANCE.window.getRegion();
+	}
+	
+	public static Bounds2f getWindowBounds() {
+		return INSTANCE.window.getBounds();
+	}
+	
+	public static void toggleMetrics() {
+		INSTANCE.debug_metrics = !INSTANCE.debug_metrics;
+	}
+	
+	public static void toggleConsole() {
+		
 	}
 	
 	public void pollInputs() {
@@ -112,23 +157,93 @@ public final class Engine implements Runnable {
 	}
 	public void pollEvents() {
 		Event.INSTANCE.poll();
-	}	
+	}
 	
-	public void update(double t, double dt, double fixed_dt) {
+	@Override
+	public void render(RenderContext context) {		
+		if(scene != null) {
+			context = context.push();
+			scene.render(context);
+			context = context.pop();
+		}
+		
+		if(debug && debug_metrics) {
+			int
+				padding_t = 2,
+				padding_l = 2,
+				padding_b = 2,
+				padding_r = 2;
+			context.g2D.setFont(debug_font);
+			FontMetrics fm = context.g2D.getFontMetrics();
+			String[]
+					debug_info = {
+						"Debug",
+						"[F1] Exit App",
+						"[F2] Toggle Metrics",
+						"[F3] Toggle Console",
+						"",
+						"Engine",
+						"Async: " + thread_async,
+						"  FPS: " + fps + " - " + String.format("%2.3f", f_ms) + " ms",
+						"  TPS: " + tps + " - " + String.format("%2.3f", t_ms) + " ms",
+						"",
+						"Window " + window.getRegion(),
+						"   AOT: " + window.window_aot,
+						"Border: " + window.window_border,
+						"Device: " + window.window_device,
+						"Layout: " + window.window_layout,
+						"",
+						"Canvas " + canvas.getRegion(),
+						"GFX AA: " + canvas.canvas_gfx_aa,
+						"GFX NB: " + canvas.canvas_gfx_nb
+					};
+			int 
+					debug_info_w = 0,
+					debug_info_h = fm.getHeight() * debug_info.length;
+			for(int i = 0; i < debug_info.length; i ++)
+				debug_info_w = Math.max(debug_info_w, fm.stringWidth(debug_info[i]));
+			debug_info_w += padding_l + padding_r;
+			debug_info_h += padding_t + padding_b;
+			
+			context.g2D.setColor(debug_background);			
+			context.g2D.fillRect(
+						0,
+						0,
+						debug_info_w,
+						debug_info_h
+					);		
+			context.g2D.setColor(debug_foreground);
+			for(int i = 0; i < debug_info.length; i ++)
+				context.g2D.drawString(debug_info[i], padding_l, padding_t + fm.getAscent() + fm.getHeight() * i);
+		}
+	}
+	
+	@Override
+	public void update(UpdateContext context) {
 		pollInputs();
 		pollEvents();
-		canvas.update(t, dt, fixed_dt);
+		if(scene != null) {
+			context = context.push();
+			scene.update(context);
+			context = context.pop();
+		}
 	}
 	
 	public void render(double t, double dt, double fixed_dt) {
-		canvas.render(t, dt, fixed_dt);
+		canvas.render(this, t, dt, fixed_dt);
+	}
+	
+	public void update(double t, double dt, double fixed_dt) {
+		canvas.update(this, t, dt, fixed_dt);
 	}
 	
 	public void onInit() {
-		canvas.buffer_background = Vector4f.parseVector4f(config.get(BUFFER_BACKGROUND, canvas.buffer_background));
 		canvas.canvas_background = Vector4f.parseVector4f(config.get(CANVAS_BACKGROUND, canvas.canvas_background));
-		canvas.canvas_w = config.getInteger(CANVAS_W, canvas.canvas_w);
-		canvas.canvas_h = config.getInteger(CANVAS_H, canvas.canvas_h);
+		canvas.canvas_foreground = Vector4f.parseVector4f(config.get(CANVAS_FOREGROUND, canvas.canvas_foreground));
+		canvas.canvas_gfx_aa = config.getBoolean(CANVAS_GFX_AA, canvas.canvas_gfx_aa);
+		canvas.canvas_gfx_nb = config.getInteger(CANVAS_GFX_NB, canvas.canvas_gfx_nb);
+		
+		debug = config.getBoolean(DEBUG, debug);
 		
 		thread_async = config.getBoolean(THREAD_ASYNC, thread_async);
 		thread_fps = config.getInteger(THREAD_FPS, thread_fps);
@@ -147,8 +262,20 @@ public final class Engine implements Runnable {
 	}
 	
 	public void onExit() {
+		if(scene != null)
+			scene.onExit();
 		window.onExit();
 		canvas.onExit();
+	}
+	
+	public void onShow() {
+		window.onShow();
+		canvas.onShow();
+	}
+	
+	public void onHide() {
+		canvas.onHide();
+		window.onHide();
 	}
 	
 	public void onMouseMoved(Vector2f mouse) { 
@@ -209,7 +336,7 @@ public final class Engine implements Runnable {
 					
 					if(t_elapsed + t_lag >= t_time) {
 						update((double)t / ONE_SECOND, (double)t_elapsed / ONE_SECOND, t_fixed_dt);
-						t_lag = Math.max(t_elapsed - t_time, 0);
+						t_lag = Util.clamp(t_lag + t_elapsed - t_time, - t_time, t_time);
 						t_avg += t_elapsed;
 						t_elapsed = 0;
 						t_ct ++;
@@ -217,32 +344,29 @@ public final class Engine implements Runnable {
 					
 					if(f_elapsed + f_lag >= f_time) {
 						render((double)t / ONE_SECOND, (double)f_elapsed / ONE_SECOND, f_fixed_dt);
-						f_lag = Math.max(f_elapsed - f_time, 0);
+						f_lag = Util.clamp(f_lag + f_elapsed - f_time, - t_time, t_time);
 						f_avg += f_elapsed;
 						f_elapsed = 0;
 						f_ct ++;
 					}
 					
 					if(elapsed >= ONE_SECOND) {
-						f_dt = (double)f_avg / f_ct / ONE_MILLIS;
-						t_dt = (double)t_avg / t_ct / ONE_MILLIS;
+						f_ms = (double)f_avg / f_ct / ONE_MILLIS;
+						t_ms = (double)t_avg / t_ct / ONE_MILLIS;
 						fps = (int)f_ct;
 						tps = (int)t_ct;
 						elapsed = 0;
 						f_avg = 0;
 						t_avg = 0;
 						f_ct = 0;
-						t_ct = 0;						
-
-						System.out.println("FPS: " + fps + " - " + String.format("%2.3f", f_dt) + " ms");
-						System.out.println("TPS: " + tps + " - " + String.format("%2.3f", t_dt) + " ms");
+						t_ct = 0;
 					}
 					
 					long sync = Math.min(
-							t_time - t_elapsed - t_lag,
-							f_time - f_elapsed - f_lag
+							t_time - t_elapsed,
+							f_time - f_elapsed
 							) / ONE_MILLIS;
-					if(sync > 0) Thread.sleep(1);
+					if(sync > 1) Thread.sleep(1);
 				}
 			else
 				while(running) {
@@ -256,7 +380,7 @@ public final class Engine implements Runnable {
 							m_dt = (double) m_elapsed / ONE_SECOND;
 						update(m_t, m_dt, m_fixed_dt);
 						render(m_t, m_dt, m_fixed_dt);
-						m_lag = Math.max(m_elapsed - m_time, 0);
+						m_lag = Util.clamp(m_lag + m_elapsed - m_time, - m_time, m_time);
 						m_avg += m_elapsed;
 						m_elapsed = 0;
 						m_ct ++;
@@ -264,20 +388,17 @@ public final class Engine implements Runnable {
 					
 					if(elapsed >= ONE_SECOND) {
 						double m_dt = (double)m_avg / m_ct / ONE_MILLIS;
-						f_dt = m_dt;
-						t_dt = m_dt;						
+						f_ms = m_dt;
+						t_ms = m_dt;						
 						fps = (int)m_ct;
 						tps = (int)m_ct;						
 						elapsed = 0;
 						m_avg = 0;
 						m_ct = 0;
-						
-						System.out.println("FPS: " + fps + " - " + String.format("%2.3f", f_dt) + " ms");
-						System.out.println("TPS: " + tps + " - " + String.format("%2.3f", t_dt) + " ms");
 					}
 					
 					long sync = (m_time - m_elapsed - m_lag) / ONE_MILLIS;
-					if(sync > 0) Thread.sleep(1);
+					if(sync > 1) Thread.sleep(1);
 				}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -342,6 +463,36 @@ public final class Engine implements Runnable {
 			if(component != null)
 				component.dispose();
 		}
+		
+		public void onShow() {
+			if(component != null)
+				component.setVisible(true);
+		}
+		
+		public void onHide() {
+			if(component != null)
+				component.setVisible(false);
+		}
+		
+		public Region2f getRegion() {
+			Rectangle rectangle = component.getBounds();
+			return new Region2f(
+					(int)rectangle.getMinX(),
+					(int)rectangle.getMinY(),
+					(int)(rectangle.getMaxX() - rectangle.getMinX()),
+					(int)(rectangle.getMaxY() - rectangle.getMinY())
+					);
+		}
+		
+		public Bounds2f getBounds() {
+			Rectangle rectangle = component.getBounds();
+			return new Bounds2f(
+					(int)rectangle.getMinX(),
+					(int)rectangle.getMinY(),
+					(int)rectangle.getMaxX(),
+					(int)rectangle.getMaxY()
+					);
+		}
 	}
 	
 	private static class Canvas {
@@ -351,20 +502,16 @@ public final class Engine implements Runnable {
 			engine;	
 		
 		public Vector4f
-			buffer_background = new Vector4f(0f, 0f, 0f, 1f),
-			canvas_background = new Vector4f(0f, 0f, 0f, 1f);			
+			canvas_background = new Vector4f(0f, 0f, 0f, 1f),
+			canvas_foreground = new Vector4f(1f, 1f, 1f, 1f);
+		public boolean
+			canvas_gfx_aa = false;
 		public int
-			canvas_w,
-			canvas_h;
+			canvas_gfx_nb = 2;
 		
 		protected java.awt.Color
-			buffer_color,
-			canvas_color;
-		protected BufferedImage
-			canvas;
-		protected Graphics2D
-			buffer_gfx,
-			canvas_gfx;
+			background,
+			foreground;
 		
 		protected final RenderContext
 			render_context = new RenderContext();
@@ -377,144 +524,117 @@ public final class Engine implements Runnable {
 		
 		public void onInit() {				
 			component = new java.awt.Canvas();
-			component.setIgnoreRepaint(true );
+			component.setIgnoreRepaint(true );		
 			
-			buffer_color = Vector.toColor4f(buffer_background);
-			canvas_color = Vector.toColor4f(canvas_background);
+			background = Vector.toColor4f(canvas_background);
+			foreground = Vector.toColor4f(canvas_foreground);
 			
-			if(canvas_w > 0 && canvas_h > 0) {
-				canvas = new BufferedImage(
-						canvas_w,
-						canvas_h,
-						BufferedImage.TYPE_INT_ARGB
-						);
-			} else
-				canvas = null;
+			component.setFocusable(true);
+			component.setFocusTraversalKeysEnabled(false);
+			component.addKeyListener(        Input.INSTANCE);
+			component.addMouseListener(      Input.INSTANCE);
+			component.addMouseWheelListener( Input.INSTANCE);
+			component.addMouseMotionListener(Input.INSTANCE);	
 			
-			component.addKeyListener(Input.INSTANCE);
-			component.addMouseListener(Input.INSTANCE);
-			component.addMouseWheelListener(Input.INSTANCE);
-			component.addMouseMotionListener(Input.INSTANCE);			
+			component.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyPressed(KeyEvent ke) {
+					if(engine.debug)
+						switch(ke.getKeyCode()) {
+							case KeyEvent.VK_F1: Engine.exit(); break;
+							case KeyEvent.VK_F2: Engine.toggleMetrics(); break;
+							case KeyEvent.VK_F3: Engine.toggleConsole(); break;
+						}
+				}
+			});
 		}
 		
-		public void onExit() {
-			
-		}	
+		public void onExit() { }		
+		public void onShow() { }
+		public void onHide() { }
 		
 		protected BufferStrategy
-			buffer;
-		public void render(double t, double dt, double fixed_dt) {
-			int
-				buffer_w = this.component.getWidth() ,
-				buffer_h = this.component.getHeight();	
+			buffer_stratgey;
+		public void render(Renderable renderable, double t, double dt, double fixed_dt) {			
 			
+			if(buffer_stratgey == null || buffer_stratgey.contentsLost()) {
+				component.createBufferStrategy(  canvas_gfx_nb);
+				buffer_stratgey = component.getBufferStrategy();
+			}			
+
+			int
+				canvas_w = this.component.getWidth() ,
+				canvas_h = this.component.getHeight();
+			
+			render_context.g2D = (Graphics2D)buffer_stratgey.getDrawGraphics();
+			render_context.region.set(
+					canvas_w,
+					canvas_h
+					);
 			render_context.t  = t ;
 			render_context.dt = dt;
-			render_context.fixed_dt = fixed_dt;
+			render_context.fixed_dt = fixed_dt;			
 			
-			if(buffer == null || buffer.contentsLost()) {
-				component.createBufferStrategy(2);
-				buffer = component.getBufferStrategy();
-			}
+			render_context.g2D.setColor(background);
+			render_context.g2D.fillRect(
+					0, 0,
+					canvas_w,
+					canvas_h
+					);
+			render_context.g2D.setColor(foreground);
+			if(canvas_gfx_aa)
+				render_context.g2D.setRenderingHint(
+						RenderingHints.KEY_ANTIALIASING  ,
+						RenderingHints.VALUE_ANTIALIAS_ON
+						);
 			
-			if(canvas != null) {
-				render_context.region.set(
-						canvas_w,
-						canvas_h
-						);				
-				buffer_gfx = (Graphics2D)buffer.getDrawGraphics();
-				canvas_gfx = (Graphics2D)canvas.createGraphics() ;				
-				render_context.g2D = canvas_gfx;
-				
-				canvas_gfx.setColor(canvas_color);
-				canvas_gfx.fillRect(
-						0, 0,
-						canvas_w,
-						canvas_h
-						);
-				
-				if(engine.scene != null) engine.scene.render(render_context);	
-				
-				buffer_gfx.setColor(buffer_color);
-				buffer_gfx.fillRect(
-						0, 0,
-						buffer_w,
-						buffer_h
-						);
-				float scale = Math.min(
-						buffer_w,
-						buffer_h
-						);				
-				this.buffer_gfx.translate(
-						buffer_w / 2,
-						buffer_h / 2
-						);
-				this.buffer_gfx.scale(
-						scale,
-						scale
-						);
-				this.buffer_gfx.drawImage(
-						this.canvas,
-						null,
-						- canvas_w / 2,
-						- canvas_h / 2
-						);
-
-				canvas_gfx.dispose();
-				buffer_gfx.dispose();
-				buffer.show();
-			} else {
-				render_context.region.set(
-						buffer_w,
-						buffer_h
-						);
-				buffer_gfx = (Graphics2D)buffer.getDrawGraphics();
-				render_context.g2D = buffer_gfx;
-				
-				buffer_gfx.setColor(buffer_color);
-				buffer_gfx.fillRect(
-						0, 0,
-						buffer_w,
-						buffer_h
-						);
-				
-				if(engine.scene != null) engine.scene.render(render_context);
-				
-				buffer_gfx.dispose();
-				buffer.show();
-			}		
+			renderable.render(render_context);			
+			
+			render_context.g2D.dispose();
+			buffer_stratgey.show();	
 		}
 		
-		public void update(double t, double dt, double fixed_dt) {
+		public void update(Updateable updateable, double t, double dt, double fixed_dt) {
 			int
-				buffer_w = component.getWidth() ,
-				buffer_h = component.getHeight();
+				canvas_w = component.getWidth() ,
+				canvas_h = component.getHeight();		
 			
+			update_context.region.set(
+					canvas_w,
+					canvas_h
+					);
 			update_context.t  = t ;
 			update_context.dt = dt;
 			update_context.fixed_dt = fixed_dt;
 			
-			if(canvas != null) {
-				update_context.region.set(
-						canvas_w,
-						canvas_h
-						);
-				if(engine.scene != null) engine.scene.update(update_context);
-			} else {
-				render_context.region.set(
-						buffer_w,
-						buffer_h
-						);
-				if(engine.scene != null) engine.scene.update(update_context);
-			}			
+			updateable.update(update_context);
+		}
+		
+		public Region2f getRegion() {
+			Rectangle rectangle = component.getBounds();
+			return new Region2f(
+					0, 0,
+					(int)(rectangle.getMaxX() - rectangle.getMinX()),
+					(int)(rectangle.getMaxY() - rectangle.getMinY())
+					);
+		}
+		
+		public Bounds2f getBounds() {
+			Rectangle rectangle = component.getBounds();
+			return new Bounds2f(
+					0, 0,
+					(int)rectangle.getMaxX(),
+					(int)rectangle.getMaxY()
+					);
 		}
 	}
 	
 	public static final String
-		BUFFER_BACKGROUND = "buffer-background",
 		CANVAS_BACKGROUND = "canvas-background",
-		CANVAS_W = "canvas-w",
-		CANVAS_H = "canvas-h",
+		CANVAS_FOREGROUND = "canvas-foreground",
+		CANVAS_GFX_AA = "canvas-gfx-aa",
+		CANVAS_GFX_NB = "canvas-gfx-nb",
+		DEBUG = "debug",
 		THREAD_ASYNC = "thread-async",
 		THREAD_FPS = "thread-fps",
 		THREAD_TPS = "thread-tps",

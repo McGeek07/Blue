@@ -1,6 +1,5 @@
 package blue.util;
 
-import java.awt.Color;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -10,12 +9,23 @@ import java.awt.Toolkit;
 
 import blue.geom.Bounds2f;
 import blue.geom.Region2f;
-import blue.geom.Vector3f;
 
 public final class Util {
 	
 	private Util() {
 		//do nothing
+	}
+	
+	public static float clamp(float x, float a, float b) {
+		if(x < a) return a;
+		if(x > b) return b;
+		return x;
+	}
+	
+	public static long clamp(long x, long a, long b) {
+		if(x < a) return a;
+		if(x > b) return b;
+		return x;
 	}
 	
 	@SuppressWarnings("unchecked")
