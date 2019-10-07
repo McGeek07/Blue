@@ -304,6 +304,12 @@ public class Engine {
 						update_ct = 0;
 						elapsed = 0;
 					}
+					
+					long sync = Math.min(
+						render_time - render_elapsed - render_lag,
+						update_time - update_elapsed - update_lag
+						) / ONE_MILLIS - 1;
+					if(sync > 0) Thread.sleep(1);					
 				}
 			} catch(Exception ex) {
 				ex.printStackTrace();
