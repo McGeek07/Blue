@@ -1,15 +1,17 @@
 package blue.core.update;
 
-import blue.geom.Region2f;
 import blue.util.Copyable;
 
 public class UpdateContext implements Copyable<UpdateContext> {
+	public long
+		frame;
 	public double
 		t,
 		dt,
 		fixed_dt;
-	public final Region2f.Mutable
-		region = new Region2f.Mutable();
+	public int
+		canvas_w,
+		canvas_h;
 	
 	private UpdateContext
 		parent;
@@ -33,8 +35,10 @@ public class UpdateContext implements Copyable<UpdateContext> {
 	@Override
 	public UpdateContext copy() {
 		UpdateContext copy = new UpdateContext();
-		copy.region.set(this.region );
+		copy.canvas_w = this.canvas_w;
+		copy.canvas_h = this.canvas_h;
 		copy.fixed_dt = this.fixed_dt;
+		copy.frame = this.frame;
 		copy.dt = this.dt;
 		copy.t  = this.t ;
 		return copy;

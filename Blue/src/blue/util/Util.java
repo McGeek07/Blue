@@ -22,6 +22,14 @@ public final class Util {
 		return x;
 	}
 	
+	public static long clamp(long x) {
+		return clamp(x, 0, 1);
+	}
+	
+	public static long clamp(long x, long a) {
+		return clamp(x, 0, 1);
+	}
+	
 	public static long clamp(long x, long a, long b) {
 		if(x < a) return a;
 		if(x > b) return b;

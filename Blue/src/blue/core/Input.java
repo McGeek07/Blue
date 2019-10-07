@@ -32,7 +32,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		btn_buffer = new boolean[NUM_BTNS];
 	protected final byte[]
 		keys = new byte[NUM_KEYS],
-		btns = new byte[NUM_BTNS];	
+		btns = new byte[NUM_BTNS];
 	
 	private Input() {
 		//do nothing
@@ -49,7 +49,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		if(!mouse_buffer.equals(mouse)) {
 			mouse.set(mouse_buffer);
 			//event
-			Engine.INSTANCE.onMouseMoved(mouse);
+			Engine.onMouseMoved(getMouse());
 		}
 	}
 	
@@ -61,7 +61,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 			wheel = wheel_buffer;
 			wheel_buffer = 0f;
 			//event
-			Engine.INSTANCE.onWheelMoved(wheel);
+			Engine.onWheelMoved(getWheel());
 		}
 	}
 	
@@ -73,7 +73,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 					keys[i] = Input.DN_ACTION;
 					//event
 					Event.queue(new KeyAction(Type.DN_ACTION, i));
-					Engine.INSTANCE.onKeyDnAction(i);
+					Engine.onKeyDn(i);
 					break;
 				case Input.DN: case Input.DN_ACTION:
 					keys[i] = Input.DN;
@@ -88,7 +88,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 					keys[i] = Input.UP_ACTION;
 					//event
 					Event.queue(new KeyAction(Type.UP_ACTION, i));
-					Engine.INSTANCE.onKeyUpAction(i);
+					Engine.onKeyUp(i);
 					break;
 			}
 		}
@@ -102,7 +102,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 					btns[i] = Input.DN_ACTION;
 					//event
 					Event.queue(new BtnAction(Type.DN_ACTION, i));
-					Engine.INSTANCE.onBtnDnAction(i);
+					Engine.onBtnDn(i);
 					break;
 				case Input.DN: case Input.DN_ACTION:
 					btns[i] = Input.DN;
@@ -117,7 +117,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 					btns[i] = Input.UP_ACTION;
 					//event
 					Event.queue(new BtnAction(Type.UP_ACTION, i));
-					Engine.INSTANCE.onBtnUpAction(i);
+					Engine.onBtnUp(i);
 					break;
 			}
 		}
@@ -408,7 +408,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 	}
 	
 	public static Vector2f getMouse() {
-		return INSTANCE.mouse;
+		return Engine.windowToCanvas(INSTANCE.mouse);
 	}
 	
 	public static float getWheel() {

@@ -34,8 +34,8 @@ public class Scene implements Renderable, Updateable {
 	public void onDetach() { }
 	public void onMouseMoved(Vector2f mouse) { }	
 	public void onWheelMoved(float    wheel) { }	
-	public void onKeyDnAction(int key) { }	
-	public void onKeyUpAction(int key) { }
-	public void onBtnDnAction(int btn) { }
-	public void onBtnUpAction(int btn) { }
+	public void onKeyDn(int key) { }	
+	public void onKeyUp(int key) { }
+	public void onBtnDn(int btn) { }
+	public void onBtnUp(int btn) { }
 }

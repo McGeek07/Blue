@@ -2,18 +2,20 @@ package blue.core.render;
 
 import java.awt.Graphics2D;
 
-import blue.geom.Region2f;
 import blue.util.Copyable;
 
 public class RenderContext implements Copyable<RenderContext> {
 	public Graphics2D
 		g2D;
+	public long
+		frame;
 	public double
 		t,
 		dt,
 		fixed_dt;
-	public final Region2f.Mutable
-		region = new Region2f.Mutable();
+	public int
+		canvas_w,
+		canvas_h;
 	
 	private RenderContext
 		parent;
@@ -39,8 +41,10 @@ public class RenderContext implements Copyable<RenderContext> {
 	public RenderContext copy() {
 		RenderContext copy = new RenderContext();
 		copy.g2D = (Graphics2D)this.g2D.create();
-		copy.region.set(this.region );
+		copy.canvas_w = this.canvas_w;
+		copy.canvas_h = this.canvas_h;
 		copy.fixed_dt = this.fixed_dt;
+		copy.frame = this.frame;
 		copy.dt = this.dt;
 		copy.t  = this.t ;
 		return copy;

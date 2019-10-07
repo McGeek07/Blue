@@ -26,11 +26,11 @@ public class Config {
 				);
 	}
 	
-	public int getInteger(Object key) {
-		return getInteger(key, 0);
+	public int getInt(Object key) {
+		return getInt(key, 0);
 	}
 	
-	public int getInteger(Object key, int alt) {
+	public int getInt(Object key, int alt) {
 		return Util.stringToInt(get(key), alt);
 	}
 	
