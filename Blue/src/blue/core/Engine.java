@@ -18,6 +18,8 @@ import blue.util.Config;
 import blue.util.Util;
 
 public class Engine {
+	protected static final Engine
+		INSTANCE = new Engine();
 	public static final String
 		CANVAS_BACKGROUND = "canvas-background",
 		CANVAS_FOREGROUND = "canvas-foreground",
@@ -212,9 +214,9 @@ public class Engine {
 				);
 		context.g2D.drawImage(
 				Canvas.foreground_canvas,
-				null,
 				- Canvas.foreground_w / 2,
-				- Canvas.foreground_h / 2
+				- Canvas.foreground_h / 2,
+				null
 				);
 		context = context.pop();
 		
@@ -309,7 +311,7 @@ public class Engine {
 						render_time - render_elapsed - render_lag,
 						update_time - update_elapsed - update_lag
 						) / ONE_MILLIS - 1;
-					if(sync > 0) Thread.sleep(1);					
+					if(sync > 0) Thread.sleep(1);
 				}
 			} catch(Exception ex) {
 				ex.printStackTrace();
