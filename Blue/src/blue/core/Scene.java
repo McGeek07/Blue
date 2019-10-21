@@ -1,9 +1,9 @@
 package blue.core;
 
-import blue.core.render.RenderContext;
-import blue.core.render.Renderable;
-import blue.core.update.UpdateContext;
-import blue.core.update.Updateable;
+import blue.core.Render.RenderContext;
+import blue.core.Render.Renderable;
+import blue.core.Update.UpdateContext;
+import blue.core.Update.Updateable;
 import blue.geom.Vector2f;
 
 public class Scene implements Renderable, Updateable {
@@ -28,8 +28,6 @@ public class Scene implements Renderable, Updateable {
 	
 	public void onRender(RenderContext context) { }
 	public void onUpdate(UpdateContext context) { }
-	public void onInit() { }
-	public void onExit() { }
 	public void onAttach() { }
 	public void onDetach() { }
 	public void onMouseMoved(Vector2f mouse) { }	

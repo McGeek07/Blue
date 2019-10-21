@@ -1,5 +1,8 @@
 package blue.util;
 
+import java.io.File;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.TreeMap;
 
 public class Config {
@@ -76,5 +79,29 @@ public class Config {
 			_alt = alt != null ? "" + alt : null,
 			_val = index.get(_key);
 		return _val != null ? _val : _alt;
+	}
+	
+	public void save(String path) {
+		save(new File(path));
+	}
+	
+	public void save(File file  ) {
+		Util.printToFile(file, false, index);
+	}
+	
+	public void load(String path) {
+		load(new File(path));
+	}
+	
+	public void load(File file  ) {
+		Util.parseFromFile(file, index);
+	}
+	
+	public void print(PrintStream out) {
+		Util.print(out, index);
+	}
+	
+	public void print(PrintWriter out) {
+		Util.print(out, index);
 	}
 }

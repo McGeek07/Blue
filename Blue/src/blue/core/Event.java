@@ -10,7 +10,6 @@ public class Event {
 	protected static final Event
 		INSTANCE = new Event();
 	
-
 	protected final Handle
 		handle;
 	protected final Broker
@@ -255,13 +254,15 @@ public class Event {
 		}	
 		
 		public void flush() {
-			LinkedList<Object> events3 = events1;
-			events1 = events2;
-			events2 = events3;
-			
-			for(Object event: events2)
-				flush(event);
-			events2.clear();
+			if(events1.size() > 0) {
+				LinkedList<Object> events3 = events1;
+				events1 = events2;
+				events2 = events3;
+				
+				for(Object event: events2)
+					flush(event);
+				events2.clear();
+			}
 		}
 		
 		public void poll() {
@@ -310,6 +311,177 @@ public class Event {
 			
 			public <T> void flush(T event) {
 				for(Broker broker: brokers)
+					broker.flush(event);
+			}
+		}
+	}
+	
+	public static class MonoHandle<T> extends Listener.Group<T> {
+		
+		public static class Group<T> {
+			protected final HashSet<MonoHandle<T>>
+				handles = new HashSet<>(),
+				attach = new HashSet<>(),
+				detach = new HashSet<>();
+			
+			public boolean add(MonoHandle<T> handle) {
+				return handles.add(handle);
+			}
+			
+			public boolean del(MonoHandle<T> handle) {
+				return handles.remove(handle);
+			}
+			
+			public void attach(MonoHandle<T> handle) {
+				attach.add(handle);
+			}
+			
+			public void detach(MonoHandle<T> handle) {
+				detach.add(handle);
+			}
+			
+			public void attach() {
+				for(MonoHandle<T> handle: attach)
+					add(handle);
+				for(MonoHandle<T> handle: handles)
+					handle.attach();
+				attach.clear();
+			}
+			
+			public void detach() {
+				for(MonoHandle<T> handle: handles)
+					handle.detach();
+				for(MonoHandle<T> handle: detach)
+					del(handle);
+				detach.clear();
+			}
+			
+			public void flush(T event) {
+				for(MonoHandle<T> handle: handles)
+					handle.flush(event);
+			}
+		}
+	}
+	
+	public static class MonoBroker<T> {
+		protected final MonoHandle.Group<T>
+			handles = new MonoHandle.Group<>();
+		protected final MonoBroker.Group<T>
+			brokers = new MonoBroker.Group<>();
+		
+		protected LinkedList<T>
+			events1 = new LinkedList<>(),
+			events2 = new LinkedList<>();
+		
+		public boolean add(MonoHandle<T> handle) {
+			return handles.add(handle);
+		}
+		
+		public boolean del(MonoHandle<T> handle) {
+			return handles.del(handle);
+		}
+		
+		public void attach(MonoHandle<T> handle) {
+			handles.attach(handle);
+		}
+		
+		public void detach(MonoHandle<T> handle) {
+			handles.detach(handle);
+		}
+		
+		public boolean add(MonoBroker<T> queue) {
+			return brokers.add(queue);
+		}
+		
+		public boolean del(MonoBroker<T> queue) {
+			return brokers.del(queue);
+		}
+		
+		public void attach(MonoBroker<T> queue) {
+			brokers.attach(queue);
+		}
+		
+		public void detach(MonoBroker<T> queue) {
+			brokers.detach(queue);
+		}
+		
+		public void attach() {
+			handles.attach();
+			brokers   .attach();
+		}
+		
+		public void detach() {
+			handles.detach();
+			brokers.detach();
+		}	
+		
+		public void queue(T event) {
+			events1.add(event);
+		}
+		
+		public void flush(T event) {
+			handles.flush(event);
+			brokers.flush(event);
+		}
+		
+		public void flush() {
+			if(events1.size() > 0) {
+				LinkedList<T> events3 = events1;
+				events1 = events2;
+				events2 = events3;
+				
+				for(T event: events2)
+					flush(event);			
+				events2.clear();
+			}
+		}
+		
+		public void poll() {
+			attach();
+			detach();
+			flush();
+		}
+		
+		public static class Group<T> {
+			protected final HashSet<MonoBroker<T>>
+				brokers = new HashSet<>(),
+				attach = new HashSet<>(),
+				detach = new HashSet<>();
+			
+			public boolean add(MonoBroker<T> broker) {
+				return brokers.add(broker);
+			}
+			
+			public boolean del(MonoBroker<T> broker) {
+				return brokers.remove(broker);
+			}
+			
+			public void attach(MonoBroker<T> broker) {
+				attach.add(broker);
+			}
+			
+			public void detach(MonoBroker<T> broker) {
+				detach.add(broker);
+			}
+			
+			public void attach() {
+				for(MonoBroker<T> broker: attach)
+					add(broker);
+				for(MonoBroker<T> broker: brokers)
+					broker.attach();
+				attach.clear();
+			}
+			
+			public void detach() {
+				for(MonoBroker<T> broker: brokers)
+					broker.detach();
+				for(MonoBroker<T> broker: detach)
+					del(broker);
+				detach.clear();
+			}
+			
+			public void flush(T event) {
+				for(MonoBroker<T> broker: brokers)
 					broker.flush(event);
 			}
 		}

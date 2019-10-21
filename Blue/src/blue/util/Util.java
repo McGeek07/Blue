@@ -6,6 +6,22 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
 
 import blue.geom.Bounds2f;
 import blue.geom.Region2f;
@@ -176,5 +192,260 @@ public final class Util {
 				bounds.x + bounds.width  - insets.left - insets.right ,
 				bounds.y + bounds.height - insets.top  - insets.bottom
 				);		
+	}
+	
+	public static <T> void print(PrintStream out, T[] list) {
+		for(T t: list) out.println(t);
+	}
+	
+	public static <T> void print(PrintWriter out, T[] list) {
+		for(T t: list) out.println(t);
+	}
+	
+	public static <T> void print(PrintStream out, Iterable<T> list) {
+		for(T t: list) out.println(t);
+	}
+	
+	public static <T> void print(PrintWriter out, Iterable<T> list) {
+		for(T t: list) out.println(t);
+	}
+	
+	public static <K, V> void print(PrintStream out, Map<K, V> map) {
+		map.forEach((key, val) -> {
+			out.println(key + "=" + val);
+		});
+	}
+	
+	public static <K, V> void print(PrintWriter out, Map<K, V> map) {
+		map.forEach((key, val) -> {
+			out.println(key + "=" + val);
+		});
+	}
+	
+	public static File validate(File file) {
+		if(!file.exists())
+			try {
+				if(file.getParentFile() != null)
+					file.getParentFile().mkdirs();
+				file.createNewFile();
+			} catch(IOException ioe) {
+				System.err.println("Unable to validate file \"" + file + "\"");
+				ioe.printStackTrace();
+			}
+		return file;
+	}
+	
+	public static ObjectOutputStream createObjectOutputStream(String path, boolean append) {
+		return createObjectOutputStream(new File(path), append);
+	}
+	
+	public static ObjectOutputStream createObjectOutputStream(File file  , boolean append) {
+		try {
+			return new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(validate(file), append)));
+		} catch (IOException ioe) {
+			System.err.println("Unable to open file \"" + file + "\"");
+		}
+		return null;
+	}
+	
+	public static ObjectInputStream createObjectInputStream(String path) {
+		return createObjectInputStream(new File(path));
+	}
+	
+	public static ObjectInputStream createObjectInputStream(File file  ) {
+		try {
+			return new ObjectInputStream(new BufferedInputStream(new FileInputStream(validate(file))));
+		} catch(IOException ioe) {
+			System.err.println("Unable to open file \"" + file + "\"");
+		}
+		return null;
+	}
+	
+	public static BufferedWriter createBufferedWriter(String path, boolean append) {
+		return createBufferedWriter(new File(path), append);
+	}
+	
+	public static BufferedWriter createBufferedWriter(File file  , boolean append) {
+		try {
+			return new BufferedWriter(new FileWriter(validate(file), append));
+		} catch(IOException ioe) {
+			System.err.println("Unable to open file \"" + file + "\"");
+		}
+		return null;
+	}
+	
+	public static PrintWriter createPrintWriter(String path, boolean append) {
+		return createPrintWriter(new File(path), append);
+	}
+	
+	public static PrintWriter createPrintWriter(File file  , boolean append) {
+		try {
+			return new PrintWriter(new BufferedWriter(new FileWriter(validate(file), append)));
+		} catch(IOException ioe) {
+			System.err.println("Unable to open file \"" + file + "\"");
+		}
+		return null;
+	}
+	
+	public static BufferedReader createBufferedReader(String path) {
+		return createBufferedReader(new File(path));
+	}
+	
+	public static BufferedReader createBufferedReader(File file  ) {
+		try {
+			return new BufferedReader(new FileReader(validate(file)));
+		} catch(IOException ioe) {
+			System.err.println("Unable to open file \"" + file + "\"");
+		}
+		return null;
+	}
+	
+	public static <T> void writeToFile(String path, boolean append, T[] list) {
+		writeToFile(new File(path), append, list);
+	}
+	
+	public static <T> void writeToFile(File file  , boolean append, T[] list) {
+		try(ObjectOutputStream out = createObjectOutputStream(file, append)) {
+			out.writeObject(list);
+		} catch(IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+	
+	public static <T> void writeToFile(String path, boolean append, Iterable<T> list) {
+		writeToFile(new File(path), append, list);
+	}
+	
+	public static <T> void writeToFile(File file  , boolean append, Iterable<T> list) {
+		try(ObjectOutputStream out = createObjectOutputStream(file, append)) {
+			out.writeObject(list);
+		} catch(IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+	
+	public static <T> List<T> readFromFile(String path, List<T> list) {
+		return readFromFile(new File(path), list);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> List<T> readFromFile(File file  , List<T> list) {
+		try(ObjectInputStream in = createObjectInputStream(file)) {
+			Object o = in.readObject();
+			if(o instanceof Iterable)
+				for(T t: (Iterable<T>)o)
+					list.add(t);
+			else
+				for(T t: (T[])o)
+					list.add(t);
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		return list;
+	}
+	
+	public static <T> void printToFile(String path, boolean append, T[] list) {
+		printToFile(new File(path), append, list);
+	}
+	
+	public static <T> void printToFile(File file  , boolean append, T[] list) {
+		try(BufferedWriter out = createBufferedWriter(file, append)) {
+			for(T t: list)
+				out.write(String.format(t + "%n"));
+		} catch(IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+	
+	public static <T> void printToFile(String path, boolean append, Iterable<T> list) {
+		printToFile(new File(path), append, list);
+	}
+	
+	public static <T> void printToFile(File file  , boolean append, Iterable<T> list) {
+		try(BufferedWriter out = createBufferedWriter(file, append)) {
+			for(T t: list)
+				out.write(String.format(t + "%n"));
+		} catch(IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+	
+	public static <K, V> void printToFile(String path, boolean append, Map<K, V> map) {
+		printToFile(new File(path), append, map);
+	}
+	
+	public static <K, V> void printToFile(File file  , boolean append, Map<K, V> map) {
+		try(BufferedWriter out = createBufferedWriter(file, append)) {
+			map.forEach((key, val) -> {
+				try {
+					out.write(String.format(key + "=" + val + "%n"));
+				} catch (IOException ioe) {
+					ioe.printStackTrace();
+				}
+			});
+		} catch(IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+	
+	public static List<String> parseFromFile(String path, List<String> list) {
+		return parseFromFile(new File(path), list);
+	}
+	
+	public static List<String> parseFromFile(File file  , List<String> list) {
+		try(BufferedReader in = createBufferedReader(file)) {
+			while(in.ready()) list.add(in.readLine());
+		} catch(IOException ioe) {
+			ioe.printStackTrace();
+		}
+		return list;
+	}
+	
+	public static Map<String, String> parseFromFile(String path, Map<String, String> map) {
+		return parseFromFile(new File(path), map);
+	}
+	
+	public static Map<String, String> parseFromFile(File file  , Map<String, String> map) {
+		try(BufferedReader in = createBufferedReader(file)) {
+			while(in.ready()) {
+				String 
+					line = in.readLine();
+				String[] 
+					temp = line.split("\\=");
+				String
+					key = temp.length > 0 ? temp[0]: "",
+					val = temp.length > 1 ? temp[1]: "";
+				map.put(key, val);
+			}
+		} catch(IOException ioe) {
+			ioe.printStackTrace();
+		}
+		return map;
+	}
+	
+	public static String parseFromFile(String path) {
+		return parseFromFile(new File(path));
+	}
+	
+	public static String parseFromFile(File file  ) {
+		StringBuilder sb = new StringBuilder();
+		try(BufferedReader in = createBufferedReader(file)) {
+			while(in.ready()) sb.append(in.readLine());
+		} catch(IOException ioe) {
+			ioe.printStackTrace();
+		}
+		return sb.toString();
+	}
+	
+	public static void clearFile(String path) {
+		clearFile(new File(path));
+	}
+	
+	public static void clearFile(File file  ) {
+		try(BufferedWriter out = createBufferedWriter(file, false)) {
+			out.write("");
+		} catch(IOException ioe) {
+			ioe.printStackTrace();
+		}
 	}
 }

@@ -6,9 +6,8 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
-import blue.core.Debug.Metrics;
-import blue.core.render.RenderContext;
-import blue.core.update.UpdateContext;
+import blue.core.Render.RenderContext;
+import blue.core.Update.UpdateContext;
 import blue.geom.Layout;
 import blue.geom.Region2f;
 import blue.geom.Vector;
@@ -37,6 +36,9 @@ public class Engine {
 	
 	protected static final Config
 		CONFIG = new Config(
+				CANVAS_BACKGROUND, Canvas.canvas_background,
+				CANVAS_FOREGROUND, Canvas.canvas_foreground,
+				CANVAS_RESOLUTION, Canvas.canvas_resolution,
 				WINDOW_BORDER, Window.window_border,
 				WINDOW_DEVICE, Window.window_device,
 				WINDOW_LAYOUT, Window.window_layout
@@ -91,9 +93,7 @@ public class Engine {
 		return scene;
 	}
 	
-	protected static void onInit() {
-		Debug.onInit();
-		
+	protected static void onInit() {		
 		thread_fps = CONFIG.getInt(THREAD_FPS, thread_fps);
 		thread_tps = CONFIG.getInt(THREAD_TPS, thread_tps);		
 		
@@ -104,7 +104,6 @@ public class Engine {
 	protected static void onExit() {
 		Window.onExit();
 		Canvas.onExit();
-		Debug.onExit();
 	}
 	
 	protected static void onWheelMoved(float    wheel) {
@@ -199,8 +198,9 @@ public class Engine {
 				Canvas.foreground_h
 				);
 		 
-		RenderContext context = render_context1.push();	 
+		RenderContext context = render_context1.push();
 		if(scene != null) scene.render(context);
+		Render.INSTANCE.poll(context);
 		context = context.pop();
 		 
 		context = render_context0.push();		
@@ -221,7 +221,7 @@ public class Engine {
 		context = context.pop();
 		
 		context = render_context0.push();
-		Metrics.onRender(context);
+		//Metrics.onRender(context);
 		context = context.pop();
 		
 		render_context0.g2D.dispose();
@@ -244,6 +244,7 @@ public class Engine {
 		
 		UpdateContext context = update_context.push();
 		if(scene != null) scene.update(context);
+		Update.INSTANCE.poll(context);
 		context = context.pop();
 	}
 	
@@ -314,6 +315,7 @@ public class Engine {
 					if(sync > 0) Thread.sleep(1);
 				}
 			} catch(Exception ex) {
+				System.err.println("A fatal exception has occurred");
 				ex.printStackTrace();
 			} finally {
 				onExit();
