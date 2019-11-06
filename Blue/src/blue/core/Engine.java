@@ -1,13 +1,15 @@
 package blue.core;
 
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
-import blue.core.Render.RenderContext;
-import blue.core.Update.UpdateContext;
+import blue.core.Renderable.RenderContext;
+import blue.core.Updateable.UpdateContext;
+import blue.geom.Bounds2f;
 import blue.geom.Layout;
 import blue.geom.Region2f;
 import blue.geom.Vector;
@@ -22,7 +24,7 @@ public class Engine {
 	public static final String
 		CANVAS_BACKGROUND = "canvas-background",
 		CANVAS_FOREGROUND = "canvas-foreground",
-		CANVAS_RESOLUTION = "canvas-resolution",
+		CANVAS_LAYOUT = "canvas-layout",
 		THREAD_FPS = "thread-fps",
 		THREAD_TPS = "thread-tps",
 		WINDOW_BORDER = "window-border",
@@ -38,7 +40,7 @@ public class Engine {
 		CONFIG = new Config(
 				CANVAS_BACKGROUND, Canvas.canvas_background,
 				CANVAS_FOREGROUND, Canvas.canvas_foreground,
-				CANVAS_RESOLUTION, Canvas.canvas_resolution,
+				CANVAS_LAYOUT, Canvas.canvas_layout,
 				WINDOW_BORDER, Window.window_border,
 				WINDOW_DEVICE, Window.window_device,
 				WINDOW_LAYOUT, Window.window_layout
@@ -68,13 +70,15 @@ public class Engine {
 			thread = new Thread(loop());
 			running = true;
 			thread.start();
-		}
+		} else
+			Engine.onInit();
 	}
 	
 	public static synchronized void exit() {
 		if( running) {
 			running = false;
-		}
+		} else
+			Engine.onExit();
 	}
 	
 	public static void setScene(Scene scene) {
@@ -95,15 +99,19 @@ public class Engine {
 	
 	protected static void onInit() {		
 		thread_fps = CONFIG.getInt(THREAD_FPS, thread_fps);
-		thread_tps = CONFIG.getInt(THREAD_TPS, thread_tps);		
-		
+		thread_tps = CONFIG.getInt(THREAD_TPS, thread_tps);
+
+		Window.onInit();	
 		Canvas.onInit();
-		Window.onInit();		
+		if(scene != null)
+			scene.attach();
 	}
 	
 	protected static void onExit() {
-		Window.onExit();
+		if(scene != null)
+			scene.detach();
 		Canvas.onExit();
+		Window.onExit();
 	}
 	
 	protected static void onWheelMoved(float    wheel) {
@@ -155,32 +163,39 @@ public class Engine {
 		render_context1 = new RenderContext();
 	private static BufferStrategy
 		b;
-	private static void onRender(long frame, double t, double dt, double fixed_dt) {
+	private static void onRender(long frame, double t, double dt, double fixed_dt) {		 
+		Canvas.background_w = (int)Canvas.background_canvas.getWidth() ;
+		Canvas.background_h = (int)Canvas.background_canvas.getHeight();
+		
+		Canvas.canvas_scale = Math.min(
+			(float)Canvas.background_w / Canvas.foreground_w,
+			(float)Canvas.background_h / Canvas.foreground_h
+			);
+		
 		render_context0.frame = frame;
 		render_context0.t  = t ;
 		render_context0.dt = dt;
 		render_context0.fixed_dt = fixed_dt;
-		render_context0.canvas_w = Canvas.foreground_w;
-		render_context0.canvas_h = Canvas.foreground_h;
+		render_context0.bounds.set(
+				0, 0,
+				Canvas.background_w,
+				Canvas.background_h
+				);
 		
 		render_context1.frame = frame;
 		render_context1.t  = t ;
 		render_context1.dt = dt;
 		render_context1.fixed_dt = fixed_dt;
-		render_context1.canvas_w = Canvas.foreground_w;
-		render_context1.canvas_h = Canvas.foreground_h;		
+		render_context1.bounds.set(
+				0, 0,
+				Canvas.foreground_w,
+				Canvas.foreground_h
+				);
 		
 		if(b == null || b.contentsLost()) {
 			Canvas.background_canvas.createBufferStrategy(2);
 			b = Canvas.background_canvas.getBufferStrategy();
 		}
-		 
-		Canvas.background_w = (int)Canvas.background_canvas.getWidth() ;
-		Canvas.background_h = (int)Canvas.background_canvas.getHeight();		 
-		Canvas.canvas_scale = Math.min(
-			(float)Canvas.background_w / Canvas.foreground_w,
-			(float)Canvas.background_h / Canvas.foreground_h
-			);
 		 
 		render_context0.g2D = (Graphics2D)b.getDrawGraphics();
 		render_context1.g2D = (Graphics2D)Canvas.foreground_canvas.createGraphics();
@@ -200,7 +215,6 @@ public class Engine {
 		 
 		RenderContext context = render_context1.push();
 		if(scene != null) scene.render(context);
-		Render.INSTANCE.poll(context);
 		context = context.pop();
 		 
 		context = render_context0.push();		
@@ -220,10 +234,6 @@ public class Engine {
 				);
 		context = context.pop();
 		
-		context = render_context0.push();
-		//Metrics.onRender(context);
-		context = context.pop();
-		
 		render_context0.g2D.dispose();
 		render_context1.g2D.dispose();
 		b.show();
@@ -236,15 +246,17 @@ public class Engine {
 		update_context.t  = t ;
 		update_context.dt = dt;
 		update_context.fixed_dt = fixed_dt;
-		update_context.canvas_w = Canvas.foreground_w;
-		update_context.canvas_h = Canvas.foreground_h;
+		update_context.bounds.set(
+				0, 0,
+				Canvas.foreground_w,
+				Canvas.foreground_h
+				);
 		
 		Input.INSTANCE.poll();
 		Event.INSTANCE.poll();
 		
 		UpdateContext context = update_context.push();
 		if(scene != null) scene.update(context);
-		Update.INSTANCE.poll(context);
 		context = context.pop();
 	}
 	
@@ -327,8 +339,8 @@ public class Engine {
 		protected static Vector4f
 			canvas_background = new Vector4f(0f, 0f, 0f, 1f),
 			canvas_foreground = new Vector4f(1f, 1f, 1f, 1f);
-		protected static Vector2f
-			canvas_resolution = new Vector2f(16 * 64, 9 * 64);
+		protected static Layout
+			canvas_layout = Layout.DEFAULT;
 		
 		protected static java.awt.Canvas
 			background_canvas;
@@ -347,24 +359,40 @@ public class Engine {
 		protected static float
 			canvas_scale;
 		
+		protected static final Region2f.Mutable
+			init_region = new Region2f.Mutable();
+		protected static final Region2f.Mutable
+			init_bounds = new Region2f.Mutable();		
+		
 		protected static void onInit() {
 			canvas_background = Vector4f.parseVector4f(CONFIG.get(CANVAS_BACKGROUND, canvas_background));
 			canvas_foreground = Vector4f.parseVector4f(CONFIG.get(CANVAS_FOREGROUND, canvas_foreground));
-			canvas_resolution = Vector2f.parseVector2f(CONFIG.get(CANVAS_RESOLUTION, canvas_resolution));
+			canvas_layout = Layout.parseLayout(CONFIG.get(CANVAS_LAYOUT, canvas_layout));
 			
 			background_color = Vector.toColor4f(canvas_background);
 			foreground_color = Vector.toColor4f(canvas_foreground);
 			
-			foreground_w = (int)canvas_resolution.x();
-			foreground_h = (int)canvas_resolution.y();
+			Region2f a = canvas_layout.region(Window.init_region);
 			
-			background_canvas = new java.awt.Canvas();
+			init_region.set(0, 0, a.w(), a.h());
+			init_bounds.set(0, 0, a.w(), a.h());
+			
+			foreground_w = (int)a.w();
+			foreground_h = (int)a.h();
+			
+			background_canvas = new java.awt.Canvas() {
+				private static final long 
+					serialVersionUID = 1L;
+				@Override
+				public void update(Graphics g) {
+					if(isShowing()) paint(g);
+				}
+			};
 			foreground_canvas = new BufferedImage(
 					foreground_w,
 					foreground_h,
 					BufferedImage.TYPE_INT_ARGB
 					);
-			
 			background_canvas.setFocusable(true);
 			background_canvas.setIgnoreRepaint(true);
 			background_canvas.setFocusTraversalKeysEnabled(false);
@@ -372,7 +400,13 @@ public class Engine {
 			background_canvas.addKeyListener(        Input.INSTANCE);
 			background_canvas.addMouseListener(      Input.INSTANCE);
 			background_canvas.addMouseWheelListener( Input.INSTANCE);
-			background_canvas.addMouseMotionListener(Input.INSTANCE);
+			background_canvas.addMouseMotionListener(Input.INSTANCE);		
+			
+			Window.window.add(background_canvas);
+			Window.window.revalidate();
+			Engine.b = null;
+			
+			background_canvas.requestFocus();
 		}
 		
 		protected static void onExit() {
@@ -393,6 +427,11 @@ public class Engine {
 		protected static java.awt.Frame
 			window;
 		
+		protected static final Region2f.Mutable
+			init_region = new Region2f.Mutable();
+		protected static final Bounds2f.Mutable
+			init_bounds = new Bounds2f.Mutable();
+		
 		protected static void onInit() {
 			window_border = CONFIG.getBoolean(WINDOW_BORDER, window_border);
 			window_device = CONFIG.getInt    (WINDOW_DEVICE, window_device);
@@ -402,7 +441,14 @@ public class Engine {
 			if(window != null)
 				window.dispose();
 			
-			window = new java.awt.Frame();
+			window = new java.awt.Frame() {
+				private static final long 
+					serialVersionUID = 1L;
+				@Override
+				public void update(Graphics g) {
+					if(isShowing()) paint(g);
+				}
+			};
 			
 			Region2f a, b;
 			if(window_border)
@@ -411,13 +457,16 @@ public class Engine {
 				a = Util.getMaximumScreenRegion(window_device);
 			b = window_layout.region(a);
 			
+			init_region.set(0, 0, b.w(), b.h());
+			init_bounds.set(0, 0, b.w(), b.h());
+			
 			window.setBounds(
 					(int)b.x(), (int)b.y(),
 					(int)b.w(), (int)b.h()
-					);		
+					);
 			window.setUndecorated(!window_border);	
 			window.setTitle(window_title);		
-			window.setIgnoreRepaint(true);		
+			window.setIgnoreRepaint(true);
 			
 			window.addWindowListener(new WindowAdapter() {
 				@Override
@@ -426,7 +475,6 @@ public class Engine {
 				}
 			});
 			
-			window.add(Canvas.background_canvas);
 			window.setVisible(true);
 		}
 		
@@ -434,5 +482,5 @@ public class Engine {
 			if(window != null)
 				window.dispose();
 		}
-	}
+	}	
 }

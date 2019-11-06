@@ -56,6 +56,7 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 		throw new UnsupportedOperationException();
 	}
 	
+
 	public static Vector2f add(Vector2f a, Vector2f b) {
 		return new Vector2f(
 				a.x + b.x,
@@ -68,7 +69,7 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				a.y + b.y,
 				a.z + b.z
 				);
-	}
+	}	
 	public static Vector4f add(Vector4f a, Vector4f b) {
 		return new Vector4f(
 				a.x + b.x,
@@ -76,21 +77,94 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				a.z + b.z,
 				a.w + b.w
 				);
+	}	
+	public static Vector2f.Mutable add(Vector2f.Mutable a, Vector2f b) {
+		a.x += b.x;
+		a.y += b.y;
+		return a;
 	}
+	public static Vector3f.Mutable add(Vector3f.Mutable a, Vector3f b) {
+		a.x += b.x;
+		a.y += b.y;
+		a.z += b.z;
+		return a;
+	}
+	public static Vector4f.Mutable add(Vector4f.Mutable a, Vector4f b) {
+		a.x += b.x;
+		a.y += b.y;
+		a.z += b.z;
+		a.w += b.w;
+		return a;
+	}
+	
+	public static Vector2f sub(Vector2f a, Vector2f b) {
+		return new Vector2f(
+				a.x - b.x,
+				a.y - b.y
+				);
+	}
+	public static Vector3f sub(Vector3f a, Vector3f b) {
+		return new Vector3f(
+				a.x - b.x,
+				a.y - b.y,
+				a.z - b.z
+				);
+	}
+	public static Vector4f sub(Vector4f a, Vector4f b) {
+		return new Vector4f(
+				a.x - b.x,
+				a.y - b.y,
+				a.z - b.z,
+				a.w - b.w
+				);
+	}
+	public static Vector2f.Mutable sub(Vector2f.Mutable a, Vector2f b) {
+		a.x -= b.x;
+		a.y -= b.y;
+		return a;
+	}
+	public static Vector3f.Mutable sub(Vector3f.Mutable a, Vector3f b) {
+		a.x -= b.x;
+		a.y -= b.y;
+		a.z -= b.z;
+		return a;
+	}
+	public static Vector4f.Mutable sub(Vector4f.Mutable a, Vector4f b) {
+		a.x -= b.x;
+		a.y -= b.y;
+		a.z -= b.z;
+		a.w -= b.w;
+		return a;
+	}
+	
+	public static float dot(Vector2f a) {
+		return a.x * a.x + a.y * a.y;
+	}	
+	public static float dot(Vector3f a) {
+		return a.x * a.x + a.y * a.y + a.z * a.z;
+	}	
+	public static float dot(Vector4f a) {
+		return a.x * a.x + a.y * a.y + a.z * a.z + a.w * a.w;
+	}	
+	public static float dot(Vector2f a, Vector2f b) {
+		return a.x * b.x + a.y * b.y;
+	}	
+	public static float dot(Vector3f a, Vector3f b) {
+		return a.x * b.x + a.y * b.y + a.z * b.z;
+	}	
+	public static float dot(Vector4f a, Vector4f b) {
+		return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
+	}	
 	
 	public static java.awt.Color toColor3i(Vector v) {
 		return new java.awt.Color((int)v.x(), (int)v.y(), (int)v.z(), 1f);
-	}
-	
+	}	
 	public static java.awt.Color toColor3f(Vector v) {
 		return new java.awt.Color(v.x(), v.y(), v.z(), 1f);
-	}
-	
+	}	
 	public static java.awt.Color toColor4i(Vector v) {
 		return new java.awt.Color((int)v.x(), (int)v.y(), (int)v.z(), (int)v.w());
-	}
-	
+	}	
 	public static java.awt.Color toColor4f(Vector v) {
 		return new java.awt.Color(v.x(), v.y(), v.z(), v.w());
-	}
-}
+	}}

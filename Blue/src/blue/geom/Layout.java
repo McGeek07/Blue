@@ -7,7 +7,7 @@ import blue.util.Util;
 public class Layout implements Serializable {
 	private static final long 
 		serialVersionUID = 1L;
-	public final Attrib
+	public final Attribute
 		anchor_x,
 		anchor_y,
 		offset_x,
@@ -20,6 +20,19 @@ public class Layout implements Serializable {
 		maximum_h;
 	
 	public Layout(
+			Object preferred_w, Object preferred_h
+			) {
+		this(
+				0, 0,
+				0, 0,
+				preferred_w,
+				preferred_h,
+				0, 0,
+				1, 1
+				);
+	}
+	
+	public Layout(
 			Object anchor_x, Object anchor_y,
 			Object offset_x, Object offset_y,
 			Object preferred_w, Object preferred_h
@@ -27,7 +40,7 @@ public class Layout implements Serializable {
 		this(
 				anchor_x, anchor_y,
 				offset_x, offset_y,
-				preferred_w,
+				preferred_w, 
 				preferred_h,
 				0, 0,
 				1, 1
@@ -41,16 +54,16 @@ public class Layout implements Serializable {
 			Object minimum_w, Object minimum_h,
 			Object maximum_w, Object maximum_h
 			) {
-		this.anchor_x = new Attrib(anchor_x);
-		this.anchor_y = new Attrib(anchor_y);
-		this.offset_x = new Attrib(offset_x);
-		this.offset_y = new Attrib(offset_y);
-		this.preferred_w = new Attrib(preferred_w);
-		this.preferred_h = new Attrib(preferred_h);
-		this.minimum_w = new Attrib(minimum_w);
-		this.minimum_h = new Attrib(minimum_h);
-		this.maximum_w = new Attrib(maximum_w);
-		this.maximum_h = new Attrib(maximum_h);
+		this.anchor_x = new Attribute(anchor_x);
+		this.anchor_y = new Attribute(anchor_y);
+		this.offset_x = new Attribute(offset_x);
+		this.offset_y = new Attribute(offset_y);
+		this.preferred_w = new Attribute(preferred_w);
+		this.preferred_h = new Attribute(preferred_h);
+		this.minimum_w = new Attribute(minimum_w);
+		this.minimum_h = new Attribute(minimum_h);
+		this.maximum_w = new Attribute(maximum_w);
+		this.maximum_h = new Attribute(maximum_h);
 	}
 	
 	public Region2f region(Box<?> box) {
@@ -58,10 +71,10 @@ public class Layout implements Serializable {
 	}
 	
 	public Region2f region(Box<?> box, Object preferred_w, Object preferred_h) {
-		return region(box, new Attrib(preferred_w), new Attrib(preferred_h));
+		return region(box, new Attribute(preferred_w), new Attribute(preferred_h));
 	}
 	
-	public Region2f region(Box<?> box, Attrib preferred_w, Attrib preferred_h) {
+	public Region2f region(Box<?> box, Attribute preferred_w, Attribute preferred_h) {
 		float[] layout = compute(
 				box.x(), box.y(),
 				box.w(), box.h(),
@@ -81,10 +94,10 @@ public class Layout implements Serializable {
 	}
 	
 	public Bounds2f bounds(Box<?> box, Object preferred_w, Object preferred_h) {
-		return bounds(box, new Attrib(preferred_w), new Attrib(preferred_h));
+		return bounds(box, new Attribute(preferred_w), new Attribute(preferred_h));
 	}
 	
-	public Bounds2f bounds(Box<?> box, Attrib preferred_w, Attrib preferred_h) {
+	public Bounds2f bounds(Box<?> box, Attribute preferred_w, Attribute preferred_h) {
 		float[] layout = compute(
 				box.x(), box.y(),
 				box.w(), box.h(),
@@ -104,10 +117,10 @@ public class Layout implements Serializable {
 	}
 	
 	public Region2f.Mutable apply(Region2f.Mutable box, Object preferred_w, Object preferred_h) {
-		return apply(box, new Attrib(preferred_w), new Attrib(preferred_h));
+		return apply(box, new Attribute(preferred_w), new Attribute(preferred_h));
 	}
 
-	public Region2f.Mutable apply(Region2f.Mutable box, Attrib preferred_w, Attrib preferred_h) {
+	public Region2f.Mutable apply(Region2f.Mutable box, Attribute preferred_w, Attribute preferred_h) {
 		float[] layout = compute(
 				box.x(), box.y(),
 				box.w(), box.h(),
@@ -128,10 +141,10 @@ public class Layout implements Serializable {
 	}
 	
 	public Bounds2f.Mutable apply(Bounds2f.Mutable box, Object preferred_w, Object preferred_h) {
-		return apply(box, new Attrib(preferred_w), new Attrib(preferred_h));
+		return apply(box, new Attribute(preferred_w), new Attribute(preferred_h));
 	}
 
-	public Bounds2f.Mutable apply(Bounds2f.Mutable box, Attrib preferred_w, Attrib preferred_h) {
+	public Bounds2f.Mutable apply(Bounds2f.Mutable box, Attribute preferred_w, Attribute preferred_h) {
 		float[] layout = compute(
 				box.x(), box.y(),
 				box.w(), box.h(),
@@ -150,8 +163,8 @@ public class Layout implements Serializable {
 	protected float[] compute(
 			float src_x, float src_y,
 			float src_w, float src_h,
-			Attrib preferred_w,
-			Attrib preferred_h
+			Attribute preferred_w,
+			Attribute preferred_h
 			) {
 		float
 			dst_w = preferred_w.value >= 0 ? 
@@ -273,16 +286,16 @@ public class Layout implements Serializable {
         if(l.equals(BR_NINTH)) return "BR_NINTH";
 		
 		return "{"
-				+ Attrib.toString(l.anchor_x, format) + ", "
-				+ Attrib.toString(l.anchor_y, format) + ", "
-				+ Attrib.toString(l.offset_x, format) + ", "
-				+ Attrib.toString(l.offset_y, format) + ", "
-				+ Attrib.toString(l.preferred_w, format) + ", "
-				+ Attrib.toString(l.preferred_h, format) + ", "
-				+ Attrib.toString(l.minimum_w, format) + ", "
-				+ Attrib.toString(l.minimum_h, format) + ", "
-				+ Attrib.toString(l.maximum_w, format) + ", "
-				+ Attrib.toString(l.maximum_h, format) + "}";
+				+ Attribute.toString(l.anchor_x, format) + ", "
+				+ Attribute.toString(l.anchor_y, format) + ", "
+				+ Attribute.toString(l.offset_x, format) + ", "
+				+ Attribute.toString(l.offset_y, format) + ", "
+				+ Attribute.toString(l.preferred_w, format) + ", "
+				+ Attribute.toString(l.preferred_h, format) + ", "
+				+ Attribute.toString(l.minimum_w, format) + ", "
+				+ Attribute.toString(l.minimum_h, format) + ", "
+				+ Attribute.toString(l.maximum_w, format) + ", "
+				+ Attribute.toString(l.maximum_h, format) + "}";
 	}
 	
 	public static final Layout parseLayout(String str) {
@@ -339,9 +352,9 @@ public class Layout implements Serializable {
 	        }
 	    }
 	    String[] temp = str.split("\\,");
-	    Attrib[] attr = new Attrib[temp.length];
+	    Attribute[] attr = new Attribute[temp.length];
 	    for (int i = 0; i < temp.length; i++) {
-	        attr[i] = new Attrib(temp[i]);
+	        attr[i] = new Attribute(temp[i]);
 	    }
 	    return new Layout(
 	    		temp.length > 0 ? attr[0] : 0f,
@@ -357,7 +370,7 @@ public class Layout implements Serializable {
 				);    
 	}
 	
-	public static class Attrib implements Serializable {
+	public static class Attribute implements Serializable {
 		private static final long 
 			serialVersionUID = 1L;
 		public final float
@@ -365,7 +378,7 @@ public class Layout implements Serializable {
 		public final boolean
 			fixed;
 		
-		public Attrib(Object obj) {
+		public Attribute(Object obj) {
 			if(obj instanceof Number) {
 				Number n = (Number)obj;
 				
@@ -382,8 +395,8 @@ public class Layout implements Serializable {
 				fixed = i >= 0;
 				return;
 			}
-			if(obj instanceof Attrib) {
-				Attrib a = (Attrib)obj;
+			if(obj instanceof Attribute) {
+				Attribute a = (Attribute)obj;
 				
 				value = a.value;
 				fixed = a.fixed;
@@ -400,19 +413,19 @@ public class Layout implements Serializable {
 		
 		@Override
 		public boolean equals(Object o) {
-			if(o instanceof Attrib) return equals((Attrib)o);
-			if(o instanceof String) return equals(new Attrib(o));
-			if(o instanceof Number) return equals(new Attrib(o));
+			if(o instanceof Attribute) return equals((Attribute)o);
+			if(o instanceof String) return equals(new Attribute(o));
+			if(o instanceof Number) return equals(new Attribute(o));
 			return false;
 		}
 		
-		public boolean equals(Attrib a) {
+		public boolean equals(Attribute a) {
 			return
 					this.fixed == a.fixed &&
 					this.value == a.value;
 		}
 		
-		public static String toString(Attrib a, String format) {
+		public static String toString(Attribute a, String format) {
 			return (a.fixed ? "#" : "") + String.format(format, a.value);
 		}
 	}
@@ -453,5 +466,20 @@ public class Layout implements Serializable {
 		MR_NINTH = new Layout( 1f, .5f,  1f, .5f, 1f/3f, 1f/3f),
 		BL_NINTH = new Layout( 0f,  1f,  0f,  1f, 1f/3f, 1f/3f),
 		BM_NINTH = new Layout(.5f,  1f, .5f,  1f, 1f/3f, 1f/3f),
-		BR_NINTH = new Layout( 1f,  1f,  1f,  1f, 1f/3f, 1f/3f);
+		BR_NINTH = new Layout( 1f,  1f,  1f,  1f, 1f/3f, 1f/3f),
+		//16:9
+		_1920x1080 = new Layout(0, 0, 0, 0, "#1920", "#1080", "#1920", "#1080", "#1920", "#1080"),
+		_1600x900  = new Layout(0, 0, 0, 0, "#1600", "#900" , "#1600", "#900" , "#1600", "#900" ),
+		_1366x768  = new Layout(0, 0, 0, 0, "#1366", "#768" , "#1366", "#768" , "#1366", "#768" ),
+		_1280x720  = new Layout(0, 0, 0, 0, "#1280", "#720" , "#1280", "#720" , "#1280", "#720" ),
+		_1024x576  = new Layout(0, 0, 0, 0, "#1024", "#576" , "#1024", "#576" , "#1024", "#576" ),
+		//4:3
+		_1600x1200 = new Layout(0, 0, 0, 0, "#1600", "#1200", "#1600", "#1200", "#1600", "#1200"),
+		_1440x1080 = new Layout(0, 0, 0, 0, "#1440", "#1080", "#1440", "#1080", "#1440", "#1080"),
+		_1400x1050 = new Layout(0, 0, 0, 0, "#1400", "#1050", "#1400", "#1050", "#1400", "#1050"),
+		_1152x864  = new Layout(0, 0, 0, 0, "#1152", "#864" , "#1152", "#864" , "#1152", "#864" ),
+		_1024x768  = new Layout(0, 0, 0, 0, "#1024", "#768" , "#1024", "#768" , "#1024", "#768" ),
+		_800x600   = new Layout(0, 0, 0, 0, "#800" , "#600" , "#800" , "#600" , "#800" , "#600" ),
+		_768x576   = new Layout(0, 0, 0, 0, "#768" , "#576" , "#768" , "#576" , "#768" , "#576" ),
+		_640x480   = new Layout(0, 0, 0, 0, "#640" , "#480" , "#640" , "#480" , "#640" , "#480" );
 }

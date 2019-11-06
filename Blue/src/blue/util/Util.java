@@ -20,6 +20,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -447,5 +448,75 @@ public final class Util {
 		} catch(IOException ioe) {
 			ioe.printStackTrace();
 		}
+	}
+	
+	public static class Forward<T> implements Iterable<T> {
+		protected T[]
+			list;
+
+		@Override
+		public Iterator<T> iterator() {
+			return new ForwardIterator<T>(this);
+		}		
+	}
+	
+	public static class Reverse<T> implements Iterable<T> {
+		protected T[]
+			list;
+
+		@Override
+		public Iterator<T> iterator() {
+			return new ReverseIterator<T>(this);
+		}		
+	}
+	
+	public static class ForwardIterator<T> implements Iterator<T> {
+		private Forward<T>
+			forward;
+		private int
+			a,
+			b;
+		
+		public ForwardIterator(Forward<T> forward) {
+			this.forward = forward;
+			
+			this.a = 0;
+			this.b = forward.list.length;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return a < b;
+		}
+
+		@Override
+		public T next() {
+			return forward.list[a ++];
+		}		
+	}
+	
+	public static class ReverseIterator<T> implements Iterator<T> {
+		private Reverse<T>
+			reverse;
+		private int
+			a,
+			b;
+		
+		public ReverseIterator(Reverse<T> reverse) {
+			this.reverse = reverse;
+			
+			this.a = 0;
+			this.b = reverse.list.length;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return a < b;
+		}
+
+		@Override
+		public T next() {
+			return reverse.list[-- b];
+		}		
 	}
 }

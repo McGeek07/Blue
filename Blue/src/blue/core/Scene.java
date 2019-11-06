@@ -1,9 +1,5 @@
 package blue.core;
 
-import blue.core.Render.RenderContext;
-import blue.core.Render.Renderable;
-import blue.core.Update.UpdateContext;
-import blue.core.Update.Updateable;
 import blue.geom.Vector2f;
 
 public class Scene implements Renderable, Updateable {
