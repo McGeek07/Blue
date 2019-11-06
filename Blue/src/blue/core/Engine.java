@@ -62,7 +62,12 @@ public class Engine {
 		scene;
 	
 	private Engine() {
-		//do nothing
+		Event.attach(EngineEvent.class, (event) -> {
+			switch(event) {
+				case ON_EXIT: Engine.exit(); break;
+				case ON_INIT: Engine.init(); break;
+			}
+		});
 	}	
 	
 	public static synchronized void init() {
@@ -483,4 +488,9 @@ public class Engine {
 				window.dispose();
 		}
 	}	
+	
+	public static enum EngineEvent {
+		ON_INIT,
+		ON_EXIT
+	}
 }

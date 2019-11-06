@@ -1,15 +1,17 @@
 package blue;
 
 import blue.core.Engine;
+import blue.core.Event;
 import blue.core.Input;
 import blue.core.Scene;
+import blue.core.Engine.EngineEvent;
 import blue.game.Sprite;
 import blue.geom.Layout;
 import blue.util.Version;
 
 public class Blue extends Scene {
 	public static final Version
-		VERSION = new Version("Blue", 0, 0, 11);
+		VERSION = new Version("Blue", 0, 0, 12);
 	
 	public static void main(String[] args) {
 		System.out.println(VERSION);
@@ -49,14 +51,14 @@ public class Blue extends Scene {
 		switch(key) {
 			case Input.KEY_1:
 				Engine.getConfig().set(Engine.WINDOW_DEVICE, 0);
-				Engine.init();
+				Event.queue(EngineEvent.ON_INIT);
 				break;
 			case Input.KEY_2:
 				Engine.getConfig().set(Engine.WINDOW_DEVICE, 1);
-				Engine.init();
+				Event.queue(EngineEvent.ON_INIT);
 				break;
 			case Input.KEY_ESCAPE:
-				Engine.exit();
+				Event.queue(EngineEvent.ON_EXIT);
 				break;
 		}
 	}
