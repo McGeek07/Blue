@@ -1,6 +1,6 @@
 package blue.core;
 
-import blue.geom.Bounds2f;
+import blue.geom.Bounds2;
 import blue.util.Copyable;
 
 public interface Updateable {
@@ -13,8 +13,8 @@ public interface Updateable {
 			t,
 			dt,
 			fixed_dt;
-		public final Bounds2f.Mutable
-			bounds = new Bounds2f.Mutable();
+		public final Bounds2.Mutable
+			bounds = new Bounds2.Mutable();
 		
 		private UpdateContext
 			parent;

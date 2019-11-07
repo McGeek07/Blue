@@ -1,20 +1,20 @@
 package blue.geom;
 
-public class Matrix4f extends Matrix<Vector4f> {
+public class Matrix4 extends Matrix<Vector4> {
 	private static final long
 		serialVersionUID = 1L;
 	
-	protected final Vector4f.Mutable
-		v0 = new Vector4f.Mutable(),
-		v1 = new Vector4f.Mutable(),
-		v2 = new Vector4f.Mutable(),
-		v3 = new Vector4f.Mutable();
+	protected final Vector4.Mutable
+		v0 = new Vector4.Mutable(),
+		v1 = new Vector4.Mutable(),
+		v2 = new Vector4.Mutable(),
+		v3 = new Vector4.Mutable();
 	
-	public Matrix4f() {
+	public Matrix4() {
 		//do nothing
 	}
 	
-	public Matrix4f(
+	public Matrix4(
 			Matrix<?> m
 			) {
 		this.v0.set(m.row(0));
@@ -23,7 +23,7 @@ public class Matrix4f extends Matrix<Vector4f> {
 		this.v3.set(m.row(3));
 	}
 	
-	public Matrix4f(
+	public Matrix4(
 			Vector r0,
 			Vector r1,
 			Vector r2,
@@ -35,7 +35,7 @@ public class Matrix4f extends Matrix<Vector4f> {
 		this.v3.set(r3);
 	}
 	
-	public Matrix4f(
+	public Matrix4(
 			float a, float b, float c, float d,
 			float e, float f, float g, float h, 
 			float i, float j, float k, float l,
@@ -59,8 +59,8 @@ public class Matrix4f extends Matrix<Vector4f> {
 	}
 
 	@Override
-	public Vector4f row(int i) {
-		return new Vector4f(
+	public Vector4 row(int i) {
+		return new Vector4(
 				get(i, 0),
 				get(i, 1),
 				get(i, 2),
@@ -69,8 +69,8 @@ public class Matrix4f extends Matrix<Vector4f> {
 	}
 
 	@Override
-	public Vector4f col(int j) {
-		return new Vector4f(
+	public Vector4 col(int j) {
+		return new Vector4(
 				get(0, j),
 				get(1, j),
 				get(2, j),
@@ -89,7 +89,16 @@ public class Matrix4f extends Matrix<Vector4f> {
 	}
 
 	@Override
-	public Matrix4f copy() {
-		return new Matrix4f(this);
+	public Matrix4 copy() {
+		return new Matrix4(this);
+	}
+	
+	public static Matrix4 identity() {
+		return new Matrix4(
+				1f, 0f, 0f, 0f,
+				0f, 1f, 0f, 0f,
+				0f, 0f, 1f, 0f,
+				0f, 0f, 0f, 1f
+				);
 	}
 }

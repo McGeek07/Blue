@@ -1,67 +1,67 @@
 package blue.geom;
 
-import blue.geom.Box.Box2f;
+import blue.geom.Box.Box2;
 
-public class Region2f extends Box2f {
+public class Region2 extends Box2 {
 	private static final long 
 		serialVersionUID = 1L;
 	
-	public Region2f() {
+	public Region2() {
 		//do nothing	
 	}
 	
-	public Region2f(Box<?> box) {
+	public Region2(Box<?> box) {
 		this.v0.set(box.loc());
 		this.v1.set(box.dim());
 	}
 	
-	public Region2f(Vector dim) {
+	public Region2(Vector dim) {
 		this.v1.set(dim);
 	}
 	
-	public Region2f(Vector loc, Vector dim) {
+	public Region2(Vector loc, Vector dim) {
 		this.v0.set(loc);
 		this.v1.set(dim);
 	}
 	
-	public Region2f(float w, float h) {
+	public Region2(float w, float h) {
 		this.v1.set(w, h);
 	}
 	
-	public Region2f(float x, float y, float w, float h) {
+	public Region2(float x, float y, float w, float h) {
 		this.v0.set(x, y);
 		this.v1.set(w, h);
 	}
 
 	@Override
-	public Vector2f loc() {
+	public Vector2 loc() {
 		return v0;
 	}
 
 	@Override
-	public Vector2f dim() {
+	public Vector2 dim() {
 		return v1;
 	}
 
 	@Override
-	public Vector2f mid() {
-		return new Vector2f(
+	public Vector2 mid() {
+		return new Vector2(
 				v0.x + v1.x / 2,
 				v0.y + v1.y / 2
 				);
 	}
 
 	@Override
-	public Vector2f min() {
-		return new Vector2f(
+	public Vector2 min() {
+		return new Vector2(
 				Math.min(v0.x, v0.x + v1.x),
 				Math.min(v0.y, v0.y + v1.y)
 				);
 	}
 
 	@Override
-	public Vector2f max() {
-		return new Vector2f(
+	public Vector2 max() {
+		return new Vector2(
 				Math.max(v0.x, v0.x + v1.x),
 				Math.max(v0.y, v0.y + v1.y)
 				);
@@ -81,15 +81,15 @@ public class Region2f extends Box2f {
 	public float z2() { return 0f; }
 
 	@Override
-	public Region2f copy() {
-		return new Region2f(this);
+	public Region2 copy() {
+		return new Region2(this);
 	}
 	
-	public static Region2f parseRegion2f(String str) {
-		return Box2f.parseBox2f(new Region2f(), str);
+	public static Region2 parseRegion2(String str) {
+		return Box2.parseBox2(new Region2(), str);
 	}
 	
-	public static class Mutable extends Region2f {
+	public static class Mutable extends Region2 {
 		private static final long 
 			serialVersionUID = 1L;
 	
@@ -117,51 +117,51 @@ public class Region2f extends Box2f {
 			super(x, y, w, h);
 		}
 		
-		public Region2f.Mutable set(Box<?> box) {
+		public Region2.Mutable set(Box<?> box) {
 			this.v0.set(box.loc());
 			this.v1.set(box.dim());
 			return this;
 		}
 		
-		public Region2f.Mutable set(Vector dim) {
+		public Region2.Mutable set(Vector dim) {
 			this.v1.set(dim);
 			return this;
 		}
 		
-		public Region2f.Mutable set(Vector loc, Vector dim) {
+		public Region2.Mutable set(Vector loc, Vector dim) {
 			this.v0.set(loc);
 			this.v1.set(dim);
 			return this;
 		}
 		
-		public Region2f.Mutable set(float w, float h) {
+		public Region2.Mutable set(float w, float h) {
 			this.v1.set(w, h);
 			return this;
 		}
 		
-		public Region2f.Mutable set(float x, float y, float w, float h) {
+		public Region2.Mutable set(float x, float y, float w, float h) {
 			this.v0.set(x, y);
 			this.v1.set(w, h);
 			return this;
 		}
 	
 		@Override
-		public Vector2f.Mutable loc() {
+		public Vector2.Mutable loc() {
 			return v0;
 		}
 	
 		@Override
-		public Vector2f.Mutable dim() {
+		public Vector2.Mutable dim() {
 			return v1;
 		}		
 		
 		@Override
-		public Region2f.Mutable copy() {
-			return new Region2f.Mutable(this);
+		public Region2.Mutable copy() {
+			return new Region2.Mutable(this);
 		}
 		
-		public static Region2f.Mutable parseRegion2f(String str) {
-			return Box2f.parseBox2f(new Region2f.Mutable(), str);
+		public static Region2.Mutable parseRegion2(String str) {
+			return Box2.parseBox2(new Region2.Mutable(), str);
 		}
 	}
 }

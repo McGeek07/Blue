@@ -2,23 +2,23 @@ package blue.geom;
 
 import blue.util.Util;
 
-public class Vector2f extends Vector {
+public class Vector2 extends Vector {
 	private static final long 
 		serialVersionUID = 1L;
 	protected float
 		x,
 		y;
 	
-	public Vector2f() {
+	public Vector2() {
 		//do nothing
 	}
 	
-	public Vector2f(Vector v) {
+	public Vector2(Vector v) {
 		this.x = v.x();
 		this.y = v.y();
 	}
 	
-	public Vector2f(float x, float y) {
+	public Vector2(float x, float y) {
 		this.x = x;
 		this.y = y;
 	}
@@ -39,8 +39,8 @@ public class Vector2f extends Vector {
 	}
 
 	@Override
-	public Vector2f copy() {
-		return new Vector2f(this);
+	public Vector2 copy() {
+		return new Vector2(this);
 	}
 	
 	@Override
@@ -48,14 +48,14 @@ public class Vector2f extends Vector {
 		return toString(this, "%s");
 	}
 	
-	public static String toString(Vector2f v2, String format) {
+	public static String toString(Vector2 v2, String format) {
 		return 
 				"<" 
 				+ String.format(format, v2.x) + ", "
 				+ String.format(format, v2.y) + ">";
 	}
 	
-	protected static final <V extends Vector2f> V parseVector2f(V v2, String str) {
+	protected static final <V extends Vector2> V parseVector2(V v2, String str) {
 		if(v2 == null)
             throw new IllegalArgumentException("Null Vector");
         if (str == null)
@@ -88,11 +88,11 @@ public class Vector2f extends Vector {
         return v2;
 	}
 	
-	public static Vector2f parseVector2f(String str) {
-		return Vector2f.parseVector2f(new Vector2f(), str);
+	public static Vector2 parseVector2(String str) {
+		return Vector2.parseVector2(new Vector2(), str);
 	}
 	
-	public static class Mutable extends Vector2f {
+	public static class Mutable extends Vector2 {
 		private static final long 
 			serialVersionUID = 1L;
 
@@ -108,35 +108,35 @@ public class Vector2f extends Vector {
 			super(x, y);
 		}
 		
-		public Vector2f.Mutable set(Vector v) {
+		public Vector2.Mutable set(Vector v) {
 			this.x = v.x();
 			this.y = v.y();
 			return this;
 		}
 		
-		public Vector2f.Mutable set(float x, float y) {
+		public Vector2.Mutable set(float x, float y) {
 			this.x = x;
 			this.y = y;
 			return this;
 		}
 		
-		public Vector2f.Mutable setX(float x) {
+		public Vector2.Mutable setX(float x) {
 			this.x = x;
 			return this;
 		}
 		
-		public Vector2f.Mutable setY(float y) {
+		public Vector2.Mutable setY(float y) {
 			this.y = y;
 			return this;
 		}
 		
 		@Override
-		public Vector2f.Mutable copy() {
-			return new Vector2f.Mutable(this);
+		public Vector2.Mutable copy() {
+			return new Vector2.Mutable(this);
 		}
 		
-		public static Vector2f.Mutable parseVector2f(String str) {
-			return Vector2f.parseVector2f(new Vector2f.Mutable(), str);
+		public static Vector2.Mutable parseVector2(String str) {
+			return Vector2.parseVector2(new Vector2.Mutable(), str);
 		}
 	}
 }

@@ -66,22 +66,22 @@ public class Layout implements Serializable {
 		this.maximum_h = new Attribute(maximum_h);
 	}
 	
-	public Region2f region(Box<?> box) {
+	public Region2 region(Box<?> box) {
 		return region(box, preferred_w, preferred_h);
 	}
 	
-	public Region2f region(Box<?> box, Object preferred_w, Object preferred_h) {
+	public Region2 region(Box<?> box, Object preferred_w, Object preferred_h) {
 		return region(box, new Attribute(preferred_w), new Attribute(preferred_h));
 	}
 	
-	public Region2f region(Box<?> box, Attribute preferred_w, Attribute preferred_h) {
+	public Region2 region(Box<?> box, Attribute preferred_w, Attribute preferred_h) {
 		float[] layout = compute(
 				box.x(), box.y(),
 				box.w(), box.h(),
 				preferred_w,
 				preferred_h
 				);
-		return new Region2f(
+		return new Region2(
 				layout[0],
 				layout[1],
 				layout[2],
@@ -89,22 +89,22 @@ public class Layout implements Serializable {
 				);
 	}
 	
-	public Bounds2f bounds(Box<?> box) {
+	public Bounds2 bounds(Box<?> box) {
 		return bounds(box, preferred_w, preferred_h);
 	}
 	
-	public Bounds2f bounds(Box<?> box, Object preferred_w, Object preferred_h) {
+	public Bounds2 bounds(Box<?> box, Object preferred_w, Object preferred_h) {
 		return bounds(box, new Attribute(preferred_w), new Attribute(preferred_h));
 	}
 	
-	public Bounds2f bounds(Box<?> box, Attribute preferred_w, Attribute preferred_h) {
+	public Bounds2 bounds(Box<?> box, Attribute preferred_w, Attribute preferred_h) {
 		float[] layout = compute(
 				box.x(), box.y(),
 				box.w(), box.h(),
 				preferred_w,
 				preferred_h
 				);
-		return new Bounds2f(
+		return new Bounds2(
 				layout[0],
 				layout[1],
 				layout[4],
@@ -112,15 +112,15 @@ public class Layout implements Serializable {
 				);
 	}
 	
-	public Region2f.Mutable apply(Region2f.Mutable box) {
+	public Region2.Mutable apply(Region2.Mutable box) {
 		return apply(box, preferred_w, preferred_h);
 	}
 	
-	public Region2f.Mutable apply(Region2f.Mutable box, Object preferred_w, Object preferred_h) {
+	public Region2.Mutable apply(Region2.Mutable box, Object preferred_w, Object preferred_h) {
 		return apply(box, new Attribute(preferred_w), new Attribute(preferred_h));
 	}
 
-	public Region2f.Mutable apply(Region2f.Mutable box, Attribute preferred_w, Attribute preferred_h) {
+	public Region2.Mutable apply(Region2.Mutable box, Attribute preferred_w, Attribute preferred_h) {
 		float[] layout = compute(
 				box.x(), box.y(),
 				box.w(), box.h(),
@@ -136,15 +136,15 @@ public class Layout implements Serializable {
 		return box;
 	}
 	
-	public Bounds2f.Mutable apply(Bounds2f.Mutable box) {
+	public Bounds2.Mutable apply(Bounds2.Mutable box) {
 		return apply(box, preferred_w, preferred_h);
 	}
 	
-	public Bounds2f.Mutable apply(Bounds2f.Mutable box, Object preferred_w, Object preferred_h) {
+	public Bounds2.Mutable apply(Bounds2.Mutable box, Object preferred_w, Object preferred_h) {
 		return apply(box, new Attribute(preferred_w), new Attribute(preferred_h));
 	}
 
-	public Bounds2f.Mutable apply(Bounds2f.Mutable box, Attribute preferred_w, Attribute preferred_h) {
+	public Bounds2.Mutable apply(Bounds2.Mutable box, Attribute preferred_w, Attribute preferred_h) {
 		float[] layout = compute(
 				box.x(), box.y(),
 				box.w(), box.h(),

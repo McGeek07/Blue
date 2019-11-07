@@ -24,8 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import blue.geom.Bounds2f;
-import blue.geom.Region2f;
+import blue.geom.Bounds2;
+import blue.geom.Region2;
 
 public final class Util {
 	
@@ -137,13 +137,13 @@ public final class Util {
 			return null;
 	}	
 	
-	public static Region2f getMaximumScreenRegion(int i) {
+	public static Region2 getMaximumScreenRegion(int i) {
 		GraphicsDevice        gd = getGraphicsDevice(i);
 		GraphicsConfiguration gc = gd.getDefaultConfiguration();
 		
 		Rectangle bounds = gc.getBounds();
 		
-		return new Region2f(
+		return new Region2(
 				bounds.x,
 				bounds.y,
 				bounds.width,
@@ -151,14 +151,14 @@ public final class Util {
 				);
 	}
 	
-	public static Region2f getMaximumWindowRegion(int i) {
+	public static Region2 getMaximumWindowRegion(int i) {
 		GraphicsDevice        gd = getGraphicsDevice(i);
 		GraphicsConfiguration gc = gd.getDefaultConfiguration();
 		
 		Rectangle bounds = gc.getBounds();
 		Insets    insets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
 		
-		return new Region2f(
+		return new Region2(
 				bounds.x + insets.left,
 				bounds.y + insets.top ,
 				bounds.width  - insets.left - insets.right ,
@@ -166,13 +166,13 @@ public final class Util {
 				);		
 	}
 	
-	public static Bounds2f getMaximumScreenBounds(int i) {
+	public static Bounds2 getMaximumScreenBounds(int i) {
 		GraphicsDevice        gd = getGraphicsDevice(i);
 		GraphicsConfiguration gc = gd.getDefaultConfiguration();
 		
 		Rectangle bounds = gc.getBounds();
 		
-		return new Bounds2f(
+		return new Bounds2(
 				bounds.x,
 				bounds.y,
 				bounds.x + bounds.width,
@@ -180,14 +180,14 @@ public final class Util {
 				);
 	}
 	
-	public static Bounds2f getMaximumWindowBounds(int i) {
+	public static Bounds2 getMaximumWindowBounds(int i) {
 		GraphicsDevice        gd = getGraphicsDevice(i);
 		GraphicsConfiguration gc = gd.getDefaultConfiguration();
 		
 		Rectangle bounds = gc.getBounds();
 		Insets    insets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
 		
-		return new Bounds2f(
+		return new Bounds2(
 				bounds.x + insets.left,
 				bounds.y + insets.top ,
 				bounds.x + bounds.width  - insets.left - insets.right ,

@@ -2,7 +2,7 @@ package blue.core;
 
 import java.awt.Graphics2D;
 
-import blue.geom.Bounds2f;
+import blue.geom.Bounds2;
 import blue.util.Copyable;
 
 public interface Renderable {
@@ -17,8 +17,8 @@ public interface Renderable {
 			t,
 			dt,
 			fixed_dt;
-		public Bounds2f.Mutable
-			bounds = new Bounds2f.Mutable();
+		public Bounds2.Mutable
+			bounds = new Bounds2.Mutable();
 		
 		private RenderContext
 			parent;

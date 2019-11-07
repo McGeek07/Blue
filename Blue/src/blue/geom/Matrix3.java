@@ -1,19 +1,19 @@
 package blue.geom;
 
-public class Matrix3f extends Matrix<Vector3f> {
+public class Matrix3 extends Matrix<Vector3> {
 	private static final long
 		serialVersionUID = 1L;
 	
-	protected final Vector3f.Mutable
-		v0 = new Vector3f.Mutable(),
-		v1 = new Vector3f.Mutable(),
-		v2 = new Vector3f.Mutable();
+	protected final Vector3.Mutable
+		v0 = new Vector3.Mutable(),
+		v1 = new Vector3.Mutable(),
+		v2 = new Vector3.Mutable();
 	
-	public Matrix3f() {
+	public Matrix3() {
 		//do nothing
 	}
 	
-	public Matrix3f(
+	public Matrix3(
 			Matrix<?> m
 			) {
 		this.v0.set(m.row(0));
@@ -21,7 +21,7 @@ public class Matrix3f extends Matrix<Vector3f> {
 		this.v2.set(m.row(2));
 	}
 	
-	public Matrix3f(
+	public Matrix3(
 			Vector r0,
 			Vector r1,
 			Vector r2
@@ -31,7 +31,7 @@ public class Matrix3f extends Matrix<Vector3f> {
 		this.v2.set(r2);
 	}
 	
-	public Matrix3f(
+	public Matrix3(
 			float a, float b, float c,
 			float d, float e, float f,
 			float g, float h, float i
@@ -52,8 +52,8 @@ public class Matrix3f extends Matrix<Vector3f> {
 	}
 
 	@Override
-	public Vector3f row(int i) {
-		return new Vector3f(
+	public Vector3 row(int i) {
+		return new Vector3(
 				get(i, 0),
 				get(i, 1),
 				get(i, 2)
@@ -61,8 +61,8 @@ public class Matrix3f extends Matrix<Vector3f> {
 	}
 
 	@Override
-	public Vector3f col(int j) {
-		return new Vector3f(
+	public Vector3 col(int j) {
+		return new Vector3(
 				get(0, j),
 				get(1, j),
 				get(2, j)
@@ -80,7 +80,15 @@ public class Matrix3f extends Matrix<Vector3f> {
 	}
 
 	@Override
-	public Matrix3f copy() {
-		return new Matrix3f(this);
+	public Matrix3 copy() {
+		return new Matrix3(this);
+	}
+	
+	public static Matrix3 identity() {
+		return new Matrix3(
+				1f, 0f, 0f,
+				0f, 1f, 0f,
+				0f, 0f, 1f
+				);
 	}
 }

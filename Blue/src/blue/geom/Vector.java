@@ -57,39 +57,39 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 	}
 	
 
-	public static Vector2f add(Vector2f a, Vector2f b) {
-		return new Vector2f(
+	public static Vector2 add(Vector2 a, Vector2 b) {
+		return new Vector2(
 				a.x + b.x,
 				a.y + b.y
 				);
 	}
-	public static Vector3f add(Vector3f a, Vector3f b) {
-		return new Vector3f(
+	public static Vector3 add(Vector3 a, Vector3 b) {
+		return new Vector3(
 				a.x + b.x,
 				a.y + b.y,
 				a.z + b.z
 				);
 	}	
-	public static Vector4f add(Vector4f a, Vector4f b) {
-		return new Vector4f(
+	public static Vector4 add(Vector4 a, Vector4 b) {
+		return new Vector4(
 				a.x + b.x,
 				a.y + b.y,
 				a.z + b.z,
 				a.w + b.w
 				);
 	}	
-	public static Vector2f.Mutable add(Vector2f.Mutable a, Vector2f b) {
+	public static Vector2.Mutable add(Vector2.Mutable a, Vector2 b) {
 		a.x += b.x;
 		a.y += b.y;
 		return a;
 	}
-	public static Vector3f.Mutable add(Vector3f.Mutable a, Vector3f b) {
+	public static Vector3.Mutable add(Vector3.Mutable a, Vector3 b) {
 		a.x += b.x;
 		a.y += b.y;
 		a.z += b.z;
 		return a;
 	}
-	public static Vector4f.Mutable add(Vector4f.Mutable a, Vector4f b) {
+	public static Vector4.Mutable add(Vector4.Mutable a, Vector4 b) {
 		a.x += b.x;
 		a.y += b.y;
 		a.z += b.z;
@@ -97,39 +97,39 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 		return a;
 	}
 	
-	public static Vector2f sub(Vector2f a, Vector2f b) {
-		return new Vector2f(
+	public static Vector2 sub(Vector2 a, Vector2 b) {
+		return new Vector2(
 				a.x - b.x,
 				a.y - b.y
 				);
 	}
-	public static Vector3f sub(Vector3f a, Vector3f b) {
-		return new Vector3f(
+	public static Vector3 sub(Vector3 a, Vector3 b) {
+		return new Vector3(
 				a.x - b.x,
 				a.y - b.y,
 				a.z - b.z
 				);
 	}
-	public static Vector4f sub(Vector4f a, Vector4f b) {
-		return new Vector4f(
+	public static Vector4 sub(Vector4 a, Vector4 b) {
+		return new Vector4(
 				a.x - b.x,
 				a.y - b.y,
 				a.z - b.z,
 				a.w - b.w
 				);
 	}
-	public static Vector2f.Mutable sub(Vector2f.Mutable a, Vector2f b) {
+	public static Vector2.Mutable sub(Vector2.Mutable a, Vector2 b) {
 		a.x -= b.x;
 		a.y -= b.y;
 		return a;
 	}
-	public static Vector3f.Mutable sub(Vector3f.Mutable a, Vector3f b) {
+	public static Vector3.Mutable sub(Vector3.Mutable a, Vector3 b) {
 		a.x -= b.x;
 		a.y -= b.y;
 		a.z -= b.z;
 		return a;
 	}
-	public static Vector4f.Mutable sub(Vector4f.Mutable a, Vector4f b) {
+	public static Vector4.Mutable sub(Vector4.Mutable a, Vector4 b) {
 		a.x -= b.x;
 		a.y -= b.y;
 		a.z -= b.z;
@@ -137,24 +137,105 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 		return a;
 	}
 	
-	public static float dot(Vector2f a) {
+	public static Vector3 hom(Vector2 a) {
+		return new Vector3(a.x, a.y, 1f);
+	}	
+	public static Vector4 hom(Vector3 a) {
+		return new Vector4(a.x, a.y, a.z, 1f);
+	}
+	
+	public static float dot(Vector2 a) {
 		return a.x * a.x + a.y * a.y;
 	}	
-	public static float dot(Vector3f a) {
+	public static float dot(Vector3 a) {
 		return a.x * a.x + a.y * a.y + a.z * a.z;
 	}	
-	public static float dot(Vector4f a) {
+	public static float dot(Vector4 a) {
 		return a.x * a.x + a.y * a.y + a.z * a.z + a.w * a.w;
 	}	
-	public static float dot(Vector2f a, Vector2f b) {
+	public static float dot(Vector2 a, Vector2 b) {
 		return a.x * b.x + a.y * b.y;
 	}	
-	public static float dot(Vector3f a, Vector3f b) {
+	public static float dot(Vector3 a, Vector3 b) {
 		return a.x * b.x + a.y * b.y + a.z * b.z;
 	}	
-	public static float dot(Vector4f a, Vector4f b) {
+	public static float dot(Vector4 a, Vector4 b) {
 		return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 	}	
+	
+	public static Vector2 mul(Matrix2 a, Vector2 b) {
+		return new Vector2(
+				Vector.dot(a.v0, b),
+				Vector.dot(a.v1, b)
+				);
+	}
+	public static Vector2 mul(Matrix3 a, Vector2 b) {
+		Vector3 h = Vector.hom(b);
+		return new Vector2(
+				Vector.dot(a.v0, h),
+				Vector.dot(a.v1, h)
+				);
+	}
+	public static Vector3 mul(Matrix3 a, Vector3 b) {
+		return new Vector3(
+				Vector.dot(a.v0, b),
+				Vector.dot(a.v1, b),
+				Vector.dot(a.v2, b)
+				);
+	}
+	public static Vector3 mul(Matrix4 a, Vector3 b) {
+		Vector4 h = Vector.hom(b);
+		return new Vector3(
+				Vector.dot(a.v0, h),
+				Vector.dot(a.v1, h),
+				Vector.dot(a.v2, h)
+				);
+	}
+	public static Vector4 mul(Matrix4 a, Vector4 b) {
+		return new Vector4(
+				Vector.dot(a.v0, b),
+				Vector.dot(a.v1, b),
+				Vector.dot(a.v2, b),
+				Vector.dot(a.v3, b)
+				);
+	}
+	
+	public static Vector2.Mutable mul(Matrix2 a, Vector2.Mutable b) {
+		return b.set(
+				Vector.dot(a.v0, b),
+				Vector.dot(a.v1, b)
+				);
+	}
+	public static Vector2.Mutable mul(Matrix3 a, Vector2.Mutable b) {
+		Vector3 h = Vector.hom(b);
+		return b.set(
+				Vector.dot(a.v0, h),
+				Vector.dot(a.v1, h)
+				);
+	}
+	public static Vector3.Mutable mul(Matrix3 a, Vector3.Mutable b) {
+		return b.set(
+				Vector.dot(a.v0, b),
+				Vector.dot(a.v1, b),
+				Vector.dot(a.v2, b)
+				);
+	}
+	public static Vector3.Mutable mul(Matrix4 a, Vector3.Mutable b) {
+		Vector4 h = Vector.hom(b);
+		return b.set(
+				Vector.dot(a.v0, h),
+				Vector.dot(a.v1, h),
+				Vector.dot(a.v2, h)
+				);
+	}
+	public static Vector4.Mutable mul(Matrix4 a, Vector4.Mutable b) {
+		return b.set(
+				Vector.dot(a.v0, b),
+				Vector.dot(a.v1, b),
+				Vector.dot(a.v2, b),
+				Vector.dot(a.v3, b)
+				);
+	}
 	
 	public static java.awt.Color toColor3i(Vector v) {
 		return new java.awt.Color((int)v.x(), (int)v.y(), (int)v.z(), 1f);

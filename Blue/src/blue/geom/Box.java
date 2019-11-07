@@ -33,12 +33,12 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 	public abstract boolean contains(Box<?> b, boolean include_edge);
 	public abstract boolean contacts(Box<?> b, boolean include_edge);
 	
-	public static abstract class Box2f extends Box<Vector2f> {
+	public static abstract class Box2 extends Box<Vector2> {
 		private static final long 
 			serialVersionUID = 1L;
-		protected final Vector2f.Mutable
-			v0 = new Vector2f.Mutable(),
-			v1 = new Vector2f.Mutable();
+		protected final Vector2.Mutable
+			v0 = new Vector2.Mutable(),
+			v1 = new Vector2.Mutable();
 		
 		@Override
 		public boolean contains(Vector b, boolean include_edge) {
@@ -60,7 +60,7 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 			return toString(this, "%s");
 		}
 		
-		public static String toString(Box2f b2, String format) {
+		public static String toString(Box2 b2, String format) {
 			return "<"
 					+ String.format(format, b2.v0.x) + ", "
 					+ String.format(format, b2.v0.y) + ", "
@@ -68,7 +68,7 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 					+ String.format(format, b2.v1.y) + ">";
 		}
 		
-		protected static final <B extends Box2f> B parseBox2f(B b2, String str) {
+		protected static final <B extends Box2> B parseBox2(B b2, String str) {
 			if(b2 == null)
 	            throw new IllegalArgumentException("Null Box");
 	        if (str == null)
@@ -106,12 +106,12 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 		}
 	}
 	
-	public static abstract class Box3f extends Box<Vector3f> {
+	public static abstract class Box3 extends Box<Vector3> {
 		private static final long 
 			serialVersionUID = 1L;
-		protected final Vector3f.Mutable
-			v0 = new Vector3f.Mutable(),
-			v1 = new Vector3f.Mutable();
+		protected final Vector3.Mutable
+			v0 = new Vector3.Mutable(),
+			v1 = new Vector3.Mutable();
 		
 		@Override
 		public boolean contains(Vector b, boolean include_edge) {
@@ -133,7 +133,7 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 			return toString(this, "%s");
 		}
 		
-		public static String toString(Box3f b3, String format) {
+		public static String toString(Box3 b3, String format) {
 			return "<"
 					+ String.format(format, b3.v0.x) + ", "
 					+ String.format(format, b3.v0.y) + ", "
@@ -143,7 +143,7 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 					+ String.format(format, b3.v1.z) + ">";
 		}
 		
-		protected static final <B extends Box3f> B parseBox3f(B b3, String str) {
+		protected static final <B extends Box3> B parseBox3(B b3, String str) {
 			if(b3 == null)
 	            throw new IllegalArgumentException("Null Box");
 	        if (str == null)
@@ -185,31 +185,31 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 		}
 	}	
 	
-	public static boolean contains(Box2f a, Vector b, boolean include_edge) {
+	public static boolean contains(Box2 a, Vector b, boolean include_edge) {
 		return contains(a.min(), a.max(), b      , b      , include_edge);			
 	}
 	
-	public static boolean contains(Box2f a, Box<?> b, boolean include_edge) {
+	public static boolean contains(Box2 a, Box<?> b, boolean include_edge) {
 		return contains(a.min(), a.max(), b.min(), b.max(), include_edge);
 	}
 	
-	public static boolean contacts(Box2f a, Box<?> b, boolean include_edge) {
+	public static boolean contacts(Box2 a, Box<?> b, boolean include_edge) {
 		return contacts(a.min(), a.max(), b.min(), b.max(), include_edge);
 	}
 	
-	public static boolean contains(Box3f a, Vector b, boolean include_edge) {
+	public static boolean contains(Box3 a, Vector b, boolean include_edge) {
 		return contains(a.min(), a.max(), b      , b      , include_edge);			
 	}
 	
-	public static boolean contains(Box3f a, Box<?> b, boolean include_edge) {
+	public static boolean contains(Box3 a, Box<?> b, boolean include_edge) {
 		return contains(a.min(), a.max(), b.min(), b.max(), include_edge);
 	}
 	
-	public static boolean contacts(Box3f a, Box<?> b, boolean include_edge) {
+	public static boolean contacts(Box3 a, Box<?> b, boolean include_edge) {
 		return contacts(a.min(), a.max(), b.min(), b.max(), include_edge);
 	}
 	
-	public static boolean contains(Vector2f a1, Vector2f a2, Vector b1, Vector b2, boolean include_edge) {
+	public static boolean contains(Vector2 a1, Vector2 a2, Vector b1, Vector b2, boolean include_edge) {
 		if(include_edge)
 			return
 					a1.x <= b1.x() && a2.x >= b2.x() &&
@@ -220,7 +220,7 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 					a1.y <  b1.y() && a2.y >  b2.y();
 	}
 	
-	public static boolean contains(Vector3f a1, Vector3f a2, Vector b1, Vector b2, boolean include_edge) {
+	public static boolean contains(Vector3 a1, Vector3 a2, Vector b1, Vector b2, boolean include_edge) {
 		if(include_edge)
 			return
 					a1.x <= b1.x() && a2.x >= b2.x() &&
@@ -233,7 +233,7 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 					a1.z <  b1.z() && a2.z >  b2.z();
 	}
 	
-	public static boolean contacts(Vector2f a1, Vector2f a2, Vector b1, Vector b2, boolean include_edge) {
+	public static boolean contacts(Vector2 a1, Vector2 a2, Vector b1, Vector b2, boolean include_edge) {
 		if(include_edge)
 			return
 					a1.x <= b2.x() && a2.x >= b1.x() &&
@@ -244,7 +244,7 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 					a1.y <  b2.y() && a2.y >  b1.y();
 	}
 	
-	public static boolean contacts(Vector3f a1, Vector3f a2, Vector b1, Vector b2, boolean include_edge) {
+	public static boolean contacts(Vector3 a1, Vector3 a2, Vector b1, Vector b2, boolean include_edge) {
 		if(include_edge)
 			return
 					a1.x <= b2.x() && a2.x >= b1.x() &&

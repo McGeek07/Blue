@@ -1,6 +1,6 @@
 package blue.core;
 
-import blue.geom.Vector2f;
+import blue.geom.Vector2;
 
 public class Scene implements Renderable, Updateable {
 	
@@ -26,7 +26,7 @@ public class Scene implements Renderable, Updateable {
 	public void onUpdate(UpdateContext context) { }
 	public void onAttach() { }
 	public void onDetach() { }
-	public void onMouseMoved(Vector2f mouse) { }	
+	public void onMouseMoved(Vector2 mouse) { }	
 	public void onWheelMoved(float    wheel) { }	
 	public void onKeyDn(int key) { }	
 	public void onKeyUp(int key) { }

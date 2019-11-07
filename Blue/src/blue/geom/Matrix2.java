@@ -1,25 +1,25 @@
 package blue.geom;
 
-public class Matrix2f extends Matrix<Vector2f> {
+public class Matrix2 extends Matrix<Vector2> {
 	private static final long 
 		serialVersionUID = 1L;
 	
-	protected final Vector2f.Mutable
-		v0 = new Vector2f.Mutable(),
-		v1 = new Vector2f.Mutable();
+	protected final Vector2.Mutable
+		v0 = new Vector2.Mutable(),
+		v1 = new Vector2.Mutable();
 	
-	public Matrix2f() {
+	public Matrix2() {
 		//do nothing
 	}
 	
-	public Matrix2f(
+	public Matrix2(
 			Matrix<?> m
 			) {
 		this.v0.set(m.row(0));
 		this.v1.set(m.row(1));
 	}
 	
-	public Matrix2f(
+	public Matrix2(
 			Vector r0,
 			Vector r1
 			) {
@@ -27,7 +27,7 @@ public class Matrix2f extends Matrix<Vector2f> {
 		this.v1.set(r1);
 	}
 	
-	public Matrix2f(
+	public Matrix2(
 			float a, float b,
 			float c, float d
 			) {
@@ -45,16 +45,16 @@ public class Matrix2f extends Matrix<Vector2f> {
 	}
 
 	@Override
-	public Vector2f row(int i) {
-		return new Vector2f(
+	public Vector2 row(int i) {
+		return new Vector2(
 				get(i, 0),
 				get(i, 1)
 				);
 	}
 
 	@Override
-	public Vector2f col(int j) {
-		return new Vector2f(
+	public Vector2 col(int j) {
+		return new Vector2(
 				get(0, j),
 				get(1, j)
 				);
@@ -69,17 +69,10 @@ public class Matrix2f extends Matrix<Vector2f> {
 	public int n() {
 		return 2;
 	}
-	
-	public static Matrix2f identity() {
-		return new Matrix2f(
-				1f, 0f,
-				0f, 1f
-				);
-	}
 
 	@Override
-	public Matrix<Vector2f> copy() {
-		return new Matrix2f(this);
+	public Matrix<Vector2> copy() {
+		return new Matrix2(this);
 	}
 	
 	@Override
@@ -87,13 +80,20 @@ public class Matrix2f extends Matrix<Vector2f> {
 		return toString(this, "%s");
 	}
 	
-	public static String toString(Matrix2f m2, String format) {
+	public static Matrix2 identity() {
+		return new Matrix2(
+				1f, 0f,
+				0f, 1f
+				);
+	}
+	
+	public static String toString(Matrix2 m2, String format) {
 		return 
 				"[" + String.format(format, m2.v0.x) + ", " + String.format(format, m2.v0.y) + "]\n" +
 				"[" + String.format(format, m2.v1.x) + ", " + String.format(format, m2.v1.y) + "]";
 	}
 	
-	protected static final <M extends Matrix2f> M parseMatrix2f(M m2, String str) {
+	protected static final <M extends Matrix2> M parseMatrix2f(M m2, String str) {
 		if(m2 == null)
             throw new IllegalArgumentException("Null Matrix");
         if (str == null)
@@ -107,19 +107,19 @@ public class Matrix2f extends Matrix<Vector2f> {
         switch(temp.length) {
 	        default:
 	        case 2:
-	        	Vector2f.parseVector2f(m2.v1, temp[1]);
+	        	Vector2.parseVector2(m2.v1, temp[1]);
 	        case 1:
-	        	Vector2f.parseVector2f(m2.v0, temp[0]);
+	        	Vector2.parseVector2(m2.v0, temp[0]);
 	        case 0:
         }
         return m2;
 	}
 	
-	public static Matrix2f parseMatrix2f(String str) {
-		return Matrix2f.parseMatrix2f(new Matrix2f(), str);
+	public static Matrix2 parseMatrix2f(String str) {
+		return Matrix2.parseMatrix2f(new Matrix2(), str);
 	}
 	
-	public static class Mutable extends Matrix2f {
+	public static class Mutable extends Matrix2 {
 		private static final long 
 			serialVersionUID = 1L;
 		
@@ -147,7 +147,7 @@ public class Matrix2f extends Matrix<Vector2f> {
 			super(a, b, c, d);
 		}
 		
-		public Matrix2f.Mutable set(
+		public Matrix2.Mutable set(
 				Matrix<?> m
 				) {
 			this.v0.set(m.row(0));
@@ -155,7 +155,7 @@ public class Matrix2f extends Matrix<Vector2f> {
 			return this;
 		}
 		
-		public Matrix2f.Mutable set(
+		public Matrix2.Mutable set(
 				Vector r0,
 				Vector r1
 				) {
@@ -164,7 +164,7 @@ public class Matrix2f extends Matrix<Vector2f> {
 			return this;
 		} 
 		
-		public Matrix2f.Mutable set(
+		public Matrix2.Mutable set(
 				float a, float b,
 				float c, float d
 				) {
@@ -174,12 +174,12 @@ public class Matrix2f extends Matrix<Vector2f> {
 		}
 		
 		@Override
-		public Matrix2f.Mutable copy() {
-			return new Matrix2f.Mutable(this);
+		public Matrix2.Mutable copy() {
+			return new Matrix2.Mutable(this);
 		}
 		
-		public static Matrix2f.Mutable parseMatrix2f(String str) {
-			return Matrix2f.parseMatrix2f(new Matrix2f.Mutable(), str);
+		public static Matrix2.Mutable parseMatrix2f(String str) {
+			return Matrix2.parseMatrix2f(new Matrix2.Mutable(), str);
 		}
 	}
 }

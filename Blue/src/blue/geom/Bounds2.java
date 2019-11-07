@@ -1,61 +1,61 @@
 package blue.geom;
 
-import blue.geom.Box.Box2f;
+import blue.geom.Box.Box2;
 
-public class Bounds2f extends Box2f {
+public class Bounds2 extends Box2 {
 	private static final long 
 		serialVersionUID = 1L;
 	
-	public Bounds2f() {
+	public Bounds2() {
 		//do nothing
 	}
 	
-	public Bounds2f(Box<?> box) {
+	public Bounds2(Box<?> box) {
 		this.v0.set(box.min());
 		this.v1.set(box.max());
 	}
 	
-	public Bounds2f(Vector min, Vector max) {
+	public Bounds2(Vector min, Vector max) {
 		this.v0.set(min);
 		this.v1.set(max);
 	}
 	
-	public Bounds2f(float x1, float y1, float x2, float y2) {
+	public Bounds2(float x1, float y1, float x2, float y2) {
 		this.v0.set(x1, y1);
 		this.v1.set(x2, y2);
 	}
 
 	@Override
-	public Vector2f loc() {
-		return new Vector2f(
+	public Vector2 loc() {
+		return new Vector2(
 				v0.x,
 				v0.y
 				);
 	}
 
 	@Override
-	public Vector2f dim() {
-		return new Vector2f(
+	public Vector2 dim() {
+		return new Vector2(
 				v1.x - v0.x,
 				v1.y - v0.y
 				);
 	}
 
 	@Override
-	public Vector2f mid() {
-		return new Vector2f(
+	public Vector2 mid() {
+		return new Vector2(
 				(v0.x + v1.x) / 2, 
 				(v0.y + v1.y) / 2
 				);
 	}
 
 	@Override
-	public Vector2f min() {
+	public Vector2 min() {
 		return v0;
 	}
 
 	@Override
-	public Vector2f max() {
+	public Vector2 max() {
 		return v1;
 	}
 	
@@ -73,15 +73,15 @@ public class Bounds2f extends Box2f {
 	public float d() { return 0f; }
 
 	@Override
-	public Bounds2f copy() {
-		return new Bounds2f(this);
+	public Bounds2 copy() {
+		return new Bounds2(this);
 	}
 	
-	public static Bounds2f parseBounds2f(String str) {
-		return Box2f.parseBox2f(new Bounds2f(), str);
+	public static Bounds2 parseBounds2(String str) {
+		return Box2.parseBox2(new Bounds2(), str);
 	}
 	
-	public static class Mutable extends Bounds2f {
+	public static class Mutable extends Bounds2 {
 		private static final long 
 			serialVersionUID = 1L;
 		
@@ -101,41 +101,41 @@ public class Bounds2f extends Box2f {
 			super(x1, y1, x2, y2);
 		}
 		
-		public Bounds2f.Mutable set(Box<?> box) {
+		public Bounds2.Mutable set(Box<?> box) {
 			this.v0.set(box.min());
 			this.v1.set(box.max());
 			return this;
 		}
 		
-		public Bounds2f.Mutable set(Vector min, Vector max) {
+		public Bounds2.Mutable set(Vector min, Vector max) {
 			this.v0.set(min);
 			this.v1.set(max);
 			return this;
 		}
 		
-		public Bounds2f.Mutable set(float x1, float y1, float x2, float y2) {
+		public Bounds2.Mutable set(float x1, float y1, float x2, float y2) {
 			this.v0.set(x1, y1);
 			this.v1.set(x2, y2);
 			return this;
 		}
 		
 		@Override
-		public Vector2f.Mutable min() {
+		public Vector2.Mutable min() {
 			return v0;
 		}
 		
 		@Override
-		public Vector2f.Mutable max() {
+		public Vector2.Mutable max() {
 			return v1;
 		}
 		
 		@Override
-		public Bounds2f.Mutable copy() {
-			return new Bounds2f.Mutable(this);
+		public Bounds2.Mutable copy() {
+			return new Bounds2.Mutable(this);
 		}
 		
-		public static Bounds2f.Mutable parseBounds2f(String str) {
-			return Box2f.parseBox2f(new Bounds2f.Mutable(), str);
+		public static Bounds2.Mutable parseBounds2(String str) {
+			return Box2.parseBox2(new Bounds2.Mutable(), str);
 		}
 	}
 }

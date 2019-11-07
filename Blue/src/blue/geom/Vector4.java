@@ -2,7 +2,7 @@ package blue.geom;
 
 import blue.util.Util;
 
-public class Vector4f extends Vector {
+public class Vector4 extends Vector {
 	private static final long 
 		serialVersionUID = 1L;
 	protected float
@@ -11,18 +11,18 @@ public class Vector4f extends Vector {
 		z,
 		w;
 	
-	public Vector4f() {
+	public Vector4() {
 		//do nothing
 	}
 	
-	public Vector4f(Vector v) {
+	public Vector4(Vector v) {
 		this.x = v.x();
 		this.y = v.y();
 		this.z = v.z();
 		this.w = v.w();
 	}
 	
-	public Vector4f(float x, float y, float z, float w) {
+	public Vector4(float x, float y, float z, float w) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -55,8 +55,8 @@ public class Vector4f extends Vector {
 	}
 	
 	@Override
-	public Vector4f copy() {
-		return new Vector4f(this);
+	public Vector4 copy() {
+		return new Vector4(this);
 	}
 	
 	@Override
@@ -64,7 +64,7 @@ public class Vector4f extends Vector {
 		return toString(this, "%s");
 	}
 	
-	public static String toString(Vector4f v4, String format) {
+	public static String toString(Vector4 v4, String format) {
 		return 
 				"<" 
 				+ String.format(format, v4.x) + ", "
@@ -73,7 +73,7 @@ public class Vector4f extends Vector {
 				+ String.format(format, v4.w) + ">";
 	}
 	
-	protected static final <V extends Vector4f> V parseVector4f(V v4, String str) {
+	protected static final <V extends Vector4> V parseVector4(V v4, String str) {
 		if(v4 == null)
 	        throw new IllegalArgumentException("Null Vector");
 	    if (str == null)
@@ -110,11 +110,11 @@ public class Vector4f extends Vector {
 	    return v4;
 	}
 	
-	public static Vector4f parseVector4f(String str) {
-		return Vector4f.parseVector4f(new Vector4f(), str);
+	public static Vector4 parseVector4(String str) {
+		return Vector4.parseVector4(new Vector4(), str);
 	}
 	
-	public static class Mutable extends Vector4f {
+	public static class Mutable extends Vector4 {
 		private static final long 
 			serialVersionUID = 1L;
 	
@@ -130,7 +130,7 @@ public class Vector4f extends Vector {
 			super(x, y, z, w);
 		}
 		
-		public Vector4f.Mutable set(Vector v) {
+		public Vector4.Mutable set(Vector v) {
 			this.x = v.x();
 			this.y = v.y();
 			this.z = v.z();
@@ -138,7 +138,7 @@ public class Vector4f extends Vector {
 			return this;
 		}
 		
-		public Vector4f.Mutable set(float x, float y, float z, float w) {
+		public Vector4.Mutable set(float x, float y, float z, float w) {
 			this.x = x;
 			this.y = y;
 			this.z = z;
@@ -146,33 +146,33 @@ public class Vector4f extends Vector {
 			return this;
 		}
 		
-		public Vector4f.Mutable setX(float x) {
+		public Vector4.Mutable setX(float x) {
 			this.x = x;
 			return this;
 		}
 		
-		public Vector4f.Mutable setY(float y) {
+		public Vector4.Mutable setY(float y) {
 			this.y = y;
 			return this;
 		}
 		
-		public Vector4f.Mutable setZ(float z) {
+		public Vector4.Mutable setZ(float z) {
 			this.z = z;
 			return this;
 		}
 		
-		public Vector4f.Mutable setW(float w) {
+		public Vector4.Mutable setW(float w) {
 			this.w = w;
 			return this;
 		}
 		
 		@Override
-		public Vector4f.Mutable copy() {
-			return new Vector4f.Mutable(this);
+		public Vector4.Mutable copy() {
+			return new Vector4.Mutable(this);
 		}
 		
-		public static Vector4f.Mutable parseVector4f(String str) {
-			return Vector4f.parseVector4f(new Vector4f.Mutable(), str);
+		public static Vector4.Mutable parseVector4(String str) {
+			return Vector4.parseVector4(new Vector4.Mutable(), str);
 		}
 	}
 }

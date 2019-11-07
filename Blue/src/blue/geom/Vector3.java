@@ -2,7 +2,7 @@ package blue.geom;
 
 import blue.util.Util;
 
-public class Vector3f extends Vector {
+public class Vector3 extends Vector {
 	private static final long 
 		serialVersionUID = 1L;
 	protected float
@@ -10,17 +10,17 @@ public class Vector3f extends Vector {
 		y,
 		z;
 	
-	public Vector3f() {
+	public Vector3() {
 		//do nothing
 	}
 	
-	public Vector3f(Vector v) {
+	public Vector3(Vector v) {
 		this.x = v.x();
 		this.y = v.y();
 		this.z = v.z();
 	}
 	
-	public Vector3f(float x, float y, float z) {
+	public Vector3(float x, float y, float z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -47,8 +47,8 @@ public class Vector3f extends Vector {
 	}
 	
 	@Override
-	public Vector3f copy() {
-		return new Vector3f(this);
+	public Vector3 copy() {
+		return new Vector3(this);
 	}
 	
 	@Override
@@ -56,7 +56,7 @@ public class Vector3f extends Vector {
 		return toString(this, "%s");
 	}
 	
-	public static String toString(Vector3f v3, String format) {
+	public static String toString(Vector3 v3, String format) {
 		return 
 				"<" 
 				+ String.format(format, v3.x) + ", "
@@ -64,7 +64,7 @@ public class Vector3f extends Vector {
 				+ String.format(format, v3.z) + ">";
 	}
 	
-	protected static final <V extends Vector3f> V parseVector3f(V v3, String str) {
+	protected static final <V extends Vector3> V parseVector3(V v3, String str) {
 		if(v3 == null)
             throw new IllegalArgumentException("Null Vector");
         if (str == null)
@@ -99,11 +99,11 @@ public class Vector3f extends Vector {
         return v3;
 	}
 	
-	public static Vector3f parseVector3f(String str) {
-		return Vector3f.parseVector3f(new Vector3f(), str);
+	public static Vector3 parseVector3(String str) {
+		return Vector3.parseVector3(new Vector3(), str);
 	}
 	
-	public static class Mutable extends Vector3f {
+	public static class Mutable extends Vector3 {
 		private static final long 
 			serialVersionUID = 1L;
 	
@@ -119,42 +119,42 @@ public class Vector3f extends Vector {
 			super(x, y, z);
 		}
 		
-		public Vector3f.Mutable set(Vector v) {
+		public Vector3.Mutable set(Vector v) {
 			this.x = v.x();
 			this.y = v.y();
 			this.z = v.z();
 			return this;
 		}
 		
-		public Vector3f.Mutable set(float x, float y, float z) {
+		public Vector3.Mutable set(float x, float y, float z) {
 			this.x = x;
 			this.y = y;
 			this.z = z;
 			return this;
 		}
 		
-		public Vector3f.Mutable setX(float x) {
+		public Vector3.Mutable setX(float x) {
 			this.x = x;
 			return this;
 		}
 		
-		public Vector3f.Mutable setY(float y) {
+		public Vector3.Mutable setY(float y) {
 			this.y = y;
 			return this;
 		}
 		
-		public Vector3f.Mutable setZ(float z) {
+		public Vector3.Mutable setZ(float z) {
 			this.z = z;
 			return this;
 		}
 		
 		@Override
-		public Vector3f.Mutable copy() {
-			return new Vector3f.Mutable(this);
+		public Vector3.Mutable copy() {
+			return new Vector3.Mutable(this);
 		}
 		
-		public static Vector3f.Mutable parseVector3f(String str) {
-			return Vector3f.parseVector3f(new Vector3f.Mutable(), str);
+		public static Vector3.Mutable parseVector3(String str) {
+			return Vector3.parseVector3(new Vector3.Mutable(), str);
 		}
 	}
 }

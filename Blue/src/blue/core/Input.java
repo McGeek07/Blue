@@ -9,7 +9,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import blue.core.Input.Action.Type;
-import blue.geom.Vector2f;
+import blue.geom.Vector2;
 
 public final class Input implements KeyListener, MouseListener, MouseWheelListener, MouseMotionListener {
 	protected static final Input
@@ -21,9 +21,9 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		NUM_KEYS = 128,
 		NUM_BTNS = 25;
 
-	protected final Vector2f.Mutable
-		mouse_buffer = new Vector2f.Mutable(),
-		mouse        = new Vector2f.Mutable();
+	protected final Vector2.Mutable
+		mouse_buffer = new Vector2.Mutable(),
+		mouse        = new Vector2.Mutable();
 	protected float
 		wheel_buffer = 0f,
 		wheel        = 0f;
@@ -407,7 +407,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 				);
 	}
 	
-	public static Vector2f getMouse() {
+	public static Vector2 getMouse() {
 		return Engine.windowToCanvas(INSTANCE.mouse);
 	}
 	

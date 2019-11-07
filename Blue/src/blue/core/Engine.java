@@ -9,12 +9,12 @@ import java.awt.image.BufferedImage;
 
 import blue.core.Renderable.RenderContext;
 import blue.core.Updateable.UpdateContext;
-import blue.geom.Bounds2f;
+import blue.geom.Bounds2;
 import blue.geom.Layout;
-import blue.geom.Region2f;
+import blue.geom.Region2;
 import blue.geom.Vector;
-import blue.geom.Vector2f;
-import blue.geom.Vector4f;
+import blue.geom.Vector2;
+import blue.geom.Vector4;
 import blue.util.Config;
 import blue.util.Util;
 
@@ -123,7 +123,7 @@ public class Engine {
 		if(scene != null) scene.onWheelMoved(wheel);
 	}
 	
-	protected static void onMouseMoved(Vector2f mouse) {
+	protected static void onMouseMoved(Vector2 mouse) {
 		if(scene != null) scene.onMouseMoved(mouse);
 	}
 	
@@ -143,24 +143,24 @@ public class Engine {
 		if(scene != null) scene.onBtnUp(btn);
 	}
 	
-	protected static Vector2f windowToCanvas(Vector2f v) {
+	protected static Vector2 windowToCanvas(Vector2 v) {
 		return windowToCanvas(v.x(), v.y());
 	}
 	
-	protected static Vector2f windowToCanvas(float x, float y) {
+	protected static Vector2 windowToCanvas(float x, float y) {
 		x = (x - Canvas.background_w / 2) / Canvas.canvas_scale + Canvas.foreground_w / 2;
 		y = (y - Canvas.background_h / 2) / Canvas.canvas_scale + Canvas.foreground_h / 2;
-		return new Vector2f(x, y);
+		return new Vector2(x, y);
 	}
 	
-	protected static Vector2f canvasToWindow(Vector2f v) {
+	protected static Vector2 canvasToWindow(Vector2 v) {
 		return canvasToWindow(v.x(), v.y());
 	}
 	
-	protected static Vector2f canvasToWindow(float x, float y) {
+	protected static Vector2 canvasToWindow(float x, float y) {
 		x = (x - Canvas.foreground_w / 2) * Canvas.canvas_scale + Canvas.background_w / 2;
 		y = (y - Canvas.foreground_h / 2) * Canvas.canvas_scale + Canvas.background_h / 2;
-		return new Vector2f(x, y);
+		return new Vector2(x, y);
 	}
 	
 	private static final RenderContext
@@ -341,9 +341,9 @@ public class Engine {
 	}
 	
 	protected static class Canvas {
-		protected static Vector4f
-			canvas_background = new Vector4f(0f, 0f, 0f, 1f),
-			canvas_foreground = new Vector4f(1f, 1f, 1f, 1f);
+		protected static Vector4
+			canvas_background = new Vector4(0f, 0f, 0f, 1f),
+			canvas_foreground = new Vector4(1f, 1f, 1f, 1f);
 		protected static Layout
 			canvas_layout = Layout.DEFAULT;
 		
@@ -364,20 +364,20 @@ public class Engine {
 		protected static float
 			canvas_scale;
 		
-		protected static final Region2f.Mutable
-			init_region = new Region2f.Mutable();
-		protected static final Region2f.Mutable
-			init_bounds = new Region2f.Mutable();		
+		protected static final Region2.Mutable
+			init_region = new Region2.Mutable();
+		protected static final Region2.Mutable
+			init_bounds = new Region2.Mutable();		
 		
 		protected static void onInit() {
-			canvas_background = Vector4f.parseVector4f(CONFIG.get(CANVAS_BACKGROUND, canvas_background));
-			canvas_foreground = Vector4f.parseVector4f(CONFIG.get(CANVAS_FOREGROUND, canvas_foreground));
+			canvas_background = Vector4.parseVector4(CONFIG.get(CANVAS_BACKGROUND, canvas_background));
+			canvas_foreground = Vector4.parseVector4(CONFIG.get(CANVAS_FOREGROUND, canvas_foreground));
 			canvas_layout = Layout.parseLayout(CONFIG.get(CANVAS_LAYOUT, canvas_layout));
 			
 			background_color = Vector.toColor4f(canvas_background);
 			foreground_color = Vector.toColor4f(canvas_foreground);
 			
-			Region2f a = canvas_layout.region(Window.init_region);
+			Region2 a = canvas_layout.region(Window.init_region);
 			
 			init_region.set(0, 0, a.w(), a.h());
 			init_bounds.set(0, 0, a.w(), a.h());
@@ -432,10 +432,10 @@ public class Engine {
 		protected static java.awt.Frame
 			window;
 		
-		protected static final Region2f.Mutable
-			init_region = new Region2f.Mutable();
-		protected static final Bounds2f.Mutable
-			init_bounds = new Bounds2f.Mutable();
+		protected static final Region2.Mutable
+			init_region = new Region2.Mutable();
+		protected static final Bounds2.Mutable
+			init_bounds = new Bounds2.Mutable();
 		
 		protected static void onInit() {
 			window_border = CONFIG.getBoolean(WINDOW_BORDER, window_border);
@@ -455,7 +455,7 @@ public class Engine {
 				}
 			};
 			
-			Region2f a, b;
+			Region2 a, b;
 			if(window_border)
 				a = Util.getMaximumWindowRegion(window_device);
 			else 
