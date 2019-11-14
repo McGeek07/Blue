@@ -80,8 +80,8 @@ public class Bounds3 extends Box3 {
 		return new Bounds3(this);
 	}
 	
-	public static Bounds3 parseBounds3(String str) {
-		return Box3.parseBox3(new Bounds3(), str);
+	public static Bounds3 fromString(String str) {
+		return Box3.fromString(new Bounds3(), str);
 	}
 	
 	public static class Mutable extends Bounds3 {
@@ -137,8 +137,8 @@ public class Bounds3 extends Box3 {
 			return new Bounds3.Mutable(this);
 		}
 		
-		public static Bounds3.Mutable parseBounds3(String str) {
-			return Box3.parseBox3(new Bounds3.Mutable(), str);
+		public static Bounds3.Mutable fromString(String str) {
+			return Box3.fromString(new Bounds3.Mutable(), str);
 		}
 	}
 }

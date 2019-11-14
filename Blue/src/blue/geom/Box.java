@@ -68,7 +68,7 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 					+ String.format(format, b2.v1.y) + ">";
 		}
 		
-		protected static final <B extends Box2> B parseBox2(B b2, String str) {
+		protected static final <B extends Box2> B fromString(B b2, String str) {
 			if(b2 == null)
 	            throw new IllegalArgumentException("Null Box");
 	        if (str == null)
@@ -85,10 +85,10 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 	                str = str.substring(++a);
 	            }
 	        }
-	        String[] temp = str.split("\\,");
-	        float[] arr = new float[temp.length];
-	        for (int i = 0; i < temp.length; i++) {
-	            arr[i] = Util.stringToFloat(temp[i]);
+	        String[] tmp = str.split("\\,");
+	        float[] arr = new float[tmp.length];
+	        for (int i = 0; i < tmp.length; i++) {
+	            arr[i] = Util.stringToFloat(tmp[i]);
 	        }
 	        switch (arr.length) {
 	            default:
@@ -143,7 +143,7 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 					+ String.format(format, b3.v1.z) + ">";
 		}
 		
-		protected static final <B extends Box3> B parseBox3(B b3, String str) {
+		protected static final <B extends Box3> B fromString(B b3, String str) {
 			if(b3 == null)
 	            throw new IllegalArgumentException("Null Box");
 	        if (str == null)
@@ -160,10 +160,10 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 	                str = str.substring(++a);
 	            }
 	        }
-	        String[] temp = str.split("\\,");
-	        float[] arr = new float[temp.length];
-	        for (int i = 0; i < temp.length; i++) {
-	            arr[i] = Util.stringToFloat(temp[i]);
+	        String[] tmp = str.split("\\,");
+	        float[] arr = new float[tmp.length];
+	        for (int i = 0; i < tmp.length; i++) {
+	            arr[i] = Util.stringToFloat(tmp[i]);
 	        }
 	        switch (arr.length) {
 	            default:

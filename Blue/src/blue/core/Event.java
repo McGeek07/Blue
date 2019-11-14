@@ -53,8 +53,8 @@ public class Event {
 		INSTANCE.broker.flush(event);
 	}
 	
-	public void poll() {
-		broker.poll();
+	public static void poll() {
+		INSTANCE.broker.poll();
 	}	
 	
 	public static interface Listener<T> {

@@ -45,7 +45,7 @@ public class Vector2 extends Vector {
 	
 	@Override
 	public String toString() {
-		return toString(this, "%s");
+		return Vector2.toString(this, "%s");
 	}
 	
 	public static String toString(Vector2 v2, String format) {
@@ -55,7 +55,7 @@ public class Vector2 extends Vector {
 				+ String.format(format, v2.y) + ">";
 	}
 	
-	protected static final <V extends Vector2> V parseVector2(V v2, String str) {
+	protected static final <V extends Vector2> V fromString(V v2, String str) {
 		if(v2 == null)
             throw new IllegalArgumentException("Null Vector");
         if (str == null)
@@ -72,10 +72,10 @@ public class Vector2 extends Vector {
                 str = str.substring(++a);
             }
         }
-        String[] temp = str.split("\\,");
-        float[] arr = new float[temp.length];
-        for (int i = 0; i < temp.length; i++) {
-            arr[i] = Util.stringToFloat(temp[i]);
+        String[] tmp = str.split("\\,");
+        float[] arr = new float[tmp.length];
+        for (int i = 0; i < tmp.length; i++) {
+            arr[i] = Util.stringToFloat(tmp[i]);
         }
         switch (arr.length) {
             default:
@@ -88,8 +88,8 @@ public class Vector2 extends Vector {
         return v2;
 	}
 	
-	public static Vector2 parseVector2(String str) {
-		return Vector2.parseVector2(new Vector2(), str);
+	public static Vector2 fromString(String str) {
+		return Vector2.fromString(new Vector2(), str);
 	}
 	
 	public static class Mutable extends Vector2 {
@@ -135,8 +135,8 @@ public class Vector2 extends Vector {
 			return new Vector2.Mutable(this);
 		}
 		
-		public static Vector2.Mutable parseVector2(String str) {
-			return Vector2.parseVector2(new Vector2.Mutable(), str);
+		public static Vector2.Mutable fromString(String str) {
+			return Vector2.fromString(new Vector2.Mutable(), str);
 		}
 	}
 }

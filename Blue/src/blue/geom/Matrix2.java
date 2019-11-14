@@ -1,63 +1,124 @@
 package blue.geom;
 
-public class Matrix2 extends Matrix<Vector2> {
+public class Matrix2 extends Matrix {
 	private static final long 
 		serialVersionUID = 1L;
-	
-	protected final Vector2.Mutable
-		v0 = new Vector2.Mutable(),
-		v1 = new Vector2.Mutable();
+	protected float
+		xx, xy,
+		yx, yy;
 	
 	public Matrix2() {
 		//do nothing
 	}
 	
-	public Matrix2(
-			Matrix<?> m
-			) {
-		this.v0.set(m.row(0));
-		this.v1.set(m.row(1));
+	public Matrix2(Matrix m) {		
+		this.mSet(m);
 	}
 	
 	public Matrix2(
-			Vector r0,
-			Vector r1
+			int mode,
+			Vector v0,
+			Vector v1
 			) {
-		this.v0.set(r0);
-		this.v1.set(r1);
+		this.mSet(mode, v0, v1);
 	}
 	
 	public Matrix2(
+			int mode,
 			float a, float b,
 			float c, float d
 			) {
-		this.v0.set(a, b);
-		this.v1.set(c, d);
+		this.mSet(mode, a, b, c, d);
 	}
-
-	@Override
-	public float get(int i, int j) {
-		switch(i) {
-			case 0: return v0.get(j);
-			case 1: return v1.get(j);
+	
+	protected void mSet(Matrix m) {
+		this.xx = m.xx(); this.xy = m.xy();		
+		this.yx = m.yx(); this.yy = m.yy();
+	}
+	
+	protected void mSet(
+			int mode,
+			Vector v0,
+			Vector v1
+			) {
+		switch(mode) {
+			case ROW_MAJOR: mSetRowMajor(v0, v1); break;
+			case COL_MAJOR: mSetColMajor(v0, v1); break;
 		}
-		return 0f;
 	}
+	
+	protected void mSet(
+			int mode,
+			float a, float b,
+			float c, float d
+			) {
+		switch(mode) {
+			case ROW_MAJOR: mSetRowMajor(a, b, c, d); break;
+			case COL_MAJOR: mSetColMajor(a, b, c, d); break;
+		}
+	}
+	
+	protected void mSetRowMajor(
+			Vector v0,
+			Vector v1
+			) {
+		mSetRowMajor(
+				v0.x(), v0.y(),
+				v1.x(), v1.y()
+				);
+	}
+	
+	protected void mSetColMajor(
+			Vector v0,
+			Vector v1
+			) {
+		mSetColMajor(
+				v0.x(), v0.y(),
+				v1.x(), v1.y()
+				);
+	}
+	
+	protected void mSetRowMajor(
+			float a, float b,
+			float c, float d
+			) {
+		this.xx = a; this.xy = b;
+		this.yx = c; this.yy = d;
+	}
+	
+	protected void mSetColMajor(
+			float a, float b,
+			float c, float d
+			) {
+		this.xx = a; this.xy = c;
+		this.yx = b; this.yy = d;
+	}
+	
+	@Override
+	public float xx() { return this.xx; }
+	@Override
+	public float xy() { return this.xy; }
+	@Override
+	public float yx() { return this.yx; }
+	@Override
+	public float yy() { return this.yy; }
 
 	@Override
 	public Vector2 row(int i) {
-		return new Vector2(
-				get(i, 0),
-				get(i, 1)
-				);
+		switch(i) {
+			case 0: return new Vector2(xx, xy);
+			case 1: return new Vector2(yx, yy);
+		}
+		return null;
 	}
 
 	@Override
 	public Vector2 col(int j) {
-		return new Vector2(
-				get(0, j),
-				get(1, j)
-				);
+		switch(j) {
+			case 0: return new Vector2(xx, yx);
+			case 1: return new Vector2(xy, yy);
+		}
+		return null;
 	}
 	
 	@Override
@@ -71,52 +132,54 @@ public class Matrix2 extends Matrix<Vector2> {
 	}
 
 	@Override
-	public Matrix<Vector2> copy() {
+	public Matrix2 copy() {
 		return new Matrix2(this);
 	}
 	
 	@Override
 	public String toString() {
-		return toString(this, "%s");
-	}
-	
-	public static Matrix2 identity() {
-		return new Matrix2(
-				1f, 0f,
-				0f, 1f
-				);
+		return Matrix2.toString(this, "%s");
 	}
 	
 	public static String toString(Matrix2 m2, String format) {
-		return 
-				"[" + String.format(format, m2.v0.x) + ", " + String.format(format, m2.v0.y) + "]\n" +
-				"[" + String.format(format, m2.v1.x) + ", " + String.format(format, m2.v1.y) + "]";
-	}
+		return
+				"[" + String.format(format, m2.xx) + ", " + String.format(format, m2.xy) + "]\n" +
+				"[" + String.format(format, m2.yx) + ", " + String.format(format, m2.yy) + "]";				
+	}	
 	
-	protected static final <M extends Matrix2> M parseMatrix2f(M m2, String str) {
+	protected static final <M extends Matrix2> M fromString(M m2, String str) {
 		if(m2 == null)
-            throw new IllegalArgumentException("Null Matrix");
+			throw new IllegalArgumentException("Null Matrix");
         if (str == null)
             throw new IllegalArgumentException("Null String");
         if ((str = str.trim()).isEmpty())
             throw new IllegalArgumentException("Empty String");
         str = str.replace("[", "");
         str = str.replace("]", "");
-        String[] temp = str.split("\n");
+        String[] tmp = str.split("\n");
         
-        switch(temp.length) {
+        Vector2
+        	v0 = new Vector2(),
+        	v1 = new Vector2();      
+        switch(tmp.length) {
 	        default:
 	        case 2:
-	        	Vector2.parseVector2(m2.v1, temp[1]);
+	        	Vector2.fromString(v1, tmp[1]);
 	        case 1:
-	        	Vector2.parseVector2(m2.v0, temp[0]);
+	        	Vector2.fromString(v0, tmp[0]);
 	        case 0:
         }
+        m2.mSetRowMajor(v0, v1);
+        
         return m2;
 	}
 	
-	public static Matrix2 parseMatrix2f(String str) {
-		return Matrix2.parseMatrix2f(new Matrix2(), str);
+	public static Matrix2 fromString(String str) {
+		return Matrix2.fromString(new Matrix2(), str);
+	}
+	
+	public static Matrix2 identity() {
+		return new Matrix2(Matrix.ROW_MAJOR, 1, 0, 0, 1);
 	}
 	
 	public static class Mutable extends Matrix2 {
@@ -127,59 +190,87 @@ public class Matrix2 extends Matrix<Vector2> {
 			super();
 		}
 		
-		public Mutable(
-				Matrix<?> m
-				) {
+		public Mutable(Matrix m) {
 			super(m);
 		}
 		
 		public Mutable(
-				Vector r0,
-				Vector r1
+				int mode,
+				Vector v0,
+				Vector v1
 				) {
-			super(r0, r1);
+			super(mode, v0, v1);
 		}
 		
 		public Mutable(
+				int mode,
 				float a, float b,
 				float c, float d
 				) {
-			super(a, b, c, d);
+			super(mode, a, b, c, d);
 		}
 		
-		public Matrix2.Mutable set(
-				Matrix<?> m
-				) {
-			this.v0.set(m.row(0));
-			this.v1.set(m.row(1));
+		public Matrix2.Mutable set(Matrix m) {
+			this.mSet(m);
 			return this;
 		}
 		
 		public Matrix2.Mutable set(
-				Vector r0,
-				Vector r1
+				int mode, 
+				Vector v0,
+				Vector v1
 				) {
-			this.v0.set(r0);
-			this.v1.set(r1);
+			this.mSet(mode, v0, v1);
 			return this;
-		} 
+		}
 		
 		public Matrix2.Mutable set(
+				int mode,
 				float a, float b,
 				float c, float d
 				) {
-			this.v0.set(a, b);
-			this.v1.set(c, d);
+			this.mSet(mode, a,  b, c, d);
 			return this;
 		}
 		
-		@Override
-		public Matrix2.Mutable copy() {
-			return new Matrix2.Mutable(this);
+		public Matrix2.Mutable setRowMajor(
+				Vector v0,
+				Vector v1
+				) {
+			this.mSetRowMajor(v0, v1);
+			return this;
 		}
 		
-		public static Matrix2.Mutable parseMatrix2f(String str) {
-			return Matrix2.parseMatrix2f(new Matrix2.Mutable(), str);
+		public Matrix2.Mutable setRowMajor(
+				float a, float b,
+				float c, float d
+				) {
+			this.mSetRowMajor(a, b, c, d);
+			return this;
+		}
+		
+		public Matrix2.Mutable setColMajor(
+				Vector v0,
+				Vector v1
+				) {
+			this.mSetColMajor(v0, v1);
+			return this;
+		}
+		
+		public Matrix2.Mutable setColMajor(
+				float a, float b,
+				float c, float d
+				) {
+			this.mSetColMajor(a, b, c, d);
+			return this;
+		}
+		
+		public static Matrix2.Mutable fromString(String str) {
+			return Matrix2.fromString(new Matrix2.Mutable(), str);
+		}
+		
+		public static Matrix2.Mutable identity() {
+			return new Matrix2.Mutable(Matrix.ROW_MAJOR, 1, 0, 0, 1);
 		}
 	}
 }

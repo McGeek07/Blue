@@ -1,6 +1,8 @@
 package blue.geom;
 
 import blue.util.Util;
+import blue.util.Util.ObjectToString;
+import blue.util.Util.StringToObject;
 
 public class Vector4 extends Vector {
 	private static final long 
@@ -61,7 +63,7 @@ public class Vector4 extends Vector {
 	
 	@Override
 	public String toString() {
-		return toString(this, "%s");
+		return Vector4.toString(this, "%s");
 	}
 	
 	public static String toString(Vector4 v4, String format) {
@@ -73,7 +75,7 @@ public class Vector4 extends Vector {
 				+ String.format(format, v4.w) + ">";
 	}
 	
-	protected static final <V extends Vector4> V parseVector4(V v4, String str) {
+	protected static final <V extends Vector4> V fromString(V v4, String str) {
 		if(v4 == null)
 	        throw new IllegalArgumentException("Null Vector");
 	    if (str == null)
@@ -90,10 +92,10 @@ public class Vector4 extends Vector {
 	            str = str.substring(++a);
 	        }
 	    }
-	    String[] temp = str.split("\\,");
-	    float[] arr = new float[temp.length];
-	    for (int i = 0; i < temp.length; i++) {
-	        arr[i] = Util.stringToFloat(temp[i]);
+	    String[] tmp = str.split("\\,");
+	    float[] arr = new float[tmp.length];
+	    for (int i = 0; i < tmp.length; i++) {
+	        arr[i] = Util.stringToFloat(tmp[i]);
 	    }
 	    switch (arr.length) {
 	        default:
@@ -110,9 +112,14 @@ public class Vector4 extends Vector {
 	    return v4;
 	}
 	
-	public static Vector4 parseVector4(String str) {
-		return Vector4.parseVector4(new Vector4(), str);
+	public static Vector4 fromString(String str) {
+		return Vector4.fromString(new Vector4(), str);
 	}
+	
+	public static final ObjectToString<Vector4>
+		VECTOR4_TO_STRING = Vector4::toString;
+	public static final StringToObject<Vector4>
+		STRING_TO_VECTOR4 = Vector4::fromString;
 	
 	public static class Mutable extends Vector4 {
 		private static final long 
@@ -171,8 +178,8 @@ public class Vector4 extends Vector {
 			return new Vector4.Mutable(this);
 		}
 		
-		public static Vector4.Mutable parseVector4(String str) {
-			return Vector4.parseVector4(new Vector4.Mutable(), str);
+		public static Vector4.Mutable fromString(String str) {
+			return Vector4.fromString(new Vector4.Mutable(), str);
 		}
 	}
 }

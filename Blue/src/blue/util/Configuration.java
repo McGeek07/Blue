@@ -5,11 +5,14 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.TreeMap;
 
-public class Config {
+import blue.util.Util.ObjectToString;
+import blue.util.Util.StringToObject;
+
+public class Configuration {
 	protected final TreeMap<String, String>
-		index = new TreeMap<String, String>();
+		map = new TreeMap<String, String>();
 	
-	public Config(Object... args) {
+	public Configuration(Object... args) {
 		int length = args.length - (args.length & 1);
 		for(int i = 0; i < length; i += 2) {
 			int 
@@ -21,19 +24,49 @@ public class Config {
 	
 	public void set(Object key, Object val) {
 		String
-			_key = key != null ? "" + key : null,
-			_val = val != null ? "" + val : null;
-		index.put(
+			_key = key != null ? key.toString() : null,
+			_val = val != null ? val.toString() : null;
+		map.put(
 				_key,
 				_val
 				);
 	}
 	
-	public int getInt(Object key) {
-		return getInt(key, 0);
+	public <OBJECT> void set(ObjectToString<OBJECT> o2s, Object key, OBJECT val) {
+		String
+			_key = key != null ?                                   key.toString() : null,
+			_val = val != null ? o2s != null ? o2s.toString(val) : val.toString() : null;
+		map.put(
+				_key,
+				_val
+				);
+	}
+
+	public String get(Object key) {
+		return get(key, null);
 	}
 	
-	public int getInt(Object key, int alt) {
+	public String get(Object key, Object alt) {
+		String 
+			_key = key != null ? key.toString() : null,
+			_alt = alt != null ? alt.toString() : null,
+			_val = map.get(_key);
+		return _val != null ? _val : _alt;
+	}
+	
+	public <T> T get(StringToObject<T> s2o, Object key) {
+		return get(s2o, key, null);
+	}
+	
+	public <T> T get(StringToObject<T> s2o, Object key, T alt) {
+		return Util.stringToObject(s2o, get(key), alt);
+	}
+	
+	public int getInteger(Object key) {
+		return getInteger(key, 0);
+	}
+	
+	public int getInteger(Object key, int alt) {
 		return Util.stringToInt(get(key), alt);
 	}
 	
@@ -67,41 +100,29 @@ public class Config {
 	
 	public boolean getBoolean(Object key, boolean alt) {
 		return Util.stringToBoolean(get(key), alt);
-	}	
-
-	public String get(Object key) {
-		return get(key, null);
-	}
-	
-	public String get(Object key, Object alt) {
-		String 
-			_key = key != null ? "" + key : null,
-			_alt = alt != null ? "" + alt : null,
-			_val = index.get(_key);
-		return _val != null ? _val : _alt;
 	}
 	
 	public void save(String path) {
 		save(new File(path));
 	}
 	
-	public void save(File file  ) {
-		Util.printToFile(file, false, index);
+	public void save(File   file) {
+		Util.printToFile(file, false, map);
 	}
 	
 	public void load(String path) {
 		load(new File(path));
 	}
 	
-	public void load(File file  ) {
-		Util.parseFromFile(file, index);
+	public void load(File   file) {
+		Util.parseFromFile(file, map);
 	}
 	
 	public void print(PrintStream out) {
-		Util.print(out, index);
+		Util.print(out, map);
 	}
 	
 	public void print(PrintWriter out) {
-		Util.print(out, index);
+		Util.print(out, map);
 	}
 }

@@ -8,7 +8,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
-import blue.core.Input.Action.Type;
 import blue.geom.Vector2;
 
 public final class Input implements KeyListener, MouseListener, MouseWheelListener, MouseMotionListener {
@@ -38,22 +37,22 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		//do nothing
 	}
 	
-	public void poll() {
-		pollMouse();
-		pollWheel();
-		pollKeys();
-		pollBtns();
+	public static void poll() {
+		INSTANCE.onPollMouse();
+		INSTANCE.onPollWheel();
+		INSTANCE.onPollKeys();
+		INSTANCE.onPollBtns();
 	}
 	
-	public void pollMouse() {
+	public void onPollMouse() {
 		if(!mouse_buffer.equals(mouse)) {
 			mouse.set(mouse_buffer);
 			//event
-			Engine.onMouseMoved(getMouse());
+			Engine.mouseMoved(getMouse());
 		}
 	}
 	
-	public void pollWheel() {
+	public void onPollWheel() {
 		if(
 				wheel_buffer != 0f &&
 				wheel_buffer != wheel
@@ -61,19 +60,19 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 			wheel = wheel_buffer;
 			wheel_buffer = 0f;
 			//event
-			Engine.onWheelMoved(getWheel());
+			Engine.wheelMoved(getWheel());
 		}
 	}
 	
-	public void pollKeys() {
+	public void onPollKeys() {
 		for(int i = 0; i < NUM_KEYS; i ++) {
 			if(key_buffer[i])
 				switch(keys[i]) {
 				case Input.UP: case Input.UP_ACTION:
 					keys[i] = Input.DN_ACTION;
 					//event
-					Event.queue(new KeyAction(Type.DN_ACTION, i));
-					Engine.onKeyDn(i);
+					Event.queue(new KeyAction(DN_ACTION, i));
+					Engine.keyDn(i);
 					break;
 				case Input.DN: case Input.DN_ACTION:
 					keys[i] = Input.DN;
@@ -87,22 +86,22 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 				case Input.DN: case Input.DN_ACTION:
 					keys[i] = Input.UP_ACTION;
 					//event
-					Event.queue(new KeyAction(Type.UP_ACTION, i));
-					Engine.onKeyUp(i);
+					Event.queue(new KeyAction(UP_ACTION, i));
+					Engine.keyUp(i);
 					break;
 			}
 		}
 	}
 	
-	public void pollBtns() {
+	public void onPollBtns() {
 		for(int i = 0; i < NUM_BTNS; i ++) {
 			if(btn_buffer[i])
 				switch(btns[i]) {
 				case Input.UP: case Input.UP_ACTION:
 					btns[i] = Input.DN_ACTION;
 					//event
-					Event.queue(new BtnAction(Type.DN_ACTION, i));
-					Engine.onBtnDn(i);
+					Event.queue(new BtnAction(DN_ACTION, i));
+					Engine.btnDn(i);
 					break;
 				case Input.DN: case Input.DN_ACTION:
 					btns[i] = Input.DN;
@@ -116,8 +115,8 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 				case Input.DN: case Input.DN_ACTION:
 					btns[i] = Input.UP_ACTION;
 					//event
-					Event.queue(new BtnAction(Type.UP_ACTION, i));
-					Engine.onBtnUp(i);
+					Event.queue(new BtnAction(UP_ACTION, i));
+					Engine.btnUp(i);
 					break;
 			}
 		}
@@ -408,7 +407,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 	}
 	
 	public static Vector2 getMouse() {
-		return Engine.windowToCanvas(INSTANCE.mouse);
+		return INSTANCE.mouse;
 	}
 	
 	public static float getWheel() {
@@ -484,15 +483,19 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 	}
 	
 	public static class Action {
-		public static enum Type {
-			DN_ACTION,
-			UP_ACTION
-		}
-		public final Type
+		public final byte
 			type;
 		
-		public Action(Type type) {
+		public Action(byte type) {
 			this.type = type;
+		}
+		
+		public boolean isDn() {
+			return type == DN_ACTION;
+		}
+		
+		public boolean isUp() {
+			return type == UP_ACTION;
 		}
 	}
 	
@@ -500,7 +503,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		public final int
 			key;
 
-		public KeyAction(Type type, int key) {
+		public KeyAction(byte type, int key) {
 			super(type);
 			this.key = key;
 		}		
@@ -510,7 +513,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		public final int
 			btn;
 	
-		public BtnAction(Type type, int btn) {
+		public BtnAction(byte type, int btn) {
 			super(type);
 			this.btn = btn;
 		}

@@ -53,7 +53,7 @@ public class Vector3 extends Vector {
 	
 	@Override
 	public String toString() {
-		return toString(this, "%s");
+		return Vector3.toString(this, "%s");
 	}
 	
 	public static String toString(Vector3 v3, String format) {
@@ -64,7 +64,7 @@ public class Vector3 extends Vector {
 				+ String.format(format, v3.z) + ">";
 	}
 	
-	protected static final <V extends Vector3> V parseVector3(V v3, String str) {
+	protected static final <V extends Vector3> V fromString(V v3, String str) {
 		if(v3 == null)
             throw new IllegalArgumentException("Null Vector");
         if (str == null)
@@ -81,10 +81,10 @@ public class Vector3 extends Vector {
                 str = str.substring(++a);
             }
         }
-        String[] temp = str.split("\\,");
-        float[] arr = new float[temp.length];
-        for (int i = 0; i < temp.length; i++) {
-            arr[i] = Util.stringToFloat(temp[i]);
+        String[] tmp = str.split("\\,");
+        float[] arr = new float[tmp.length];
+        for (int i = 0; i < tmp.length; i++) {
+            arr[i] = Util.stringToFloat(tmp[i]);
         }
         switch (arr.length) {
             default:
@@ -99,8 +99,8 @@ public class Vector3 extends Vector {
         return v3;
 	}
 	
-	public static Vector3 parseVector3(String str) {
-		return Vector3.parseVector3(new Vector3(), str);
+	public static Vector3 fromString(String str) {
+		return Vector3.fromString(new Vector3(), str);
 	}
 	
 	public static class Mutable extends Vector3 {
@@ -153,8 +153,8 @@ public class Vector3 extends Vector {
 			return new Vector3.Mutable(this);
 		}
 		
-		public static Vector3.Mutable parseVector3(String str) {
-			return Vector3.parseVector3(new Vector3.Mutable(), str);
+		public static Vector3.Mutable fromString(String str) {
+			return Vector3.fromString(new Vector3.Mutable(), str);
 		}
 	}
 }

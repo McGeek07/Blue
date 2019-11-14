@@ -19,16 +19,6 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 	public float w() { return 0f; }
 	public int n() { return 0; }
 	
-	public float get(int j) {
-		switch(j) {
-			case X: return x();
-			case Y: return y();
-			case Z: return z();
-			case W: return w();
-		}
-		return 0f;
-	}
-	
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof Vector ? Vector.compare(this, (Vector)o) == 0 : false;
@@ -162,78 +152,95 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 	public static float dot(Vector4 a, Vector4 b) {
 		return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 	}	
+	public static float dot(Vector2 a, float x, float y) {
+		return a.x * x + a.y * y;
+	}
+	public static float dot(Vector3 a, float x, float y, float z) {
+		return a.x * x + a.y * y + a.z * z;
+	}
+	public static float dot(Vector4 a, float x, float y, float z, float w) {
+		return a.x * x + a.y * y + a.z * z + a.w * w;
+	}
+	public static float dot(float x1, float y1, float x2, float y2) {
+		return x1 * x2 + y1 * y2;
+	}
+	public static float dot(float x1, float y1, float z1, float x2, float y2, float z2) {
+		return x1 * x2 + y1 * y2 + z1 * z2;
+	}
+	public static float dot(float x1, float y1, float z1, float w1, float x2, float y2, float z2, float w2) {
+		return x1 * x2 + y1 * y2 + z1 * z2 + w1 * w2;
+	}
 	
-	public static Vector2 mul(Matrix2 a, Vector2 b) {
+	public static Vector2 mul(Vector2 a, Matrix2 b) {
 		return new Vector2(
-				Vector.dot(a.v0, b),
-				Vector.dot(a.v1, b)
+				Vector.dot(a, b.xx, b.yx),
+				Vector.dot(a, b.xy, b.yy)
 				);
-	}
-	public static Vector2 mul(Matrix3 a, Vector2 b) {
-		Vector3 h = Vector.hom(b);
+	}	
+	public static Vector2 mul(Vector2 a, Matrix3 b) {
+		Vector3 h = Vector.hom(a);
 		return new Vector2(
-				Vector.dot(a.v0, h),
-				Vector.dot(a.v1, h)
+				Vector.dot(h, b.xx, b.yx, b.zx),
+				Vector.dot(h, b.xy, b.yy, b.zy)
 				);
 	}
-	public static Vector3 mul(Matrix3 a, Vector3 b) {
+	public static Vector3 mul(Vector3 a, Matrix3 b) {
 		return new Vector3(
-				Vector.dot(a.v0, b),
-				Vector.dot(a.v1, b),
-				Vector.dot(a.v2, b)
+				Vector.dot(a, b.xx, b.yx, b.zx),
+				Vector.dot(a, b.xy, b.yy, b.zy),
+				Vector.dot(a, b.xz, b.yz, b.zz)
 				);
-	}
-	public static Vector3 mul(Matrix4 a, Vector3 b) {
-		Vector4 h = Vector.hom(b);
+	}	
+	public static Vector3 mul(Vector3 a, Matrix4 b) {
+		Vector4 h = Vector.hom(a);
 		return new Vector3(
-				Vector.dot(a.v0, h),
-				Vector.dot(a.v1, h),
-				Vector.dot(a.v2, h)
+				Vector.dot(h, b.xx, b.yx, b.zx, b.wx),
+				Vector.dot(h, b.xy, b.yy, b.zy, b.wy),
+				Vector.dot(h, b.xz, b.yz, b.zz, b.wz)
 				);
 	}
-	public static Vector4 mul(Matrix4 a, Vector4 b) {
+	public static Vector4 mul(Vector4 a, Matrix4 b) {
 		return new Vector4(
-				Vector.dot(a.v0, b),
-				Vector.dot(a.v1, b),
-				Vector.dot(a.v2, b),
-				Vector.dot(a.v3, b)
+				Vector.dot(a, b.xx, b.yx, b.zx, b.wx),
+				Vector.dot(a, b.xy, b.yy, b.zy, b.wy),
+				Vector.dot(a, b.xz, b.yz, b.zz, b.wz),
+				Vector.dot(a, b.xw, b.yw, b.zw, b.ww)
 				);
 	}
-	
-	public static Vector2.Mutable mul(Matrix2 a, Vector2.Mutable b) {
-		return b.set(
-				Vector.dot(a.v0, b),
-				Vector.dot(a.v1, b)
+	public static Vector2.Mutable mul(Vector2.Mutable a, Matrix2 b) {
+		return a.set(
+				Vector.dot(a, b.xx, b.yx),
+				Vector.dot(a, b.xy, b.yy)
+				);
+	}	
+	public static Vector2.Mutable mul(Vector2.Mutable a, Matrix3 b) {
+		Vector3 h = Vector.hom(a);
+		return a.set(
+				Vector.dot(h, b.xx, b.yx, b.zx),
+				Vector.dot(h, b.xy, b.yy, b.zy)
 				);
 	}
-	public static Vector2.Mutable mul(Matrix3 a, Vector2.Mutable b) {
-		Vector3 h = Vector.hom(b);
-		return b.set(
-				Vector.dot(a.v0, h),
-				Vector.dot(a.v1, h)
+	public static Vector3.Mutable mul(Vector3.Mutable a, Matrix3 b) {
+		return a.set(
+				Vector.dot(a, b.xx, b.yx, b.zx),
+				Vector.dot(a, b.xy, b.yy, b.zy),
+				Vector.dot(a, b.xz, b.yz, b.zz)
+				);
+	}	
+	public static Vector3.Mutable mul(Vector3.Mutable a, Matrix4 b) {
+		Vector4 h = Vector.hom(a);
+		return a.set(
+				Vector.dot(h, b.xx, b.yx, b.zx, b.wx),
+				Vector.dot(h, b.xy, b.yy, b.zy, b.wy),
+				Vector.dot(h, b.xz, b.yz, b.zz, b.wz)
 				);
 	}
-	public static Vector3.Mutable mul(Matrix3 a, Vector3.Mutable b) {
-		return b.set(
-				Vector.dot(a.v0, b),
-				Vector.dot(a.v1, b),
-				Vector.dot(a.v2, b)
-				);
-	}
-	public static Vector3.Mutable mul(Matrix4 a, Vector3.Mutable b) {
-		Vector4 h = Vector.hom(b);
-		return b.set(
-				Vector.dot(a.v0, h),
-				Vector.dot(a.v1, h),
-				Vector.dot(a.v2, h)
-				);
-	}
-	public static Vector4.Mutable mul(Matrix4 a, Vector4.Mutable b) {
-		return b.set(
-				Vector.dot(a.v0, b),
-				Vector.dot(a.v1, b),
-				Vector.dot(a.v2, b),
-				Vector.dot(a.v3, b)
+	public static Vector4.Mutable mul(Vector4.Mutable a, Matrix4 b) {
+		return a.set(
+				Vector.dot(a, b.xx, b.yx, b.zx, b.wx),
+				Vector.dot(a, b.xy, b.yy, b.zy, b.wy),
+				Vector.dot(a, b.xz, b.yz, b.zz, b.wz),
+				Vector.dot(a, b.xw, b.yw, b.zw, b.ww)
 				);
 	}
 	
@@ -248,4 +255,40 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 	}	
 	public static java.awt.Color toColor4f(Vector v) {
 		return new java.awt.Color(v.x(), v.y(), v.z(), v.w());
-	}}
+	}
+	
+	public static Vector3 fromColor3i(java.awt.Color color) {
+		int argb = color.getRGB();
+		return new Vector3(
+				(argb >> 16) & 0xFF,
+				(argb >>  8) & 0xFF,
+				(argb >>  0) & 0xFF
+				);
+	}	
+	public static Vector3 fromColor3f(java.awt.Color color) {
+		float[] rgba = color.getComponents(null);
+		return new Vector3(
+				rgba[0],
+				rgba[1],
+				rgba[2]
+				);
+	}
+	public static Vector4 fromColor4i(java.awt.Color color) {
+		int argb = color.getRGB();
+		return new Vector4(
+				(argb >> 16) & 0xFF,
+				(argb >>  8) & 0xFF,
+				(argb >>  0) & 0xFF,
+				(argb >> 24) & 0xFF		
+				);
+	}
+	public static Vector4 fromColor4f(java.awt.Color color) {
+		float[] rgba = color.getComponents(null);
+		return new Vector4(
+				rgba[0],
+				rgba[1],
+				rgba[2],
+				rgba[3]
+				);
+	}
+}

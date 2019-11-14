@@ -1,49 +1,47 @@
 package blue.core;
 
-import blue.geom.Bounds2;
-import blue.util.Copyable;
+import java.util.LinkedList;
 
 public interface Updateable {
-	public void update(UpdateContext context);
+	public void onUpdate(UpdateContext context);
 	
-	public static class UpdateContext implements Copyable<UpdateContext> {
-		public long
-			frame;
-		public double
+	public static class UpdateContext {		
+		public float
 			t,
 			dt,
 			fixed_dt;
-		public final Bounds2.Mutable
-			bounds = new Bounds2.Mutable();
+		public int
+			canvas_w,
+			canvas_h;
 		
-		private UpdateContext
-			parent;
-		
-		public UpdateContext push() {
-			UpdateContext copy = copy();
-			copy.parent = this;
-			return copy;
+		protected UpdateContext() {
+			//do nothing
 		}
 		
-		public UpdateContext pop() {
-			if(this.parent != null)
-				try {
-					return this.parent;
-				} finally {
-					this.parent = null;
-				}
-			return this;
+		private final LinkedList<UpdateContext>
+			stack = new LinkedList<>();
+	
+		public void push() {
+			UpdateContext copy = new UpdateContext();
+			
+			stack.push(copy);
+			copy.t  = this.t ;
+			copy.dt = this.dt;
+			copy.fixed_dt = this.fixed_dt;
+			copy.canvas_w = this.canvas_w;
+			copy.canvas_h = this.canvas_h;
 		}
 		
-		@Override
-		public UpdateContext copy() {
-			UpdateContext copy = new UpdateContext();		
-			copy.frame  = this.frame;
-			copy.t		= this.t ;
-			copy.dt 	= this.dt;
-			copy.fixed_dt = this.fixed_dt;			
-			copy.bounds.set(this.bounds );
-			return copy;
+		public void pop()  {
+			UpdateContext copy = stack.poll();			
+			
+			if(copy != null) {
+				this.t  = copy.t ;
+				this.dt = copy.dt;
+				this.fixed_dt = copy.fixed_dt;
+				this.canvas_w = copy.canvas_w;
+				this.canvas_h = copy.canvas_h;
+			}
 		}
 	}
 }

@@ -4,35 +4,60 @@ import java.io.Serializable;
 
 import blue.util.Copyable;
 
-public abstract class Matrix<T extends Vector> implements Serializable, Copyable<Matrix<T>> {
+public abstract class Matrix implements Serializable, Copyable<Matrix> {
 	private static final long 
 		serialVersionUID = 1L;
+	public static final int
+		ROW_MAJOR = 0,
+		COL_MAJOR = 1;
 	
-	public abstract float get(int i, int j);
-	public abstract T row(int i);
-	public abstract T col(int j);
+	public float xx() { return 0f; }
+	public float xy() { return 0f; }
+	public float xz() { return 0f; }
+	public float xw() { return 0f; }
+	
+	public float yx() { return 0f; }
+	public float yy() { return 0f; }
+	public float yz() { return 0f; }
+	public float yw() { return 0f; }
+	
+	public float zx() { return 0f; }
+	public float zy() { return 0f; }
+	public float zz() { return 0f; }
+	public float zw() { return 0f; }
+	
+	public float wx() { return 0f; }
+	public float wy() { return 0f; }
+	public float wz() { return 0f; }
+	public float ww() { return 0f; }
+	
+	public abstract Vector row(int i);
+	public abstract Vector col(int j);
 	public int m() { return 0; }
 	public int n() { return 0; }
 	
 	public static Matrix2 add(Matrix2 a, Matrix2 b) {
 		return new Matrix2(
-				a.v0.x + b.v0.x, a.v0.y + b.v0.y,
-				a.v1.x + b.v1.x, a.v1.y + b.v1.y
+				Matrix.ROW_MAJOR,
+				a.xx + b.xx, a.xy + b.xy,
+				a.yx + b.yx, a.yy + b.yy
 				);
 	}
 	public static Matrix3 add(Matrix3 a, Matrix3 b) {
 		return new Matrix3(
-				a.v0.x + b.v0.x, a.v0.y + b.v0.y, a.v0.z + b.v0.z,
-				a.v1.x + b.v1.x, a.v1.y + b.v1.y, a.v1.z + b.v1.z,
-				a.v2.x + b.v2.x, a.v2.y + b.v2.y, a.v2.z + a.v2.z
+				Matrix.ROW_MAJOR,
+				a.xx + b.xx, a.xy + b.xy, a.xz + b.xz,
+				a.yx + b.yx, a.yy + b.yy, a.yz + b.yz,
+				a.zx + b.zx, a.zy + b.zy, a.zz + b.zz
 				);
 	}
 	public static Matrix4 add(Matrix4 a, Matrix4 b) {
 		return new Matrix4(
-				a.v0.x + b.v0.x, a.v0.y + b.v0.y, a.v0.z + b.v0.z, a.v0.w + b.v0.w,
-				a.v1.x + b.v1.x, a.v1.y + b.v1.y, a.v1.z + b.v1.z, a.v1.w + b.v1.w,
-				a.v2.x + b.v2.x, a.v2.y + b.v2.y, a.v2.z + b.v2.z, a.v2.w + b.v2.w,
-				a.v3.x + b.v2.x, a.v3.y + b.v3.y, a.v3.z + b.v3.z, a.v3.w + b.v3.w
+				Matrix.ROW_MAJOR,
+				a.xx + b.xx, a.xy + b.xy, a.xz + b.xz, a.xw + b.xw,
+				a.yx + b.yx, a.yy + b.yy, a.yz + b.yz, a.yw + b.yw,
+				a.zx + b.zx, a.zy + b.zy, a.zz + b.zz, a.zw + b.zw,
+				a.wx + b.wx, a.wy + b.wy, a.wz + b.wz, a.ww + b.ww
 				);
 	}
 }

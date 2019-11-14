@@ -10,19 +10,24 @@ import javax.imageio.ImageIO;
 
 import blue.core.Renderable;
 import blue.core.Updateable;
+import blue.geom.Boundable;
+import blue.geom.Region2;
 
-public class Sprite implements Renderable, Updateable {
+public class Sprite implements Boundable<Region2.Mutable>, Renderable, Updateable {
 	public static final int
 		STOP = 0,
 		PLAY = 1,
-		LOOP = 2;
+		LOOP = 2;	
+	
 	protected final Sprite.Atlas
 		atlas;
-
 	protected Effect
 		effect;
 	protected BufferedImage[]
 		frames;
+	
+	protected final Region2.Mutable
+		bounds = new Region2.Mutable();
 	
 	protected float
 		frame,
@@ -38,29 +43,38 @@ public class Sprite implements Renderable, Updateable {
 		this.atlas  = atlas ;
 		this.effect = effect;
 		this.frames = atlas.frames(effect);
+		this.bounds.dim().set(
+				this.atlas.frame_w,
+				this.atlas.frame_h
+				);
 	}
 
 	@Override
-	public void render(RenderContext context) {
-		context = context.push();
+	public Region2.Mutable bounds() {
+		return bounds;
+	}
+
+	@Override
+	public void onRender(RenderContext context) {
+		context.push();
 		int
 			x1, y1,
 			x2, y2;
 		if(flip) {
-			x1 = (int)context.bounds.x2();
-			x2 = (int)context.bounds.x1();
+			x1 = (int)bounds.x2();
+			x2 = (int)bounds.x1();
 		} else {
-			x1 = (int)context.bounds.x1();
-			x2 = (int)context.bounds.x2();
+			x1 = (int)bounds.x1();
+			x2 = (int)bounds.x2();
 		}
 		if(flop) {
-			y1 = (int)context.bounds.y2();
-			y2 = (int)context.bounds.y1();
+			y1 = (int)bounds.y2();
+			y2 = (int)bounds.y1();
 		} else {
-			y1 = (int)context.bounds.y1();
-			y2 = (int)context.bounds.y2();
+			y1 = (int)bounds.y1();
+			y2 = (int)bounds.y2();
 		}
-		context.g2D.drawImage(
+		context.g.drawImage(
 				atlas.frames[(int)frame],
 				x1, y1,
 				x2, y2,
@@ -69,11 +83,11 @@ public class Sprite implements Renderable, Updateable {
 				atlas.frame_h,
 				null
 				);
-		context = context.pop();
+		context.pop();
 	}
 
 	@Override
-	public void update(UpdateContext context) {
+	public void onUpdate(UpdateContext context) {
 		if(mode > 0) {
 			frame += speed * context.dt;
 			switch(mode) {
