@@ -1,5 +1,7 @@
 package blue.game;
 
+import java.awt.AlphaComposite;
+import java.awt.Composite;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -17,52 +19,59 @@ public class Sprite implements Renderable, Updateable {
 		PLAY = 1,
 		LOOP = 2;
 	
-	protected Atlas
-		atlas;
+	protected Frames
+		frames;
 	protected Effect
 		effect;	
 	protected BufferedImage[]
-		frames;
+		images;
 	
 	protected float
 		frame = 0f,
-		speed = 0f;
+		speed = 0f,
+		alpha = 1f;
 	protected boolean
 		flip,
 		flop;
 	protected int
 		mode;
 	
-	protected final Region2.Mutable
+	protected Composite
+		alpha_composite;
+	
+	public final Region2.Mutable
 		bounds = new Region2.Mutable();
 	
 	public Sprite(
-			Atlas  atlas ,
+			Frames frames,
 			Effect effect
 			) {
-		this.atlas  = atlas;
+		this.frames = frames;
 		this.effect = effect;
 		
-		this.frames = atlas.filter(effect);
+		this.images = frames.filter(effect);
 		
 		this.bounds.set(
 				0, 0,
-				atlas.frame_w,
-				atlas.frame_h
+				frames.frame_w,
+				frames.frame_h
 				);
 	}
 	
-	public Region2.Mutable bounds() {
-		return this.bounds;
+	public void setFrames(Frames frames) {
+		this.frames = frames;
+		
+		this.images = this.frames != null ? this.frames.filter(effect) : null;
 	}
 	
 	public void setEffect(Effect effect) {
 		this.effect = effect;
-		this.frames = atlas.filter(effect);
+		
+		this.images = this.frames != null ? this.frames.filter(effect) : null;
 	}
 	
-	public Atlas getFrames() {
-		return this.atlas;
+	public Frames getFrames() {
+		return this.frames;
 	}
 	public Effect getEffect() {
 		return this.effect;
@@ -74,12 +83,21 @@ public class Sprite implements Renderable, Updateable {
 	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
+	public void setAlpha(float alpha) {
+		if(this.alpha != alpha) {
+			this.alpha           = alpha;
+			this.alpha_composite = null ;
+		}		
+	}
 	
 	public float getFrame() {
 		return this.frame;
 	}	
 	public float getSpeed() {
 		return this.speed;
+	}
+	public float getAlpha() {
+		return this.alpha;
 	}
 	
 	public void play() {
@@ -135,32 +153,53 @@ public class Sprite implements Renderable, Updateable {
 
 	@Override
 	public void onRender(RenderContext context) {
-		int
-			x1, y1,
-			x2, y2;
-		if(flip) {
-			x1 = (int)bounds.x2();
-			x2 = (int)bounds.x1();
-		} else {
-			x1 = (int)bounds.x1();
-			x2 = (int)bounds.x2();
-		}
-		if(flop) {
-			y1 = (int)bounds.y2();
-			y2 = (int)bounds.y1();
-		} else {
-			y1 = (int)bounds.y1();
-			y2 = (int)bounds.y2();
-		}
-		context.g.drawImage(
-				frames[(int)frame],
+		if(alpha > 0f) {
+			int
 				x1, y1,
-				x2, y2,
-				0 , 0 ,
-				atlas.frame_w,
-				atlas.frame_h,
-				null
-				);	
+				x2, y2;
+			if(flip) {
+				x1 = (int)bounds.x2();
+				x2 = (int)bounds.x1();
+			} else {
+				x1 = (int)bounds.x1();
+				x2 = (int)bounds.x2();
+			}
+			if(flop) {
+				y1 = (int)bounds.y2();
+				y2 = (int)bounds.y1();
+			} else {
+				y1 = (int)bounds.y1();
+				y2 = (int)bounds.y2();
+			}
+			if(alpha < 1f) {				
+				context.push();
+				
+				if(alpha_composite == null)
+					alpha_composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+				
+				context.g.setComposite(alpha_composite);
+				context.g.drawImage(
+						images[(int)frame],
+						x1, y1,
+						x2, y2,
+						0 , 0 ,
+						frames.frame_w,
+						frames.frame_h,
+						null
+						);	
+				
+				context.pop();
+			} else
+				context.g.drawImage(
+						images[(int)frame],
+						x1, y1,
+						x2, y2,
+						0 , 0 ,
+						frames.frame_w,
+						frames.frame_h,
+						null
+						);
+		}
 	}
 
 	@Override
@@ -170,25 +209,25 @@ public class Sprite implements Renderable, Updateable {
 			switch(mode) {
 				case PLAY: 
 					if(frame <  0f           ) stop(0f               );
-					if(frame >= frames.length) stop(frames.length - 1);
+					if(frame >= images.length) stop(images.length - 1);
 					break;
 				case LOOP:
-					if(frame <  0f           ) frame += frames.length;
-					if(frame >= frames.length) frame -= frames.length;
+					if(frame <  0f           ) frame += images.length;
+					if(frame >= images.length) frame -= images.length;
 			}
 		}
 	}
 	
 	public Sprite filter(Effect effect) {
 		return new Sprite(
-				atlas ,
+				frames ,
 				effect
 				);
 	}
 	
 	public static void load(String name, String path, int frame_w, int frame_h) {
 		try {
-			new Atlas(name, path, frame_w, frame_h);
+			new Frames(name, path, frame_w, frame_h);
 		} catch (Exception ex) {
 			System.err.println("Failed to load Sprite");
 			ex.printStackTrace();
@@ -196,17 +235,17 @@ public class Sprite implements Renderable, Updateable {
 	}
 	
 	public static Sprite fromName(String name, Effect effect) {
-		return new Sprite(Atlas.fromName(name), effect);
+		return new Sprite(Frames.fromName(name), effect);
 	}
 	
 	public static Sprite fromPath(String path, Effect effect) {
-		return new Sprite(Atlas.fromName(path), effect);
+		return new Sprite(Frames.fromName(path), effect);
 	}
 	
-	public static class Atlas {		
-		private static final HashMap<String, Atlas>
-			NAME_INDEX = new HashMap<String, Atlas>(),
-			PATH_INDEX = new HashMap<String, Atlas>();
+	public static class Frames {		
+		private static final HashMap<String, Frames>
+			NAME_INDEX = new HashMap<String, Frames>(),
+			PATH_INDEX = new HashMap<String, Frames>();
 		public final String
 			name,
 			path;
@@ -221,7 +260,7 @@ public class Sprite implements Renderable, Updateable {
 		private final HashMap<Effect, BufferedImage[]>
 			cached = new HashMap<Effect, BufferedImage[]>();
 		
-		public Atlas(
+		public Frames(
 				String name,
 				String path,
 				int frame_w,
@@ -290,15 +329,15 @@ public class Sprite implements Renderable, Updateable {
 			return effect_frames;
 		}
 		
-		public static Atlas fromName(String name) {
-			Atlas frames = NAME_INDEX.get(name);
+		public static Frames fromName(String name) {
+			Frames frames = NAME_INDEX.get(name);
 			if(frames == null)
 				throw new IllegalArgumentException("No Atlas exists for name '" + name + "'");
 			return frames;
 		}
 		
-		public static Atlas fromPath(String path) {
-			Atlas frames = PATH_INDEX.get(path);
+		public static Frames fromPath(String path) {
+			Frames frames = PATH_INDEX.get(path);
 			if(frames == null)
 				throw new IllegalArgumentException("No Atlas exists for path '" + path + "'");
 			return frames;

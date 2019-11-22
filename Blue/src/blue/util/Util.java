@@ -131,8 +131,6 @@ public final class Util {
     	return alt;
 	}
 	
-
-	
 	public static <T> String objectToString(ObjectToString<T> o2s, T obj) {
 		return obj != null ? o2s != null ? o2s.toString(obj) : obj.toString() : null;
 	}	
