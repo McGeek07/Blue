@@ -6,6 +6,9 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.Transparency;
+import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -218,6 +221,21 @@ public final class Util {
 				bounds.y + bounds.height - insets.top  - insets.bottom
 				);		
 	}
+	
+	public static BufferedImage createBufferedImage(int i, int w, int h) {
+		GraphicsDevice        gd = getGraphicsDevice(i);
+		GraphicsConfiguration gc = gd.getDefaultConfiguration();
+		
+		return gc.createCompatibleImage(w, h, Transparency.TRANSLUCENT);
+	}
+	
+	public static VolatileImage createVolatileImage(int i, int w, int h) {
+		GraphicsDevice        gd = getGraphicsDevice(i);
+		GraphicsConfiguration gc = gd.getDefaultConfiguration();
+		
+		return gc.createCompatibleVolatileImage(w, h, Transparency.TRANSLUCENT);
+	}
+	
 	
 	public static <T> void print(PrintStream out, T[] list) {
 		for(T t: list) out.println(t);
