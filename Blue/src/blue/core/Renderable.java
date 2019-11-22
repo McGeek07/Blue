@@ -87,17 +87,17 @@ public interface Renderable {
 						(int)s
 						);					
 		}		
-		public void circle(float x, float y, float s, boolean fill) {
-			float r = s / 2f;
+		public void circle(float x, float y, float r, boolean fill) {
+			float s = r * 2f;
 			if(fill)
-				g.fillRect(
+				g.fillOval(
 						(int)(x - r),
 						(int)(y - r),
 						(int)s,
 						(int)s
 						);
 			else
-				g.drawRect(
+				g.drawOval(
 						(int)(x - r),
 						(int)(y - r),
 						(int)s,
@@ -113,8 +113,8 @@ public interface Renderable {
 		public void square(Vector p, float s, boolean fill) {
 			square(p.x(), p.y(), s, fill);					
 		}		
-		public void circle(Vector p, float s, boolean fill) {
-			circle(p.x(), p.y(), s, fill);
+		public void circle(Vector p, float r, boolean fill) {
+			circle(p.x(), p.y(), r, fill);
 		}
 		
 		private final LinkedList<RenderContext>
@@ -135,17 +135,15 @@ public interface Renderable {
 		}
 		
 		public void pop()  {
-			RenderContext copy = stack.poll();			
+			RenderContext copy = stack.pop();
 			
-			if(copy != null) {
-				this.g.dispose();
-				this.g  = copy.g ;
-				this.t  = copy.t ;
-				this.dt = copy.dt;
-				this.fixed_dt = copy.fixed_dt;
-				this.canvas_w = copy.canvas_w;
-				this.canvas_h = copy.canvas_h;
-			}
+			this.g.dispose();
+			this.g  = copy.g ;
+			this.t  = copy.t ;
+			this.dt = copy.dt;
+			this.fixed_dt = copy.fixed_dt;
+			this.canvas_w = copy.canvas_w;
+			this.canvas_h = copy.canvas_h;
 		}
 	}
 }	

@@ -92,7 +92,7 @@ public class Region3 extends Box3 {
 	}
 	
 	public static Region3 fromString(String str) {
-		return Box3.fromString(new Region3(), str);
+		return Box3.parseBox3(new Region3(), str);
 	}
 	
 	public static class Mutable extends Region3 {
@@ -167,7 +167,7 @@ public class Region3 extends Box3 {
 		}
 		
 		public static Region3.Mutable fromString(String str) {
-			return Box3.fromString(new Region3.Mutable(), str);
+			return Box3.parseBox3(new Region3.Mutable(), str);
 		}
 	}
 }

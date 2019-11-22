@@ -31,67 +31,72 @@ public class Matrix2 extends Matrix {
 		this.mSet(mode, a, b, c, d);
 	}
 	
-	protected void mSet(Matrix m) {
+	protected Matrix2 mSet(Matrix m) {
 		this.xx = m.xx(); this.xy = m.xy();		
 		this.yx = m.yx(); this.yy = m.yy();
+		return this;
 	}
 	
-	protected void mSet(
+	protected Matrix2 mSet(
 			int mode,
 			Vector v0,
 			Vector v1
 			) {
 		switch(mode) {
-			case ROW_MAJOR: mSetRowMajor(v0, v1); break;
-			case COL_MAJOR: mSetColMajor(v0, v1); break;
+			case ROW_MAJOR: return mSetRowMajor(v0, v1);
+			case COL_MAJOR: return mSetColMajor(v0, v1);
 		}
+		return this;
 	}
 	
-	protected void mSet(
+	protected Matrix2 mSet(
 			int mode,
 			float a, float b,
 			float c, float d
 			) {
 		switch(mode) {
-			case ROW_MAJOR: mSetRowMajor(a, b, c, d); break;
-			case COL_MAJOR: mSetColMajor(a, b, c, d); break;
+			case ROW_MAJOR: return mSetRowMajor(a, b, c, d);
+			case COL_MAJOR: return mSetColMajor(a, b, c, d);
 		}
+		return this;
 	}
 	
-	protected void mSetRowMajor(
+	protected Matrix2 mSetRowMajor(
 			Vector v0,
 			Vector v1
 			) {
-		mSetRowMajor(
+		return mSetRowMajor(
 				v0.x(), v0.y(),
 				v1.x(), v1.y()
 				);
 	}
 	
-	protected void mSetColMajor(
+	protected Matrix2 mSetColMajor(
 			Vector v0,
 			Vector v1
 			) {
-		mSetColMajor(
+		return mSetColMajor(
 				v0.x(), v0.y(),
 				v1.x(), v1.y()
 				);
 	}
 	
-	protected void mSetRowMajor(
+	protected Matrix2 mSetRowMajor(
 			float a, float b,
 			float c, float d
 			) {
 		this.xx = a; this.xy = b;
 		this.yx = c; this.yy = d;
+		return this;
 	}
 	
-	protected void mSetColMajor(
+	protected Matrix2 mSetColMajor(
 			float a, float b,
 			float c, float d
 			) {
 		this.xx = a; this.xy = c;
 		this.yx = b; this.yy = d;
+		return this;
 	}
 	
 	@Override
@@ -147,7 +152,7 @@ public class Matrix2 extends Matrix {
 				"[" + String.format(format, m2.yx) + ", " + String.format(format, m2.yy) + "]";				
 	}	
 	
-	protected static final <M extends Matrix2> M fromString(M m2, String str) {
+	protected static final <M extends Matrix2> M parseMatrix2(M m2, String str) {
 		if(m2 == null)
 			throw new IllegalArgumentException("Null Matrix");
         if (str == null)
@@ -164,9 +169,9 @@ public class Matrix2 extends Matrix {
         switch(tmp.length) {
 	        default:
 	        case 2:
-	        	Vector2.fromString(v1, tmp[1]);
+	        	Vector2.parseVector2(v1, tmp[1]);
 	        case 1:
-	        	Vector2.fromString(v0, tmp[0]);
+	        	Vector2.parseVector2(v0, tmp[0]);
 	        case 0:
         }
         m2.mSetRowMajor(v0, v1);
@@ -174,8 +179,8 @@ public class Matrix2 extends Matrix {
         return m2;
 	}
 	
-	public static Matrix2 fromString(String str) {
-		return Matrix2.fromString(new Matrix2(), str);
+	public static Matrix2 parseMatrix2(String str) {
+		return Matrix2.parseMatrix2(new Matrix2(), str);
 	}
 	
 	public static Matrix2 identity() {
@@ -265,8 +270,8 @@ public class Matrix2 extends Matrix {
 			return this;
 		}
 		
-		public static Matrix2.Mutable fromString(String str) {
-			return Matrix2.fromString(new Matrix2.Mutable(), str);
+		public static Matrix2.Mutable parseMatrix2(String str) {
+			return Matrix2.parseMatrix2(new Matrix2.Mutable(), str);
 		}
 		
 		public static Matrix2.Mutable identity() {

@@ -81,7 +81,7 @@ public class Engine implements Runnable {
 	
 	public static synchronized void loop() {
 		if(!INSTANCE.running) {
-			INSTANCE.thread = new Thread(INSTANCE);
+			INSTANCE.thread = new Thread(INSTANCE, Blue.VERSION.toString());
 			INSTANCE.running = true;
 			INSTANCE.thread.start();
 		}
@@ -111,6 +111,14 @@ public class Engine implements Runnable {
 		return INSTANCE.cfg;
 	}
 	
+	public static void setScene(Scene scene) {
+		if(INSTANCE.scene != null)
+			INSTANCE.scene.onDetach();
+		INSTANCE.scene = scene;
+		if(INSTANCE.scene != null)
+			INSTANCE.scene.onAttach();
+	}
+	
 	public static void mouseMoved(Vector2 mouse) {
 		INSTANCE.onMouseMoved(mouse);
 	}
@@ -136,14 +144,14 @@ public class Engine implements Runnable {
 	}
 	
 	public void onInit() {
-		canvas_background = cfg.get(Vector4::fromString, CANVAS_BACKGROUND, canvas_background);
-		canvas_foreground = cfg.get(Vector4::fromString, CANVAS_FOREGROUND, canvas_foreground);
+		canvas_background = cfg.get(Vector4::parseVector4, CANVAS_BACKGROUND, canvas_background);
+		canvas_foreground = cfg.get(Vector4::parseVector4, CANVAS_FOREGROUND, canvas_foreground);
 		debug         = cfg.getBoolean(DEBUG, debug);
 		engine_fps    = cfg.getFloat(ENGINE_FPS, engine_fps);
 		engine_tps    = cfg.getFloat(ENGINE_TPS, engine_tps);
 		window_border = cfg.getBoolean(WINDOW_BORDER, window_border);
 		window_device = cfg.getInteger(WINDOW_DEVICE, window_device);
-		window_layout = cfg.get(Layout::fromString, WINDOW_LAYOUT, window_layout);
+		window_layout = cfg.get(Layout::parseLayout, WINDOW_LAYOUT, window_layout);
 		window_title  = cfg.get(WINDOW_TITLE, window_title);		
 		
 		background = Vector.toColor4i(canvas_background);
@@ -187,13 +195,17 @@ public class Engine implements Runnable {
 		
 		window.setVisible(true);
 		canvas.requestFocus();
+		
+		if(scene != null)
+			scene.onInit();
 	}
 	
 	public void onExit() {
+		if(scene != null)
+			scene.onExit();
 		if(window != null)
 			window.dispose();
-	}
-	
+	}	
 	
 	protected BufferStrategy
 		b;	

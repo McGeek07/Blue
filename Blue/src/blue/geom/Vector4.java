@@ -75,7 +75,7 @@ public class Vector4 extends Vector {
 				+ String.format(format, v4.w) + ">";
 	}
 	
-	protected static final <V extends Vector4> V fromString(V v4, String str) {
+	protected static final <V extends Vector4> V parseVector4(V v4, String str) {
 		if(v4 == null)
 	        throw new IllegalArgumentException("Null Vector");
 	    if (str == null)
@@ -112,14 +112,14 @@ public class Vector4 extends Vector {
 	    return v4;
 	}
 	
-	public static Vector4 fromString(String str) {
-		return Vector4.fromString(new Vector4(), str);
+	public static Vector4 parseVector4(String str) {
+		return Vector4.parseVector4(new Vector4(), str);
 	}
 	
 	public static final ObjectToString<Vector4>
 		VECTOR4_TO_STRING = Vector4::toString;
 	public static final StringToObject<Vector4>
-		STRING_TO_VECTOR4 = Vector4::fromString;
+		STRING_TO_VECTOR4 = Vector4::parseVector4;
 	
 	public static class Mutable extends Vector4 {
 		private static final long 
@@ -178,8 +178,8 @@ public class Vector4 extends Vector {
 			return new Vector4.Mutable(this);
 		}
 		
-		public static Vector4.Mutable fromString(String str) {
-			return Vector4.fromString(new Vector4.Mutable(), str);
+		public static Vector4.Mutable parseVector4(String str) {
+			return Vector4.parseVector4(new Vector4.Mutable(), str);
 		}
 	}
 }

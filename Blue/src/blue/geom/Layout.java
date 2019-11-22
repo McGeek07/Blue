@@ -298,7 +298,7 @@ public class Layout implements Serializable {
 				+ Attribute.toString(l.maximum_h, format) + "}";
 	}
 	
-	public static final Layout fromString(String str) {
+	public static final Layout parseLayout(String str) {
 		if(str == null)
             throw new IllegalArgumentException("Null String");
         if((str = str.trim()).isEmpty())

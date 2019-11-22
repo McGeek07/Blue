@@ -33,15 +33,13 @@ public interface Updateable {
 		}
 		
 		public void pop()  {
-			UpdateContext copy = stack.poll();			
+			UpdateContext copy = stack.pop();
 			
-			if(copy != null) {
-				this.t  = copy.t ;
-				this.dt = copy.dt;
-				this.fixed_dt = copy.fixed_dt;
-				this.canvas_w = copy.canvas_w;
-				this.canvas_h = copy.canvas_h;
-			}
+			this.t  = copy.t ;
+			this.dt = copy.dt;
+			this.fixed_dt = copy.fixed_dt;
+			this.canvas_w = copy.canvas_w;
+			this.canvas_h = copy.canvas_h;
 		}
 	}
 }

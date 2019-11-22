@@ -4,59 +4,137 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
 
 import blue.core.Renderable;
 import blue.core.Updateable;
-import blue.geom.Boundable;
 import blue.geom.Region2;
 
-public class Sprite implements Boundable<Region2.Mutable>, Renderable, Updateable {
+public class Sprite implements Renderable, Updateable {
 	public static final int
 		STOP = 0,
 		PLAY = 1,
-		LOOP = 2;	
+		LOOP = 2;
 	
-	protected final Sprite.Atlas
+	protected Atlas
 		atlas;
 	protected Effect
-		effect;
+		effect;	
 	protected BufferedImage[]
 		frames;
 	
-	protected final Region2.Mutable
-		bounds = new Region2.Mutable();
-	
 	protected float
-		frame,
-		speed,	
-		alpha;
+		frame = 0f,
+		speed = 0f;
 	protected boolean
 		flip,
 		flop;
 	protected int
 		mode;
 	
-	public Sprite(Sprite.Atlas atlas, Effect effect) {
-		this.atlas  = atlas ;
+	protected final Region2.Mutable
+		bounds = new Region2.Mutable();
+	
+	public Sprite(
+			Atlas  atlas ,
+			Effect effect
+			) {
+		this.atlas  = atlas;
 		this.effect = effect;
-		this.frames = atlas.frames(effect);
-		this.bounds.dim().set(
-				this.atlas.frame_w,
-				this.atlas.frame_h
+		
+		this.frames = atlas.filter(effect);
+		
+		this.bounds.set(
+				0, 0,
+				atlas.frame_w,
+				atlas.frame_h
 				);
 	}
-
-	@Override
+	
 	public Region2.Mutable bounds() {
-		return bounds;
+		return this.bounds;
+	}
+	
+	public void setEffect(Effect effect) {
+		this.effect = effect;
+		this.frames = atlas.filter(effect);
+	}
+	
+	public Atlas getFrames() {
+		return this.atlas;
+	}
+	public Effect getEffect() {
+		return this.effect;
+	}
+	
+	public void setFrame(float frame) {
+		this.frame = frame;
+	}	
+	public void setSpeed(float speed) {
+		this.speed = speed;
+	}
+	
+	public float getFrame() {
+		return this.frame;
+	}	
+	public float getSpeed() {
+		return this.speed;
+	}
+	
+	public void play() {
+		this.mode = PLAY;
+	}	
+	public void loop() {
+		this.mode = LOOP;
+	}	
+	public void stop() {
+		this.mode = STOP;
+	}	
+	public void flip() {
+		this.flip = !flip;
+	}	
+	public void flop() {
+		this.flop = !flop;
+	}
+	
+	public void play(float speed) {
+		this.setSpeed(speed);
+		this.play();
+	}	
+	public void loop(float speed) {
+		this.setSpeed(speed);
+		this.loop();
+	}	
+	public void stop(float frame) {
+		this.setFrame(frame);
+		this.stop();
+	}	
+	public void flip(boolean flip) {
+		this.flip = flip;
+	}	
+	public void flop(boolean flop) {
+		this.flop = flop;
+	}
+	
+	public boolean isPlaying() {
+		return this.mode == PLAY;
+	}
+	public boolean isLooping() {
+		return this.mode == LOOP;
+	}
+	public boolean isStopped() {
+		return this.mode == STOP;
+	}	
+	public boolean isFlipped() {
+		return this.flip;
+	}
+	public boolean isFlopped() {
+		return this.flop;
 	}
 
 	@Override
 	public void onRender(RenderContext context) {
-		context.push();
 		int
 			x1, y1,
 			x2, y2;
@@ -75,15 +153,14 @@ public class Sprite implements Boundable<Region2.Mutable>, Renderable, Updateabl
 			y2 = (int)bounds.y2();
 		}
 		context.g.drawImage(
-				atlas.frames[(int)frame],
+				frames[(int)frame],
 				x1, y1,
 				x2, y2,
 				0 , 0 ,
 				atlas.frame_w,
 				atlas.frame_h,
 				null
-				);
-		context.pop();
+				);	
 	}
 
 	@Override
@@ -102,260 +179,151 @@ public class Sprite implements Boundable<Region2.Mutable>, Renderable, Updateabl
 		}
 	}
 	
-	public int w() {
-		return atlas.frame_w;
+	public Sprite filter(Effect effect) {
+		return new Sprite(
+				atlas ,
+				effect
+				);
 	}
 	
-	public int h() {
-		return atlas.frame_h;
+	public static void load(String name, String path, int frame_w, int frame_h) {
+		try {
+			new Atlas(name, path, frame_w, frame_h);
+		} catch (Exception ex) {
+			System.err.println("Failed to load Sprite");
+			ex.printStackTrace();
+		}
 	}
 	
-	public void setEffect(Effect effect) {
-		this.effect = effect;
-		this.frames = atlas.frames(effect);
+	public static Sprite fromName(String name, Effect effect) {
+		return new Sprite(Atlas.fromName(name), effect);
 	}
 	
-	public void setFrame(float frame) {
-		this.frame = frame;
+	public static Sprite fromPath(String path, Effect effect) {
+		return new Sprite(Atlas.fromName(path), effect);
 	}
 	
-	public void setSpeed(float speed) {
-		this.speed = speed;
-	}
-	
-	public void setAlpha(float alpha) {
-		this.alpha = alpha;
-	}
-	
-	public float getFrame() {
-		return this.frame;
-	}
-	
-	public float getSpeed() {
-		return this.speed;
-	}
-	
-	public float getAlpha() {
-		return this.alpha;
-	}
-	
-	public void play(float speed) {
-		this.setSpeed(speed);
-		this.play();
-	}
-	
-	public void play() {
-		this.mode = PLAY;
-	}
-	
-	public void loop(float speed) {
-		this.setSpeed(speed);
-		this.loop();
-	}
-	
-	public void loop() {
-		this.mode = LOOP;
-	}
-	
-	public void stop(float frame) {
-		this.setFrame(frame);
-		this.stop();
-	}
-	
-	public void stop() {
-		this.mode = STOP;
-	}
-	
-	public boolean isPlaying() {
-		return this.mode == PLAY;
-	}
-	
-	public boolean isLooping() {
-		return this.mode == LOOP;
-	}
-	
-	public boolean isStopped() {
-		return this.mode == STOP;
-	}
-	
-	public void flip(boolean flip) {
-		this.flip =  flip;
-	}
-	
-	public void flip() {
-		this.flip = !flip;
-	}
-	
-	public void flop(boolean flop) {
-		this.flop =  flop;
-	}
-	
-	public void flop() {
-		this.flop = !flop;
-	}
-	
-	public boolean isFlipped() {
-		return this.flip;
-	}
-	
-	public boolean isFlopped() {
-		return this.flop;
-	}
-	
-	public static Sprite getByName(String name) {
-		return Sprite.getByName(name, null);
-	}
-	
-	public static Sprite getByPath(String path) {
-		return Sprite.getByPath(path, null);
-	}
-	
-	public static Sprite getByName(String name, Effect effect) {
-		return new Sprite(Sprite.Atlas.getByName(name), effect);
-	}
-	
-	public static Sprite getByPath(String path, Effect effect) {
-		return new Sprite(Sprite.Atlas.getByPath(path), effect);
-	}
-	
-	public static class Atlas {
-		private static final TreeMap<String, Atlas>
-			NAME_INDEX = new TreeMap<String, Atlas>(),
-			PATH_INDEX = new TreeMap<String, Atlas>();
+	public static class Atlas {		
+		private static final HashMap<String, Atlas>
+			NAME_INDEX = new HashMap<String, Atlas>(),
+			PATH_INDEX = new HashMap<String, Atlas>();
 		public final String
 			name,
 			path;
+		public final BufferedImage
+			atlas;
 		public final int
+			atlas_w,
+			atlas_h,
 			frame_w,
 			frame_h;
-		public final BufferedImage[]
-			frames;
-		public final HashMap<Integer, BufferedImage[]>
-			cached = new HashMap<>();
+		
+		private final HashMap<Effect, BufferedImage[]>
+			cached = new HashMap<Effect, BufferedImage[]>();
 		
 		public Atlas(
 				String name,
 				String path,
 				int frame_w,
 				int frame_h
-				) {
-			if(NAME_INDEX.get(name) != null)
-				throw new IllegalArgumentException("Duplicate Name '" + name + "' for Sprite.Atlas");
-			if(PATH_INDEX.get(path) != null)
-				throw new IllegalArgumentException("Duplicate Path '" + path + "' for Sprite.Atlas");
+				) throws IOException {
+			if(NAME_INDEX.containsKey(name))
+				throw new IllegalArgumentException("Duplicate name '" + name + "'");
+			if(PATH_INDEX.containsKey(name))
+				throw new IllegalArgumentException("Duplicate path '" + path + "'");
+			
+			this.atlas = ImageIO.read(new File(path));
+			
 			this.name = name;
 			this.path = path;
 			this.frame_w = frame_w;
 			this.frame_h = frame_h;
-			this.frames = Sprite.Atlas.create(
-					this.path,
-					this.frame_w,
-					this.frame_h
-					);
-			NAME_INDEX.put(this.name, this);
-			PATH_INDEX.put(this.path, this);
-		}
-		
-		public BufferedImage[] frames(Effect effect) {
-			if(effect != null) {
-				BufferedImage[] frames = cached.get(effect.uid);
-				if(frames == null) {
-					frames = Effect.filter(frames, effect);
-					cached.put(effect.uid, frames);
-				}
-				return frames;
-			} else
-				return frames;
-		}		
-		
-		public static Sprite.Atlas getByName(String name) {
-			Sprite.Atlas atlas = NAME_INDEX.get(name);
-			if(atlas == null) 
-				throw new IllegalArgumentException("No Sprite Atlas exists for name '" + name + "'");
-			else
-				return atlas;
-		}
-		
-		public static Sprite.Atlas getByPath(String path) {
-			Sprite.Atlas atlas = NAME_INDEX.get(path);
-			if(atlas == null) 
-				throw new IllegalArgumentException("No Sprite Atlas exists for path '" + path + "'");
-			else
-				return atlas;
-		}
-		
-		public static final BufferedImage[] create(String path, int frame_w, int frame_h) {
-			try {
-				BufferedImage image = ImageIO.read(new File(path));		
-				int
-					w = image.getWidth()  / frame_w,
-					h = image.getHeight() / frame_h;
-				BufferedImage[] frames = new BufferedImage[w * h];
-				for(int x = 0; x < w; x ++)
-					for(int y = 0; y < h; y ++)
-						frames[h * y + x] = image.getSubimage(
-								x * frame_w,
-								y * frame_h,
-								frame_w,
-								frame_h
-								);			
-				return frames;
-			} catch(IOException ioe) {
-				ioe.printStackTrace();
-			}
-			return null;
-		}	
-	}
-	
-	public static interface Filter {
-		public int[] filter(int[] pixels, int w, int h);
-	}
-	
-	public static class Effect {
-		private static final HashMap<Integer, Effect>
-			INDEX = new HashMap<>();
-		private static int
-			UID;
-
-		protected final int
-			uid;
-		protected final Filter[]
-			filters;
-		
-		public Effect(Filter... filters) {
-			this.uid = UID ++;
-			this.filters = filters;
-			INDEX.put(this.uid, this);
-		}
-		
-		public int[] filter(int[] pixels, int w, int h) {
-			for(Filter filter: filters)
-				pixels = filter.filter(pixels, w, h);
-			return pixels;
-		}
-		
-		public static final BufferedImage[] filter(BufferedImage[] frames, Effect effect) {
-			BufferedImage[] filter = new BufferedImage[frames.length];
-			for(int i = 0; i < frames.length; i ++) {
-				int
-					frame_w = frames[i].getWidth() ,
-					frame_h = frames[i].getHeight();
-				BufferedImage
-					frame0 = frames[i],
-					frame1 = new BufferedImage(
+			this.atlas_w = atlas.getWidth() ;
+			this.atlas_h = atlas.getHeight();
+			
+			int
+				w = atlas_w / frame_w,
+				h = atlas_h / frame_h;
+			BufferedImage[] frames = new BufferedImage[w * h];
+			for(int x = 0; x < w; x ++)
+				for(int y = 0; y < h; y ++)
+					frames[h * y + x] = atlas.getSubimage(
+							x * frame_w,
+							y * frame_h,
 							frame_w,
-							frame_h,
-							BufferedImage.TYPE_INT_ARGB
+							frame_h
 							);
-				int[] pixels = new int[frame_w * frame_h];
-				frame0.getRGB(0, 0, frame_w, frame_h, pixels, 0, frame_w);
-				
-				pixels = effect.filter(pixels, frame_w, frame_h);
-				frame1.setRGB(0, 0, frame_w, frame_h, pixels, 0, frame_w);
-				
-				filter[i] = frame1;
-			}
-			return filter;
+			 
+			cached.put(null, frames);
+			
+			NAME_INDEX.put(name, this);
+			PATH_INDEX.put(path, this);
 		}
+		
+		public BufferedImage[] filter(Effect effect) {
+			BufferedImage[]
+					sprite_frames = cached.get(null  ),
+					effect_frames = cached.get(effect);	
+			if(effect_frames == null) {
+				effect_frames = new BufferedImage[sprite_frames.length];
+				for(int i = 0; i < sprite_frames.length; i ++) {
+					int
+						frame_w = sprite_frames[i].getWidth() ,
+						frame_h = sprite_frames[i].getHeight();
+					BufferedImage
+						sprite_frame = sprite_frames[i],
+						effect_frame = new BufferedImage(
+								frame_w,
+								frame_h,
+								BufferedImage.TYPE_INT_ARGB
+								);
+					int[] frame_data = new int[frame_w * frame_h];
+					sprite_frame.getRGB(0, 0, frame_w, frame_h, frame_data, 0, frame_w);
+					
+					effect.filter(frame_data, frame_w, frame_h);
+					effect_frame.setRGB(0, 0, frame_w, frame_h, frame_data, 0, frame_w);
+					
+					effect_frames[i] = effect_frame;
+				}
+				cached.put(effect, effect_frames);
+			}			
+			return effect_frames;
+		}
+		
+		public static Atlas fromName(String name) {
+			Atlas frames = NAME_INDEX.get(name);
+			if(frames == null)
+				throw new IllegalArgumentException("No Atlas exists for name '" + name + "'");
+			return frames;
+		}
+		
+		public static Atlas fromPath(String path) {
+			Atlas frames = PATH_INDEX.get(path);
+			if(frames == null)
+				throw new IllegalArgumentException("No Atlas exists for path '" + path + "'");
+			return frames;
+		}
+	}
+	
+	private static final int
+		BLACK = 0xFF000000,
+		WHITE = 0xFFFFFFFF;
+	
+	public static interface Effect {
+		public void filter(int[] frame_data, int frame_w, int frame_h);
+		
+		public static final Effect
+			BLACKOUT = (frame_data, frame_w, frame_h) -> {
+				for(int i = 0; i < frame_data.length; i ++) {
+					int alpha = (frame_data[i] >> 24) & 0xFF;
+					if(alpha > 0) frame_data[i] = BLACK;
+				}					
+			},
+			WHITEOUT = (frame_data, frame_w, frame_h) -> {
+				for(int i = 0; i < frame_data.length; i ++) {
+					int alpha = (frame_data[i] >> 24) & 0xFF;
+					if(alpha > 0) frame_data[i] = WHITE;
+				}
+			};
 	}
 }

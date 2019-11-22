@@ -34,61 +34,64 @@ public class Matrix3 extends Matrix {
 		this.mSet(mode, a, b, c, d, e, f, g, h, i);
 	}
 	
-	protected void mSet(Matrix m) {
+	protected Matrix3 mSet(Matrix m) {
 		this.xx = m.xx(); this.xy = m.xy(); this.xz = m.xz();
 		this.yx = m.yx(); this.yy = m.yy(); this.yz = m.yz();
 		this.zx = m.zx(); this.zy = m.zy(); this.zz = m.zz();
+		return this;
 	}
 	
-	protected void mSet(
+	protected Matrix3 mSet(
 			int mode,
 			Vector v0,
 			Vector v1,
 			Vector v2
 			) {
 		switch(mode) {
-			case ROW_MAJOR: mSetRowMajor(v0, v1, v2); break;
-			case COL_MAJOR: mSetColMajor(v0, v1, v2); break;
+			case ROW_MAJOR: return mSetRowMajor(v0, v1, v2);
+			case COL_MAJOR: return mSetColMajor(v0, v1, v2);
 		}
+		return this;
 	}
 	
-	protected void mSet(
+	protected Matrix3 mSet(
 			int mode,
 			float a, float b, float c, 
 			float d, float e, float f,
 			float g, float h, float i
 			) {
 		switch(mode) {
-			case ROW_MAJOR: mSetRowMajor(a, b, c, d, e, f, g, h, i); break;
-			case COL_MAJOR: mSetColMajor(a, b, c, d, e, f, g, h, i); break;
+			case ROW_MAJOR: return mSetRowMajor(a, b, c, d, e, f, g, h, i);
+			case COL_MAJOR: return mSetColMajor(a, b, c, d, e, f, g, h, i);
 		}
+		return this;
 	}
 	
-	protected void mSetRowMajor(
+	protected Matrix3 mSetRowMajor(
 			Vector v0,
 			Vector v1,
 			Vector v2
 			) {
-		mSetRowMajor(
+		return mSetRowMajor(
 				v0.x(), v0.y(), v0.z(),
 				v1.x(), v1.y(), v1.z(),
 				v2.x(), v2.y(), v2.z()
 				);
 	}
 	
-	protected void mSetColMajor(
+	protected Matrix3 mSetColMajor(
 			Vector v0,
 			Vector v1,
 			Vector v2
 			) {
-		mSetColMajor(
+		return mSetColMajor(
 				v0.x(), v0.y(), v0.z(),
 				v1.x(), v1.y(), v1.z(),
 				v2.x(), v2.y(), v2.z()
 				);
 	}
 	
-	protected void mSetRowMajor(
+	protected Matrix3 mSetRowMajor(
 			float a, float b, float c,
 			float d, float e, float f,
 			float g, float h, float i
@@ -96,9 +99,10 @@ public class Matrix3 extends Matrix {
 		this.xx = a; this.xy = b; this.xz = c;
 		this.yx = d; this.yy = e; this.yz = f;
 		this.zx = g; this.zy = h; this.zz = i;
+		return this;
 	}
 	
-	protected void mSetColMajor(
+	protected Matrix3 mSetColMajor(
 			float a, float b, float c,
 			float d, float e, float f,
 			float g, float h, float i
@@ -106,6 +110,7 @@ public class Matrix3 extends Matrix {
 		this.xx = a; this.xy = d; this.xz = g;
 		this.yx = b; this.yy = e; this.yz = h;
 		this.zx = c; this.zy = f; this.zz = i;
+		return this;
 	}
 	
 	@Override
@@ -174,7 +179,7 @@ public class Matrix3 extends Matrix {
 				"[" + String.format(format, m3.zx) + ", " + String.format(format, m3.zy) + ", " + String.format(format, m3.zz) + "]";
 	}	
 	
-	protected static final <M extends Matrix3> M fromString(M m3, String str) {
+	protected static final <M extends Matrix3> M parseMatrix3(M m3, String str) {
 		if(m3 == null)
 			throw new IllegalArgumentException("Null Matrix");
 	    if (str == null)
@@ -192,11 +197,11 @@ public class Matrix3 extends Matrix {
 	    switch(tmp.length) {
 	        default:
 	        case 3:
-	        	Vector3.fromString(v2, tmp[2]);
+	        	Vector3.parseVector3(v2, tmp[2]);
 	        case 2:
-	        	Vector3.fromString(v1, tmp[1]);
+	        	Vector3.parseVector3(v1, tmp[1]);
 	        case 1:
-	        	Vector3.fromString(v0, tmp[0]);
+	        	Vector3.parseVector3(v0, tmp[0]);
 	        case 0:
 	    }
 	    m3.mSetRowMajor(v0, v1, v2);
@@ -204,8 +209,8 @@ public class Matrix3 extends Matrix {
 	    return m3;
 	}
 	
-	public static Matrix3 fromString(String str) {
-		return Matrix3.fromString(new Matrix3(), str);
+	public static Matrix3 parseMatrix3(String str) {
+		return Matrix3.parseMatrix3(new Matrix3(), str);
 	}
 	
 	public static Matrix3 identity() {
@@ -303,8 +308,8 @@ public class Matrix3 extends Matrix {
 			return this;
 		}
 		
-		public static Matrix3.Mutable fromString(String str) {
-			return Matrix3.fromString(new Matrix3.Mutable(), str);
+		public static Matrix3.Mutable parseMatrix3(String str) {
+			return Matrix3.parseMatrix3(new Matrix3.Mutable(), str);
 		}
 		
 		public static Matrix3.Mutable identity() {

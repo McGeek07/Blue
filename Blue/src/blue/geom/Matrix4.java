@@ -37,14 +37,15 @@ public class Matrix4 extends Matrix {
 		this.mSet(mode, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p);
 	}
 	
-	protected void mSet(Matrix m) {
+	protected Matrix4 mSet(Matrix m) {
 		this.xx = m.xx(); this.xy = m.xy(); this.xz = m.xz(); this.xw = m.xw();
 		this.yx = m.yx(); this.yy = m.yy(); this.yz = m.yz(); this.yw = m.yx();
 		this.zx = m.zx(); this.zy = m.zy(); this.zz = m.zz(); this.zw = m.zw();
 		this.wx = m.wx(); this.wy = m.wy(); this.wz = m.wz(); this.ww = m.ww();
+		return this;
 	}
 	
-	protected void mSet(
+	protected Matrix4 mSet(
 			int mode,
 			Vector v0,
 			Vector v1,
@@ -52,12 +53,13 @@ public class Matrix4 extends Matrix {
 			Vector v3
 			) {
 		switch(mode) {
-			case ROW_MAJOR: mSetRowMajor(v0, v1, v2, v3); break;
-			case COL_MAJOR: mSetColMajor(v0, v1, v2, v3); break;
+			case ROW_MAJOR: return mSetRowMajor(v0, v1, v2, v3);
+			case COL_MAJOR: return mSetColMajor(v0, v1, v2, v3);
 		}
+		return this;
 	}
 	
-	protected void mSet(
+	protected Matrix4 mSet(
 			int mode,
 			float a, float b, float c, float d,
 			float e, float f, float g, float h, 
@@ -65,18 +67,19 @@ public class Matrix4 extends Matrix {
 			float m, float n, float o, float p
 			) {
 		switch(mode) {
-			case ROW_MAJOR: mSetRowMajor(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p); break;
-			case COL_MAJOR: mSetColMajor(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p); break;
+			case ROW_MAJOR: return mSetRowMajor(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p);
+			case COL_MAJOR: return mSetColMajor(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p);
 		}
+		return this;
 	}
 	
-	protected void mSetRowMajor(
+	protected Matrix4 mSetRowMajor(
 			Vector v0,
 			Vector v1,
 			Vector v2,
 			Vector v3
 			) {
-		mSetRowMajor(
+		return mSetRowMajor(
 				v0.x(), v0.y(), v0.z(), v0.w(),
 				v1.x(), v1.y(), v1.z(), v1.w(),
 				v2.x(), v2.y(), v2.z(), v2.w(),
@@ -84,13 +87,13 @@ public class Matrix4 extends Matrix {
 				);
 	}
 	
-	protected void mSetColMajor(
+	protected Matrix4 mSetColMajor(
 			Vector v0,
 			Vector v1,
 			Vector v2,
 			Vector v3
 			) {
-		mSetColMajor(
+		return mSetColMajor(
 				v0.x(), v0.y(), v0.z(), v0.w(),
 				v1.x(), v1.y(), v1.z(), v1.w(),
 				v2.x(), v2.y(), v2.z(), v2.w(),
@@ -98,7 +101,7 @@ public class Matrix4 extends Matrix {
 				);
 	}
 	
-	protected void mSetRowMajor(
+	protected Matrix4 mSetRowMajor(
 			float a, float b, float c, float d,
 			float e, float f, float g, float h, 
 			float i, float j, float k, float l,
@@ -108,9 +111,10 @@ public class Matrix4 extends Matrix {
 		this.yx = e; this.yy = f; this.yz = g; this.yw = h;
 		this.zx = i; this.zy = j; this.zz = k; this.zw = l;
 		this.wx = m; this.wy = n; this.wz = o; this.ww = p;
+		return this;
 	}
 	
-	protected void mSetColMajor(
+	protected Matrix4 mSetColMajor(
 			float a, float b, float c, float d,
 			float e, float f, float g, float h, 
 			float i, float j, float k, float l,
@@ -120,6 +124,7 @@ public class Matrix4 extends Matrix {
 		this.yx = b; this.yy = f; this.yz = j; this.yw = n;
 		this.zx = c; this.zy = g; this.zz = k; this.zw = o;
 		this.wx = d; this.wy = h; this.wz = l; this.ww = p;
+		return this;
 	}
 	
 	@Override
@@ -205,7 +210,7 @@ public class Matrix4 extends Matrix {
 				"[" + String.format(format, m4.wx) + ", " + String.format(format, m4.wy) + ", " + String.format(format, m4.wz) + ", " + String.format(format, m4.ww) + "]";
 	}	
 	
-	protected static final <M extends Matrix4> M fromString(M m4, String str) {
+	protected static final <M extends Matrix4> M parseMatrix4(M m4, String str) {
 		if(m4 == null)
 			throw new IllegalArgumentException("Null Matrix");
 	    if (str == null)
@@ -224,13 +229,13 @@ public class Matrix4 extends Matrix {
 	    switch(tmp.length) {
 	        default:
 	        case 4:
-	        	Vector4.fromString(v3, tmp[3]);
+	        	Vector4.parseVector4(v3, tmp[3]);
 	        case 3:
-	        	Vector4.fromString(v2, tmp[2]);
+	        	Vector4.parseVector4(v2, tmp[2]);
 	        case 2:
-	        	Vector4.fromString(v1, tmp[1]);
+	        	Vector4.parseVector4(v1, tmp[1]);
 	        case 1:
-	        	Vector4.fromString(v0, tmp[0]);
+	        	Vector4.parseVector4(v0, tmp[0]);
 	        case 0:
 	    }
 	    m4.mSetRowMajor(v0, v1, v2, v3);
@@ -238,8 +243,8 @@ public class Matrix4 extends Matrix {
 	    return m4;
 	}
 	
-	public static Matrix4 fromString(String str) {
-		return Matrix4.fromString(new Matrix4(), str);
+	public static Matrix4 parseMatrix4(String str) {
+		return Matrix4.parseMatrix4(new Matrix4(), str);
 	}
 	
 	public static Matrix4 identity() {
@@ -345,8 +350,8 @@ public class Matrix4 extends Matrix {
 			return this;
 		}
 		
-		public static Matrix4.Mutable fromString(String str) {
-			return Matrix4.fromString(new Matrix4.Mutable(), str);
+		public static Matrix4.Mutable parseMatrix4(String str) {
+			return Matrix4.parseMatrix4(new Matrix4.Mutable(), str);
 		}
 		
 		public static Matrix4.Mutable identity() {

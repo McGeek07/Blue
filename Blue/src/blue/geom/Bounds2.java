@@ -77,8 +77,8 @@ public class Bounds2 extends Box2 {
 		return new Bounds2(this);
 	}
 	
-	public static Bounds2 fromString(String str) {
-		return Box2.fromString(new Bounds2(), str);
+	public static Bounds2 parseBounds2(String str) {
+		return Box2.parseBox2(new Bounds2(), str);
 	}
 	
 	public static class Mutable extends Bounds2 {
@@ -134,8 +134,8 @@ public class Bounds2 extends Box2 {
 			return new Bounds2.Mutable(this);
 		}
 		
-		public static Bounds2.Mutable fromString(String str) {
-			return Box2.fromString(new Bounds2.Mutable(), str);
+		public static Bounds2.Mutable parseBounds2(String str) {
+			return Box2.parseBox2(new Bounds2.Mutable(), str);
 		}
 	}
 }

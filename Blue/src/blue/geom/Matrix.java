@@ -37,27 +37,131 @@ public abstract class Matrix implements Serializable, Copyable<Matrix> {
 	public int n() { return 0; }
 	
 	public static Matrix2 add(Matrix2 a, Matrix2 b) {
-		return new Matrix2(
-				Matrix.ROW_MAJOR,
+		return new Matrix2().mSetRowMajor(
 				a.xx + b.xx, a.xy + b.xy,
 				a.yx + b.yx, a.yy + b.yy
 				);
 	}
 	public static Matrix3 add(Matrix3 a, Matrix3 b) {
-		return new Matrix3(
-				Matrix.ROW_MAJOR,
+		return new Matrix3().mSetRowMajor(
 				a.xx + b.xx, a.xy + b.xy, a.xz + b.xz,
 				a.yx + b.yx, a.yy + b.yy, a.yz + b.yz,
 				a.zx + b.zx, a.zy + b.zy, a.zz + b.zz
 				);
 	}
 	public static Matrix4 add(Matrix4 a, Matrix4 b) {
-		return new Matrix4(
-				Matrix.ROW_MAJOR,
+		return new Matrix4().mSetRowMajor(
 				a.xx + b.xx, a.xy + b.xy, a.xz + b.xz, a.xw + b.xw,
 				a.yx + b.yx, a.yy + b.yy, a.yz + b.yz, a.yw + b.yw,
 				a.zx + b.zx, a.zy + b.zy, a.zz + b.zz, a.zw + b.zw,
 				a.wx + b.wx, a.wy + b.wy, a.wz + b.wz, a.ww + b.ww
+				);
+	}
+	public static Matrix2.Mutable add(Matrix2.Mutable a, Matrix2 b) {
+		return a.setRowMajor(
+				a.xx + b.xx, a.xy + b.xy,
+				a.yx + b.yx, a.yy + b.yy
+				);
+	}
+	public static Matrix3.Mutable add(Matrix3.Mutable a, Matrix3 b) {
+		return a.setRowMajor(
+				a.xx + b.xx, a.xy + b.xy, a.xz + b.xz,
+				a.yx + b.yx, a.yy + b.yy, a.yz + b.yz,
+				a.zx + b.zx, a.zy + b.zy, a.zz + b.zz
+				);
+	}
+	public static Matrix4.Mutable add(Matrix4.Mutable a, Matrix4 b) {
+		return a.setRowMajor(
+				a.xx + b.xx, a.xy + b.xy, a.xz + b.xz, a.xw + b.xw,
+				a.yx + b.yx, a.yy + b.yy, a.yz + b.yz, a.yw + b.yw,
+				a.zx + b.zx, a.zy + b.zy, a.zz + b.zz, a.zw + b.zw,
+				a.wx + b.wx, a.wy + b.wy, a.wz + b.wz, a.ww + b.ww
+				);
+	}
+	
+	public static Matrix2 sub(Matrix2 a, Matrix2 b) {
+		return new Matrix2().mSetRowMajor(
+				a.xx - b.xx, a.xy - b.xy,
+				a.yx - b.yx, a.yy - b.yy
+				);
+	}
+	public static Matrix3 sub(Matrix3 a, Matrix3 b) {
+		return new Matrix3().mSetRowMajor(
+				a.xx - b.xx, a.xy - b.xy, a.xz - b.xz,
+				a.yx - b.yx, a.yy - b.yy, a.yz - b.yz,
+				a.zx - b.zx, a.zy - b.zy, a.zz - b.zz
+				);
+	}
+	public static Matrix4 sub(Matrix4 a, Matrix4 b) {
+		return new Matrix4().mSetRowMajor(
+				a.xx - b.xx, a.xy - b.xy, a.xz - b.xz, a.xw - b.xw,
+				a.yx - b.yx, a.yy - b.yy, a.yz - b.yz, a.yw - b.yw,
+				a.zx - b.zx, a.zy - b.zy, a.zz - b.zz, a.zw - b.zw,
+				a.wx - b.wx, a.wy - b.wy, a.wz - b.wz, a.ww - b.ww
+				);
+	}
+	public static Matrix2.Mutable sub(Matrix2.Mutable a, Matrix2 b) {
+		return a.setRowMajor(
+				a.xx - b.xx, a.xy - b.xy,
+				a.yx - b.yx, a.yy - b.yy
+				);
+	}
+	public static Matrix3.Mutable sub(Matrix3.Mutable a, Matrix3 b) {
+		return a.setRowMajor(
+				a.xx - b.xx, a.xy - b.xy, a.xz - b.xz,
+				a.yx - b.yx, a.yy - b.yy, a.yz - b.yz,
+				a.zx - b.zx, a.zy - b.zy, a.zz - b.zz
+				);
+	}
+	public static Matrix4.Mutable sub(Matrix4.Mutable a, Matrix4 b) {
+		return a.setRowMajor(
+				a.xx - b.xx, a.xy - b.xy, a.xz - b.xz, a.xw - b.xw,
+				a.yx - b.yx, a.yy - b.yy, a.yz - b.yz, a.yw - b.yw,
+				a.zx - b.zx, a.zy - b.zy, a.zz - b.zz, a.zw - b.zw,
+				a.wx - b.wx, a.wy - b.wy, a.wz - b.wz, a.ww - b.ww
+				);
+	}
+	
+	public static Matrix2 mul(Matrix2 a, Matrix2 b) {
+		return new Matrix2().mSetRowMajor(
+				Vector.dot(a.xx, a.xy, b.xx, b.yx), Vector.dot(a.xx, a.xy, b.xy, b.yy),
+				Vector.dot(a.yx, a.yy, b.xx, b.yx), Vector.dot(a.yx, a.yy, b.xy, b.yy)
+				);
+	}
+	public static Matrix3 mul(Matrix3 a, Matrix3 b) {
+		return new Matrix3().mSetRowMajor(
+				Vector.dot(a.xx, a.xy, a.xz, b.xx, b.yx, b.zx), Vector.dot(a.xx, a.xy, a.xz, b.xy, b.yy, b.zy), Vector.dot(a.xx, a.xy, a.xz, b.xz, b.yz, b.zz),
+				Vector.dot(a.yx, a.yy, a.yz, b.xx, b.yx, b.zx), Vector.dot(a.yx, a.yy, a.yz, b.xy, b.yy, b.zy), Vector.dot(a.yx, a.yy, a.yz, b.xz, b.yz, b.zz),
+				Vector.dot(a.zx, a.zy, a.zz, b.xx, b.yx, b.zx), Vector.dot(a.zx, a.zy, a.zz, b.xy, b.yy, b.zy), Vector.dot(a.zx, a.zy, a.zz, b.xz, b.yz, b.zz)
+				);
+	}
+	public static Matrix4 mul(Matrix4 a, Matrix4 b) {
+		return new Matrix4().mSetRowMajor(
+				Vector.dot(a.xx, a.xy, a.xz, a.xw, b.xx, b.yx, b.zx, b.wx), Vector.dot(a.xx, a.xy, a.xz, a.xw, b.xy, b.yy, b.zy, b.wy), Vector.dot(a.xx, a.xy, a.xz, a.xw, b.xz, b.yz, b.zz, b.wz), Vector.dot(a.xx, a.xy, a.xz, a.xw, b.xw, b.yw, b.zw, b.ww),
+				Vector.dot(a.yx, a.yy, a.yz, a.yw, b.xx, b.yx, b.zx, b.wx), Vector.dot(a.yx, a.yy, a.yz, a.yw, b.xy, b.yy, b.zy, b.wy), Vector.dot(a.yx, a.yy, a.yz, a.yw, b.xz, b.yz, b.zz, b.wz), Vector.dot(a.yx, a.yy, a.yz, a.yw, b.xw, b.yw, b.zw, b.ww),
+				Vector.dot(a.zx, a.zy, a.zz, a.zw, b.xx, b.yx, b.zx, b.wx), Vector.dot(a.zx, a.zy, a.zz, a.zw, b.xy, b.yy, b.zy, b.wy), Vector.dot(a.zx, a.zy, a.zz, a.zw, b.xz, b.yz, b.zz, b.wz), Vector.dot(a.zx, a.zy, a.zz, a.zw, b.xw, b.yw, b.zw, b.ww),
+				Vector.dot(a.wx, a.wy, a.wz, a.ww, b.xx, b.yx, b.zx, b.wx), Vector.dot(a.wx, a.wy, a.wz, a.ww, b.xy, b.yy, b.zy, b.wy), Vector.dot(a.wx, a.wy, a.wz, a.ww, b.xz, b.yz, b.zz, b.wz), Vector.dot(a.wx, a.wy, a.wz, a.ww, b.xw, b.yw, b.zw, b.ww)
+				);
+	}
+	public static Matrix2.Mutable mul(Matrix2.Mutable a, Matrix2 b) {
+		return a.setRowMajor(
+				Vector.dot(a.xx, a.xy, b.xx, b.yx), Vector.dot(a.xx, a.xy, b.xy, b.yy),
+				Vector.dot(a.yx, a.yy, b.xx, b.yx), Vector.dot(a.yx, a.yy, b.xy, b.yy)
+				);
+	}
+	public static Matrix3.Mutable mul(Matrix3.Mutable a, Matrix3 b) {
+		return a.setRowMajor(
+				Vector.dot(a.xx, a.xy, a.xz, b.xx, b.yx, b.zx), Vector.dot(a.xx, a.xy, a.xz, b.xy, b.yy, b.zy), Vector.dot(a.xx, a.xy, a.xz, b.xz, b.yz, b.zz),
+				Vector.dot(a.yx, a.yy, a.yz, b.xx, b.yx, b.zx), Vector.dot(a.yx, a.yy, a.yz, b.xy, b.yy, b.zy), Vector.dot(a.yx, a.yy, a.yz, b.xz, b.yz, b.zz),
+				Vector.dot(a.zx, a.zy, a.zz, b.xx, b.yx, b.zx), Vector.dot(a.zx, a.zy, a.zz, b.xy, b.yy, b.zy), Vector.dot(a.zx, a.zy, a.zz, b.xz, b.yz, b.zz)
+				);
+	}
+	public static Matrix4.Mutable mul(Matrix4.Mutable a, Matrix4 b) {
+		return a.setRowMajor(
+				Vector.dot(a.xx, a.xy, a.xz, a.xw, b.xx, b.yx, b.zx, b.wx), Vector.dot(a.xx, a.xy, a.xz, a.xw, b.xy, b.yy, b.zy, b.wy), Vector.dot(a.xx, a.xy, a.xz, a.xw, b.xz, b.yz, b.zz, b.wz), Vector.dot(a.xx, a.xy, a.xz, a.xw, b.xw, b.yw, b.zw, b.ww),
+				Vector.dot(a.yx, a.yy, a.yz, a.yw, b.xx, b.yx, b.zx, b.wx), Vector.dot(a.yx, a.yy, a.yz, a.yw, b.xy, b.yy, b.zy, b.wy), Vector.dot(a.yx, a.yy, a.yz, a.yw, b.xz, b.yz, b.zz, b.wz), Vector.dot(a.yx, a.yy, a.yz, a.yw, b.xw, b.yw, b.zw, b.ww),
+				Vector.dot(a.zx, a.zy, a.zz, a.zw, b.xx, b.yx, b.zx, b.wx), Vector.dot(a.zx, a.zy, a.zz, a.zw, b.xy, b.yy, b.zy, b.wy), Vector.dot(a.zx, a.zy, a.zz, a.zw, b.xz, b.yz, b.zz, b.wz), Vector.dot(a.zx, a.zy, a.zz, a.zw, b.xw, b.yw, b.zw, b.ww),
+				Vector.dot(a.wx, a.wy, a.wz, a.ww, b.xx, b.yx, b.zx, b.wx), Vector.dot(a.wx, a.wy, a.wz, a.ww, b.xy, b.yy, b.zy, b.wy), Vector.dot(a.wx, a.wy, a.wz, a.ww, b.xz, b.yz, b.zz, b.wz), Vector.dot(a.wx, a.wy, a.wz, a.ww, b.xw, b.yw, b.zw, b.ww)
 				);
 	}
 }

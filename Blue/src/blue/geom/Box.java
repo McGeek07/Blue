@@ -68,7 +68,7 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 					+ String.format(format, b2.v1.y) + ">";
 		}
 		
-		protected static final <B extends Box2> B fromString(B b2, String str) {
+		protected static final <B extends Box2> B parseBox2(B b2, String str) {
 			if(b2 == null)
 	            throw new IllegalArgumentException("Null Box");
 	        if (str == null)
@@ -143,7 +143,7 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 					+ String.format(format, b3.v1.z) + ">";
 		}
 		
-		protected static final <B extends Box3> B fromString(B b3, String str) {
+		protected static final <B extends Box3> B parseBox3(B b3, String str) {
 			if(b3 == null)
 	            throw new IllegalArgumentException("Null Box");
 	        if (str == null)

@@ -86,7 +86,7 @@ public class Region2 extends Box2 {
 	}
 	
 	public static Region2 fromString(String str) {
-		return Box2.fromString(new Region2(), str);
+		return Box2.parseBox2(new Region2(), str);
 	}
 	
 	public static class Mutable extends Region2 {
@@ -161,7 +161,7 @@ public class Region2 extends Box2 {
 		}
 		
 		public static Region2.Mutable fromString(String str) {
-			return Box2.fromString(new Region2.Mutable(), str);
+			return Box2.parseBox2(new Region2.Mutable(), str);
 		}
 	}
 }

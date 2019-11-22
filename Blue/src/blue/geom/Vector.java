@@ -171,6 +171,92 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 		return x1 * x2 + y1 * y2 + z1 * z2 + w1 * w2;
 	}
 	
+	public static Vector2 mul(Vector2 a, Vector2 b) {
+		return new Vector2(
+				a.x * b.x,
+				a.y * b.y
+				);
+	}
+	public static Vector3 mul(Vector3 a, Vector3 b) {
+		return new Vector3(
+				a.x * b.x,
+				a.y * b.y,
+				a.z * b.z
+				);
+	}
+	public static Vector4 mul(Vector4 a, Vector4 b) {
+		return new Vector4(
+				a.x * b.x,
+				a.y * b.y,
+				a.z * b.z,
+				a.w * b.w
+				);
+	}
+	public static Vector2.Mutable mul(Vector2.Mutable a, Vector2 b) {
+		return a.set(
+				a.x * b.x,
+				a.y * b.y
+				);
+	}
+	public static Vector3.Mutable mul(Vector3.Mutable a, Vector3 b) {
+		return a.set(
+				a.x * b.x,
+				a.y * b.y,
+				a.z * b.z
+				);
+	}
+	public static Vector4.Mutable mul(Vector4.Mutable a, Vector4 b) {
+		return a.set(
+				a.x * b.x,
+				a.y * b.y,
+				a.z * b.z,
+				a.w * b.w
+				);
+	}
+	
+	public static Vector2 div(Vector2 a, Vector2 b) {
+		return new Vector2(
+				a.x / b.x,
+				a.y / b.y
+				);
+	}
+	public static Vector3 div(Vector3 a, Vector3 b) {
+		return new Vector3(
+				a.x / b.x,
+				a.y / b.y,
+				a.z / b.z
+				);
+	}
+	public static Vector4 div(Vector4 a, Vector4 b) {
+		return new Vector4(
+				a.x / b.x,
+				a.y / b.y,
+				a.z / b.z,
+				a.w / b.w
+				);
+	}
+	public static Vector2.Mutable div(Vector2.Mutable a, Vector2 b) {
+		return a.set(
+				a.x / b.x,
+				a.y / b.y
+				);
+	}
+	public static Vector3.Mutable div(Vector3.Mutable a, Vector3 b) {
+		return a.set(
+				a.x / b.x,
+				a.y / b.y,
+				a.z / b.z
+				);
+	}
+	public static Vector4.Mutable div(Vector4.Mutable a, Vector4 b) {
+		return a.set(
+				a.x / b.x,
+				a.y / b.y,
+				a.z / b.z,
+				a.w / b.w
+				);
+	}
+	
 	public static Vector2 mul(Vector2 a, Matrix2 b) {
 		return new Vector2(
 				Vector.dot(a, b.xx, b.yx),
@@ -243,6 +329,16 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				Vector.dot(a, b.xw, b.yw, b.zw, b.ww)
 				);
 	}
+	
+	public static Vector2 transform(Vector2 a, Transform2 t) {
+		return Vector.mul(a, t.xform);
+	}
+	
+	public static Vector3 transform(Vector3 a, Transform3 t) {
+		return null;
+	}
+	
+	
 	
 	public static java.awt.Color toColor3i(Vector v) {
 		return new java.awt.Color((int)v.x(), (int)v.y(), (int)v.z(), 1f);
