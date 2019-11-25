@@ -332,14 +332,14 @@ public class Sprite implements Renderable, Updateable {
 		public static Frames fromName(String name) {
 			Frames frames = NAME_INDEX.get(name);
 			if(frames == null)
-				throw new IllegalArgumentException("No Atlas exists for name '" + name + "'");
+				throw new IllegalArgumentException("No Sprite.Atlas exists for name '" + name + "'");
 			return frames;
 		}
 		
 		public static Frames fromPath(String path) {
 			Frames frames = PATH_INDEX.get(path);
 			if(frames == null)
-				throw new IllegalArgumentException("No Atlas exists for path '" + path + "'");
+				throw new IllegalArgumentException("No Sprite.Atlas exists for path '" + path + "'");
 			return frames;
 		}
 	}

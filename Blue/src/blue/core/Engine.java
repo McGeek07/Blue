@@ -1,6 +1,8 @@
 package blue.core;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -29,6 +31,10 @@ public class Engine implements Runnable {
 		canvas_layout = Layout.DEFAULT;
 	protected boolean
 		debug = true;
+	protected String
+		debug_font_name = "Monospaced";
+	protected int
+		debug_font_size = 16;
 	protected float
 		engine_fps = 60,
 		engine_tps = 60;
@@ -53,6 +59,8 @@ public class Engine implements Runnable {
 	protected Color
 		foreground,
 		background;
+	protected Font
+		debug_font;
 	protected int
 		render_hz,
 		update_hz;
@@ -156,20 +164,23 @@ public class Engine implements Runnable {
 		INSTANCE.onBtnUp(btn);
 	}
 	
-	public void onInit() {
+	public void onInit() {		
 		canvas_background = cfg.get(Vector4::parseVector4, CANVAS_BACKGROUND, canvas_background);
 		canvas_foreground = cfg.get(Vector4::parseVector4, CANVAS_FOREGROUND, canvas_foreground);
 		canvas_layout = cfg.get(Layout::parseLayout, CANVAS_LAYOUT, canvas_layout);
 		debug         = cfg.getBoolean(DEBUG, debug);
+		debug_font_name = cfg.get       (DEBUG_FONT_NAME, debug_font_name);
+		debug_font_size = cfg.getInteger(DEBUG_FONT_SIZE, debug_font_size);
 		engine_fps    = cfg.getFloat(ENGINE_FPS, engine_fps);
 		engine_tps    = cfg.getFloat(ENGINE_TPS, engine_tps);
 		window_border = cfg.getBoolean(WINDOW_BORDER, window_border);
 		window_device = cfg.getInteger(WINDOW_DEVICE, window_device);
 		window_layout = cfg.get(Layout::parseLayout, WINDOW_LAYOUT, window_layout);
-		window_title  = cfg.get(WINDOW_TITLE, window_title);		
+		window_title  = cfg.get(WINDOW_TITLE, window_title);
 		
 		background = Vector.toColor4i(canvas_background);
 		foreground = Vector.toColor4i(canvas_foreground);
+		debug_font = new Font(debug_font_name, Font.PLAIN, debug_font_size);
 		
 		if(window_component != null)
 			window_component.dispose();
@@ -177,7 +188,7 @@ public class Engine implements Runnable {
 		window_component = new java.awt.Frame() ;
 		canvas_component = new java.awt.Canvas();
 		
-		window_component.add(canvas_component);
+		window_component.add(canvas_component);		
 		
 		Region2 a, b, c;
 		if(window_border)
@@ -195,6 +206,7 @@ public class Engine implements Runnable {
 				foreground_h
 				);
 		
+		window_component.setUndecorated(!window_border);
 		window_component.setBounds(
 				(int)b.x(), (int)b.y(),
 				(int)b.w(), (int)b.h()
@@ -214,7 +226,7 @@ public class Engine implements Runnable {
 		canvas_component.addKeyListener        (Input.INSTANCE);
 		canvas_component.addMouseListener      (Input.INSTANCE);
 		canvas_component.addMouseWheelListener (Input.INSTANCE);
-		canvas_component.addMouseMotionListener(Input.INSTANCE);		
+		canvas_component.addMouseMotionListener(Input.INSTANCE);
 		
 		window_component.setVisible(true);
 		canvas_component.requestFocus();
@@ -298,6 +310,46 @@ public class Engine implements Runnable {
 					null
 					);
 		render_context0.pop();
+		
+		if(debug) {
+			render_context0.push();
+			
+			render_context0.g.setFont(debug_font);
+			FontMetrics fm = render_context0.g.getFontMetrics();
+			
+			String[] debug_info = {
+						String.format("FPS: %1$d hz @ %2$.2f ms%n", render_hz, render_dt),
+						String.format("TPS: %1$d hz @ %2$.2f ms%n", update_hz, update_dt),
+						String.format("Canvas: %1$d x %2$d @ %3$.1f%%", foreground_w, foreground_h, canvas_scale * 100)
+					};
+			int
+				debug_info_w = 0,
+				debug_info_h = 0,
+				fm_h = fm.getAscent() + fm.getDescent() + fm.getLeading();
+			for(int i = 0; i < debug_info.length; i ++) {
+				int w = fm.stringWidth(debug_info[i]);
+				if(w > debug_info_w)
+					debug_info_w = w;
+				debug_info_h += fm_h;
+			}
+			debug_info_h += fm_h;
+			
+			int
+				x = 0,
+				y = 0;
+			
+			render_context0.color(Color.BLACK);
+			render_context0.rect(
+					0, 0,
+					debug_info_w,
+					debug_info_h,
+					true
+					);
+			render_context0.color(Color.WHITE);
+			for(int i = 0; i < debug_info.length; i ++)
+				render_context0.g.drawString(debug_info[i], x, y += fm_h);				
+			render_context0.pop();
+		}
 		
 		g0.dispose();
 		g1.dispose();
@@ -411,15 +463,12 @@ public class Engine implements Runnable {
 					render_count  = 0;
 					update_count  = 0;					
 					elapsed_nanos = 0;
-					
-					System.out.printf("FPS: %1$d hz @ %2$.2f ms%n", render_hz, render_dt);
-					System.out.printf("TPS: %1$d hz @ %2$.2f ms%n", update_hz, update_dt);
 				}
 				
 				long sync = Math.min(
 					render_fixed_nanos - render_nanos - render_lag_nanos,
 					update_fixed_nanos - update_nanos - update_lag_nanos
-					) / ONE_MILLIS - 1;
+					) / ONE_MILLIS;
 				if(sync > 0) Thread.sleep(1);
 			}
 		} catch(Exception ex) {
@@ -434,6 +483,8 @@ public class Engine implements Runnable {
 		CANVAS_FOREGROUND = "canvas-foreground",
 		CANVAS_LAYOUT = "canvas-layout",
 		DEBUG         = "debug",
+		DEBUG_FONT_NAME = "debug-font-name",
+		DEBUG_FONT_SIZE = "debug-font-size",		
 		ENGINE_FPS    = "engine-fps",
 		ENGINE_TPS    = "engine-tps",
 		WINDOW_BORDER = "window-border",

@@ -5,6 +5,7 @@ import blue.core.Input;
 import blue.core.Scene;
 import blue.game.Sprite;
 import blue.game.Sprite.Effect;
+import blue.geom.Layout;
 import blue.util.Version;
 
 public class Blue extends Scene {
@@ -12,11 +13,14 @@ public class Blue extends Scene {
 		serialVersionUID = 1L;
 	
 	public static final Version
-		VERSION = new Version("Blue", 0, 0, 18);
+		VERSION = new Version("Blue", 0, 0, 19);
 	
 	public static void main(String[] args) {
+		System.out.println(VERSION);
 		
-		Engine.getConfiguration().print(System.out);
+		Engine.getConfiguration().set(Engine.CANVAS_LAYOUT, Layout._640x480);
+		Engine.getConfiguration().set(Engine.WINDOW_BORDER, false);
+		
 		Sprite.load("Debug", "Debug.png", 16, 16);
 		
 		Engine.init();
@@ -62,6 +66,17 @@ public class Blue extends Scene {
 	@Override
 	public void onKeyDn(int key) {
 		switch(key) {
+			case Input.KEY_ESCAPE:
+				Engine.exit();
+				break;
+			case Input.KEY_1:
+				Engine.getConfiguration().set(Engine.WINDOW_DEVICE, 0);
+				Engine.init();
+				break;
+			case Input.KEY_2:
+				Engine.getConfiguration().set(Engine.WINDOW_DEVICE, 1);
+				Engine.init();
+				break;
 			case Input.KEY_UP_ARROW:
 				effect.setAlpha(effect.getAlpha() + .1f);
 				break;
