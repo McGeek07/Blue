@@ -8,17 +8,29 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import blue.core.Event.Broker;
+import blue.core.Event.Handle;
+import blue.core.Event.Listener;
 import blue.geom.Vector2;
 
 public final class Input implements KeyListener, MouseListener, MouseWheelListener, MouseMotionListener {
 	protected static final Input
 		INSTANCE = new Input();
+	public static final Class<KeyAction>
+		KEY_ACTION = KeyAction.class;
+	public static final Class<BtnAction>
+		BTN_ACTION = BtnAction.class;
 	public static final byte
 		UP = 0, UP_ACTION = 1,
 		DN = 2, DN_ACTION = 3;	
 	public static final int
 		NUM_KEYS = 128,
 		NUM_BTNS = 25;
+	
+	protected final Handle
+		handle;
+	protected final Broker
+		broker;
 
 	protected final Vector2.Mutable
 		mouse_buffer = new Vector2.Mutable(),
@@ -34,7 +46,43 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		btns = new byte[NUM_BTNS];
 	
 	private Input() {
-		//do nothing
+		this.handle = new Handle();
+		this.broker = new Broker();
+		this.broker.add(this.handle);
+		
+		Event.attach(this.broker);
+	}
+	
+	public static <T extends Action> void attach(Class<T> type, Listener<T> listener) {
+		INSTANCE.handle.attach(type, listener);
+	}
+	
+	public static <T extends Action> void detach(Class<T> type, Listener<T> listener) {
+		INSTANCE.handle.detach(type, listener);
+	}
+	
+	public static void attach(Handle handle) {
+		INSTANCE.broker.attach(handle);
+	}
+	
+	public static void detach(Handle handle) {
+		INSTANCE.broker.detach(handle);
+	}
+	
+	public static void attach(Broker broker) {
+		INSTANCE.broker.attach(broker);
+	}
+	
+	public static void detach(Broker broker) {
+		INSTANCE.broker.detach(broker);
+	}
+	
+	public static <T extends Action> void queue(T action) {
+		INSTANCE.broker.queue(action);
+	}
+	
+	public static <T extends Action> void flush(T action) {
+		INSTANCE.broker.flush(action);
 	}
 	
 	public static void poll() {
@@ -71,7 +119,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 				case Input.UP: case Input.UP_ACTION:
 					keys[i] = Input.DN_ACTION;
 					//event
-					Event.queue(new KeyAction(DN_ACTION, i));
+					queue(new KeyAction(DN_ACTION, i));
 					Engine.keyDn(i);
 					break;
 				case Input.DN: case Input.DN_ACTION:
@@ -86,7 +134,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 				case Input.DN: case Input.DN_ACTION:
 					keys[i] = Input.UP_ACTION;
 					//event
-					Event.queue(new KeyAction(UP_ACTION, i));
+					queue(new KeyAction(UP_ACTION, i));
 					Engine.keyUp(i);
 					break;
 			}
@@ -100,7 +148,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 				case Input.UP: case Input.UP_ACTION:
 					btns[i] = Input.DN_ACTION;
 					//event
-					Event.queue(new BtnAction(DN_ACTION, i));
+					queue(new BtnAction(DN_ACTION, i));
 					Engine.btnDn(i);
 					break;
 				case Input.DN: case Input.DN_ACTION:
@@ -115,7 +163,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 				case Input.DN: case Input.DN_ACTION:
 					btns[i] = Input.UP_ACTION;
 					//event
-					Event.queue(new BtnAction(UP_ACTION, i));
+					queue(new BtnAction(UP_ACTION, i));
 					Engine.btnUp(i);
 					break;
 			}
@@ -212,9 +260,9 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 			case KeyEvent.VK_Z: key_buffer[KEY_Z] = true; break;
 			
 			case KeyEvent.VK_OPEN_BRACKET : key_buffer[KEY_L_BRACKET] = true; break; 
-			case KeyEvent.VK_BACK_SLASH   : key_buffer[KEY_SLASH    ] = true; break; 
+			case KeyEvent.VK_BACK_SLASH   : key_buffer[KEY_BSLASH   ] = true; break; 
 			case KeyEvent.VK_CLOSE_BRACKET: key_buffer[KEY_R_BRACKET] = true; break; 
-			case KeyEvent.VK_BACK_QUOTE   : key_buffer[KEY_QUOTE    ] = true; break;
+			case KeyEvent.VK_BACK_QUOTE   : key_buffer[KEY_BQUOTE   ] = true; break;
 					
 			case KeyEvent.VK_NUMPAD0: key_buffer[KEY_NUMPAD_0] = true; break;
 			case KeyEvent.VK_NUMPAD1: key_buffer[KEY_NUMPAD_1] = true; break;
@@ -326,9 +374,9 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 			case KeyEvent.VK_Z: key_buffer[KEY_Z] = false; break;
 			
 			case KeyEvent.VK_OPEN_BRACKET : key_buffer[KEY_L_BRACKET] = false; break; 
-			case KeyEvent.VK_BACK_SLASH   : key_buffer[KEY_SLASH    ] = false; break; 
+			case KeyEvent.VK_BACK_SLASH   : key_buffer[KEY_BSLASH   ] = false; break; 
 			case KeyEvent.VK_CLOSE_BRACKET: key_buffer[KEY_R_BRACKET] = false; break; 
-			case KeyEvent.VK_BACK_QUOTE   : key_buffer[KEY_QUOTE    ] = false; break;
+			case KeyEvent.VK_BACK_QUOTE   : key_buffer[KEY_BQUOTE   ] = false; break;
 					
 			case KeyEvent.VK_NUMPAD0: key_buffer[KEY_NUMPAD_0] = false; break;
 			case KeyEvent.VK_NUMPAD1: key_buffer[KEY_NUMPAD_1] = false; break;
@@ -392,18 +440,18 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		mouse_buffer.set(
+		mouse_buffer.set(Engine.screenToCanvas(
 				e.getX(),
 				e.getY()
-				);
+				));
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		mouse_buffer.set(
+		mouse_buffer.set(Engine.screenToCanvas(
 				e.getX(),
 				e.getY()
-				);
+				));
 	}
 	
 	public static Vector2 getMouse() {
@@ -506,7 +554,11 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		public KeyAction(byte type, int key) {
 			super(type);
 			this.key = key;
-		}		
+		}
+		
+		public boolean isKey(int key) {
+			return this.key == key;
+		}
 	}
 	
 	public static class BtnAction extends Action {
@@ -516,6 +568,10 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		public BtnAction(byte type, int btn) {
 			super(type);
 			this.btn = btn;
+		}
+		
+		public boolean isBtn(int btn) {
+			return this.btn == btn;
 		}
 	}
 	

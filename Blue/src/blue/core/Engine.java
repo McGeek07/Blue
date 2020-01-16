@@ -4,10 +4,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
-import java.awt.image.VolatileImage;
+import java.awt.image.BufferedImage;
 
 import blue.Blue;
 import blue.core.Renderable.RenderContext;
@@ -30,11 +31,11 @@ public class Engine implements Runnable {
 	protected Layout
 		canvas_layout = Layout.DEFAULT;
 	protected boolean
-		debug = true;
+		debug = false;
 	protected String
 		debug_font_name = "Monospaced";
 	protected int
-		debug_font_size = 16;
+		debug_font_size = 14;
 	protected float
 		engine_fps = 60,
 		engine_tps = 60;
@@ -87,7 +88,7 @@ public class Engine implements Runnable {
 		window_component;
 	protected java.awt.Canvas
 		canvas_component;
-	protected VolatileImage
+	protected BufferedImage
 		canvas;
 	
 	protected final RenderContext
@@ -196,21 +197,12 @@ public class Engine implements Runnable {
 		else
 			a = Util.computeMaximumScreenRegion(window_device);
 		b = window_layout.region(a);
-		c = canvas_layout.region(b);		
-		
-		foreground_w = (int)c.w();
-		foreground_h = (int)c.h();
-		canvas = Util.createVolatileImage(
-				window_device,
-				foreground_w,
-				foreground_h
-				);
 		
 		window_component.setUndecorated(!window_border);
 		window_component.setBounds(
 				(int)b.x(), (int)b.y(),
 				(int)b.w(), (int)b.h()
-				);
+				);		
 		window_component.setTitle(window_title);
 		
 		window_component.addWindowListener(new WindowAdapter() {
@@ -219,6 +211,21 @@ public class Engine implements Runnable {
 				Engine.exit();
 			}
 		});
+		window_component.setVisible(true);
+		
+		Insets insets = window_component.getInsets();
+		b = new Region2(
+			Vector.add(b.loc(), insets.left               , insets.top                ),
+			Vector.sub(b.dim(), insets.left + insets.right, insets.top + insets.bottom)
+		);		 
+		c = canvas_layout.region(b);
+		foreground_w = (int)c.w();
+		foreground_h = (int)c.h();
+		canvas = Util.createBufferedImage(
+				window_device,
+				foreground_w,
+				foreground_h
+				);
 		
 		canvas_component.setFocusable(true);
 		canvas_component.setFocusTraversalKeysEnabled(false);
@@ -228,7 +235,6 @@ public class Engine implements Runnable {
 		canvas_component.addMouseWheelListener (Input.INSTANCE);
 		canvas_component.addMouseMotionListener(Input.INSTANCE);
 		
-		window_component.setVisible(true);
 		canvas_component.requestFocus();
 		
 		if(scene != null)
@@ -476,6 +482,26 @@ public class Engine implements Runnable {
 		} finally {
 			onExit();
 		}
+	}
+	
+	public static final Vector2 screenToCanvas(Vector2 p) {
+		return screenToCanvas(p.x(), p.y());
+	}
+	
+	public static final Vector2 screenToCanvas(float x, float y) {
+		x = (x - INSTANCE.background_w / 2) / INSTANCE.canvas_scale + INSTANCE.foreground_w / 2;
+		y = (y - INSTANCE.background_h / 2) / INSTANCE.canvas_scale + INSTANCE.foreground_h / 2;
+		return new Vector2(x, y);
+	}
+	
+	public static Vector2 canvasToScreen(Vector2 p) {
+		return canvasToScreen(p.x(), p.y());
+	}
+	
+	public static Vector2 canvasToScreen(float x, float y) {
+		x = (x - INSTANCE.foreground_w / 2) * INSTANCE.canvas_scale + INSTANCE.background_w / 2;
+		y = (y - INSTANCE.foreground_h / 2) * INSTANCE.canvas_scale + INSTANCE.background_h / 2;
+		return new Vector2(x, y);
 	}
 	
 	public static final String

@@ -86,6 +86,45 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 		a.w += b.w;
 		return a;
 	}
+	public static Vector2 add(Vector2 a, float x, float y) {
+		return new Vector2(
+				a.x + x,
+				a.y + y
+				);
+	}
+	public static Vector3 add(Vector3 a, float x, float y, float z) {
+		return new Vector3(
+				a.x + x,
+				a.y + y,
+				a.z + z
+				);
+	}	
+	public static Vector4 add(Vector4 a, float x, float y, float z, float w) {
+		return new Vector4(
+				a.x + x,
+				a.y + y,
+				a.z + z,
+				a.w + w
+				);
+	}	
+	public static Vector2.Mutable add(Vector2.Mutable a, float x, float y) {
+		a.x += x;
+		a.y += y;
+		return a;
+	}
+	public static Vector3.Mutable add(Vector3.Mutable a, float x, float y, float z) {
+		a.x += x;
+		a.y += y;
+		a.z += z;
+		return a;
+	}
+	public static Vector4.Mutable add(Vector4.Mutable a, float x, float y, float z, float w) {
+		a.x += x;
+		a.y += y;
+		a.z += z;
+		a.w += w;
+		return a;
+	}
 	
 	public static Vector2 sub(Vector2 a, Vector2 b) {
 		return new Vector2(
@@ -124,6 +163,45 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 		a.y -= b.y;
 		a.z -= b.z;
 		a.w -= b.w;
+		return a;
+	}
+	public static Vector2 sub(Vector2 a, float x, float y) {
+		return new Vector2(
+				a.x - x,
+				a.y - y
+				);
+	}
+	public static Vector3 sub(Vector3 a, float x, float y, float z) {
+		return new Vector3(
+				a.x - x,
+				a.y - y,
+				a.z - z
+				);
+	}	
+	public static Vector4 sub(Vector4 a, float x, float y, float z, float w) {
+		return new Vector4(
+				a.x - x,
+				a.y - y,
+				a.z - z,
+				a.w - w
+				);
+	}	
+	public static Vector2.Mutable sub(Vector2.Mutable a, float x, float y) {
+		a.x -= x;
+		a.y -= y;
+		return a;
+	}
+	public static Vector3.Mutable sub(Vector3.Mutable a, float x, float y, float z) {
+		a.x -= x;
+		a.y -= y;
+		a.z -= z;
+		return a;
+	}
+	public static Vector4.Mutable sub(Vector4.Mutable a, float x, float y, float z, float w) {
+		a.x -= x;
+		a.y -= y;
+		a.z -= z;
+		a.w -= w;
 		return a;
 	}
 	

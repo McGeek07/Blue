@@ -33,6 +33,7 @@ public class Scene implements Serializable, Renderable, Updateable {
 		try {
 			out.defaultWriteObject();
 		} catch (Exception ex) {
+			System.err.println("[ERROR] Scene.onSave()");
 			ex.printStackTrace();
 		} 
 	}
@@ -41,6 +42,7 @@ public class Scene implements Serializable, Renderable, Updateable {
 		try {
 			in .defaultReadObject();
 		} catch (Exception ex) {
+			System.err.println("[ERROR] Scene.onLoad()");
 			ex.printStackTrace();
 		}
 	}

@@ -5,6 +5,7 @@ import java.awt.Composite;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
@@ -12,6 +13,7 @@ import javax.imageio.ImageIO;
 import blue.core.Renderable;
 import blue.core.Updateable;
 import blue.geom.Region2;
+import blue.geom.Vector;
 
 public class Sprite implements Renderable, Updateable {
 	public static final int
@@ -22,9 +24,9 @@ public class Sprite implements Renderable, Updateable {
 	protected Frames
 		frames;
 	protected Effect
-		effect;	
+		effect;
 	protected BufferedImage[]
-		images;
+		_frames;
 	
 	protected float
 		frame = 0f,
@@ -42,37 +44,38 @@ public class Sprite implements Renderable, Updateable {
 	public final Region2.Mutable
 		bounds = new Region2.Mutable();
 	
-	public Sprite(
+	public Sprite(			
 			Frames frames,
 			Effect effect
 			) {
 		this.frames = frames;
 		this.effect = effect;
 		
-		this.images = frames.filter(effect);
-		
 		this.bounds.set(
 				0, 0,
 				frames.frame_w,
 				frames.frame_h
 				);
+		
+		this._frames = this.frames != null ? this.frames.filter(this.effect) : null;
 	}
 	
 	public void setFrames(Frames frames) {
 		this.frames = frames;
 		
-		this.images = this.frames != null ? this.frames.filter(effect) : null;
+		this._frames = this.frames != null ? this.frames.filter(this.effect) : null;
 	}
 	
-	public void setEffect(Effect effect) {
+	public void setEffect(Effect effect) {		
 		this.effect = effect;
 		
-		this.images = this.frames != null ? this.frames.filter(effect) : null;
+		this._frames = this.frames != null ? this.frames.filter(this.effect) : null;
 	}
 	
 	public Frames getFrames() {
 		return this.frames;
 	}
+	
 	public Effect getEffect() {
 		return this.effect;
 	}
@@ -150,6 +153,19 @@ public class Sprite implements Renderable, Updateable {
 	public boolean isFlopped() {
 		return this.flop;
 	}
+	
+	public void center(float x, float y) {
+		float
+			w2 = bounds.w() / 2,
+			h2 = bounds.h() / 2;
+		bounds.loc().set(
+				x - w2,
+				y - h2
+				);
+	}
+	public void center(Vector v) {
+		this.center(v.x(), v.y());
+	}
 
 	@Override
 	public void onRender(RenderContext context) {
@@ -179,7 +195,7 @@ public class Sprite implements Renderable, Updateable {
 				
 				context.g.setComposite(alpha_composite);
 				context.g.drawImage(
-						images[(int)frame],
+						_frames[(int)frame],
 						x1, y1,
 						x2, y2,
 						0 , 0 ,
@@ -191,7 +207,7 @@ public class Sprite implements Renderable, Updateable {
 				context.pop();
 			} else
 				context.g.drawImage(
-						images[(int)frame],
+						_frames[(int)frame],
 						x1, y1,
 						x2, y2,
 						0 , 0 ,
@@ -208,44 +224,51 @@ public class Sprite implements Renderable, Updateable {
 			frame += speed * context.dt;
 			switch(mode) {
 				case PLAY: 
-					if(frame <  0f           ) stop(0f               );
-					if(frame >= images.length) stop(images.length - 1);
+					if(frame <  0f            ) stop(0f                );
+					if(frame >= _frames.length) stop(_frames.length - 1);
 					break;
 				case LOOP:
-					if(frame <  0f           ) frame += images.length;
-					if(frame >= images.length) frame -= images.length;
+					while(frame <  0f            ) frame += _frames.length;
+					while(frame >= _frames.length) frame -= _frames.length;
 			}
 		}
 	}
 	
 	public Sprite filter(Effect effect) {
 		return new Sprite(
-				frames ,
+				frames,
 				effect
 				);
 	}
 	
 	public static void load(String name, String path, int frame_w, int frame_h) {
 		try {
-			new Frames(name, path, frame_w, frame_h);
+			Frames.load(name, path, frame_w, frame_h);
 		} catch (Exception ex) {
-			System.err.println("Failed to load Sprite");
+			System.err.println("[ERROR] Sprite.load(" + name + ", " + path + ", " + frame_w + ", " + frame_h + ")");
 			ex.printStackTrace();
 		}
 	}
 	
-	public static Sprite fromName(String name, Effect effect) {
-		return new Sprite(Frames.fromName(name), effect);
+	public static Sprite fromName(String name, Effect paint) {
+		return new Sprite(Frames.getByName(name), paint);
 	}
 	
-	public static Sprite fromPath(String path, Effect effect) {
-		return new Sprite(Frames.fromName(path), effect);
+	public static Sprite fromPath(String path, Effect paint) {
+		return new Sprite(Frames.getByPath(path), paint);
 	}
 	
-	public static class Frames {		
+	public static class Frames implements Serializable {
+		private static final long 
+			serialVersionUID = 1L;
 		private static final HashMap<String, Frames>
 			NAME_INDEX = new HashMap<String, Frames>(),
 			PATH_INDEX = new HashMap<String, Frames>();
+		private static int
+			HASH = 0;
+		
+		public final int
+			hash = HASH ++;
 		public final String
 			name,
 			path;
@@ -263,18 +286,13 @@ public class Sprite implements Renderable, Updateable {
 		public Frames(
 				String name,
 				String path,
+				BufferedImage atlas,
 				int frame_w,
 				int frame_h
-				) throws IOException {
-			if(NAME_INDEX.containsKey(name))
-				throw new IllegalArgumentException("Duplicate name '" + name + "'");
-			if(PATH_INDEX.containsKey(name))
-				throw new IllegalArgumentException("Duplicate path '" + path + "'");
-			
-			this.atlas = ImageIO.read(new File(path));
-			
+				) {			
 			this.name = name;
 			this.path = path;
+			this.atlas = atlas;
 			this.frame_w = frame_w;
 			this.frame_h = frame_h;
 			this.atlas_w = atlas.getWidth() ;
@@ -294,15 +312,12 @@ public class Sprite implements Renderable, Updateable {
 							);
 			 
 			cached.put(null, frames);
-			
-			NAME_INDEX.put(name, this);
-			PATH_INDEX.put(path, this);
 		}
 		
 		public BufferedImage[] filter(Effect effect) {
 			BufferedImage[]
 					sprite_frames = cached.get(null  ),
-					effect_frames = cached.get(effect);	
+					effect_frames = cached.get(effect);
 			if(effect_frames == null) {
 				effect_frames = new BufferedImage[sprite_frames.length];
 				for(int i = 0; i < sprite_frames.length; i ++) {
@@ -329,18 +344,41 @@ public class Sprite implements Renderable, Updateable {
 			return effect_frames;
 		}
 		
-		public static Frames fromName(String name) {
-			Frames frames = NAME_INDEX.get(name);
-			if(frames == null)
-				throw new IllegalArgumentException("No Sprite.Atlas exists for name '" + name + "'");
-			return frames;
+		public static Frames getByName(String name) {
+			Frames atlas = NAME_INDEX.get(name);
+			if(atlas == null)
+				throw new IllegalArgumentException("A Sprite.Atlas with name '" + name + "' does not exist");
+			return atlas;
 		}
 		
-		public static Frames fromPath(String path) {
-			Frames frames = PATH_INDEX.get(path);
-			if(frames == null)
-				throw new IllegalArgumentException("No Sprite.Atlas exists for path '" + path + "'");
-			return frames;
+		public static Frames getByPath(String path) {
+			Frames atlas = PATH_INDEX.get(path);
+			if(atlas == null)
+				throw new IllegalArgumentException("A Sprite.Atlas with path '" + path + "' does not exist");
+			return atlas;
+		}
+		
+		public static Frames load(String name, String path, int frame_w, int frame_h) throws IOException {
+			if(NAME_INDEX.containsKey(name))
+				throw new IllegalArgumentException("A Sprite.Atlas with name '" + name + "' already exists.");
+			if(PATH_INDEX.containsKey(name))
+				throw new IllegalArgumentException("A Sprite.Atlas with path '" + path + "' already exists.");
+			
+			BufferedImage 
+				image = ImageIO.read(new File(path));			
+			Frames 
+				atlas = new Frames(
+					name,
+					path,
+					image,
+					frame_w,
+					frame_h
+					);
+			
+			NAME_INDEX.put(name, atlas);
+			PATH_INDEX.put(path, atlas);
+			
+			return atlas;
 		}
 	}
 	

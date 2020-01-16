@@ -2,6 +2,7 @@ package blue.core;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import blue.util.Util;
@@ -60,7 +61,7 @@ public class Event {
 	public static interface Listener<T> {
 		public void handle(T event);
 		
-		public static class Group<T> {
+		public static class Group<T> implements Iterable<Listener<T>> {
 			protected final HashSet<Listener<T>>
 				listeners = new HashSet<>(),
 				attach = new HashSet<>(),
@@ -97,7 +98,12 @@ public class Event {
 			public void flush(T event) {
 				for(Listener<T> listener : listeners)
 					listener.handle(event);			
-			}			
+			}
+
+			@Override
+			public Iterator<Listener<T>> iterator() {
+				return listeners.iterator();
+			}
 		}
 	}
 	
@@ -147,7 +153,7 @@ public class Event {
 			getListeners(Util.typeOf(event)).flush(event);
 		}
 		
-		public static class Group {
+		public static class Group implements Iterable<Handle> {
 			protected final HashSet<Handle>
 				handles = new HashSet<>(),
 				attach = new HashSet<>(),
@@ -188,6 +194,11 @@ public class Event {
 			public <T> void flush(T event) {
 				for(Handle handle: handles)
 					handle.flush(event);
+			}
+
+			@Override
+			public Iterator<Handle> iterator() {
+				return handles.iterator();
 			}
 		}
 	}
@@ -263,6 +274,8 @@ public class Event {
 					flush(event);
 				events2.clear();
 			}
+			for(Broker broker: brokers)
+				broker.flush();
 		}
 		
 		public void poll() {
@@ -271,7 +284,7 @@ public class Event {
 			flush();
 		}
 		
-		public static class Group {
+		public static class Group implements Iterable<Broker> {
 			protected final HashSet<Broker>
 				brokers = new HashSet<>(),
 				attach = new HashSet<>(),
@@ -313,12 +326,17 @@ public class Event {
 				for(Broker broker: brokers)
 					broker.flush(event);
 			}
+
+			@Override
+			public Iterator<Broker> iterator() {
+				return brokers.iterator();
+			}
 		}
 	}
 	
 	public static class MonoHandle<T> extends Listener.Group<T> {
 		
-		public static class Group<T> {
+		public static class Group<T> implements Iterable<MonoHandle<T>> {
 			protected final HashSet<MonoHandle<T>>
 				handles = new HashSet<>(),
 				attach = new HashSet<>(),
@@ -359,6 +377,11 @@ public class Event {
 			public void flush(T event) {
 				for(MonoHandle<T> handle: handles)
 					handle.flush(event);
+			}
+
+			@Override
+			public Iterator<MonoHandle<T>> iterator() {
+				return handles.iterator();
 			}
 		}
 	}
@@ -407,7 +430,7 @@ public class Event {
 		
 		public void attach() {
 			handles.attach();
-			brokers   .attach();
+			brokers.attach();
 		}
 		
 		public void detach() {
@@ -434,6 +457,8 @@ public class Event {
 					flush(event);			
 				events2.clear();
 			}
+			for(MonoBroker<T> broker: brokers)
+				broker.flush();
 		}
 		
 		public void poll() {
@@ -442,7 +467,7 @@ public class Event {
 			flush();
 		}
 		
-		public static class Group<T> {
+		public static class Group<T> implements Iterable<MonoBroker<T>> {
 			protected final HashSet<MonoBroker<T>>
 				brokers = new HashSet<>(),
 				attach = new HashSet<>(),
@@ -483,6 +508,11 @@ public class Event {
 			public void flush(T event) {
 				for(MonoBroker<T> broker: brokers)
 					broker.flush(event);
+			}
+
+			@Override
+			public Iterator<MonoBroker<T>> iterator() {
+				return brokers.iterator();
 			}
 		}
 	}

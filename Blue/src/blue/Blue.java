@@ -13,13 +13,13 @@ public class Blue extends Scene {
 		serialVersionUID = 1L;
 	
 	public static final Version
-		VERSION = new Version("Blue", 0, 0, 19);
+		VERSION = new Version("Blue", 0, 0, 21);
 	
 	public static void main(String[] args) {
 		System.out.println(VERSION);
 		
-		Engine.getConfiguration().set(Engine.CANVAS_LAYOUT, Layout._640x480);
-		Engine.getConfiguration().set(Engine.WINDOW_BORDER, false);
+		Engine.getConfiguration().set(Engine.WINDOW_BORDER, true);
+		Engine.getConfiguration().set(Engine.DEBUG, true);
 		
 		Sprite.load("Debug", "Debug.png", 16, 16);
 		
@@ -39,8 +39,8 @@ public class Blue extends Scene {
 		
 		effect.setAlpha(0f);
 		
-		sprite.loop(3f);
-		effect.loop(3f);
+		sprite.loop(180f);
+		//effect.loop(3f);
 	}
 	
 	@Override
@@ -82,6 +82,11 @@ public class Blue extends Scene {
 				break;
 			case Input.KEY_DN_ARROW:
 				effect.setAlpha(effect.getAlpha() - .1f);
+				break;
+			case Input.KEY_BQUOTE:
+				boolean debug = Engine.getConfiguration().getBoolean(Engine.DEBUG);
+				Engine.getConfiguration().set(Engine.DEBUG, !debug);
+				Engine.init();
 				break;
 		}
 	}

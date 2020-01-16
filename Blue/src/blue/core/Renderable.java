@@ -104,6 +104,15 @@ public interface Renderable {
 						(int)s
 						);					
 		}
+		public void pixel(float x, float y) {
+			g.fillRect(
+					(int)x,
+					(int)y,
+					1, 
+					1
+					);
+		}
+		
 		public void rect(Box<?> box, boolean fill) {
 			rect(box.x(), box.y(), box.w(), box.h(), fill);
 		}		
@@ -115,6 +124,30 @@ public interface Renderable {
 		}		
 		public void circle(Vector p, float r, boolean fill) {
 			circle(p.x(), p.y(), r, fill);
+		}
+		public void pixel(Vector p) {
+			pixel(p.x(), p.y());
+		}
+		
+		public void translate(float tx, float ty) {
+			g.translate(tx, ty);
+		}
+		public void scale(float sx, float sy) {
+			g.scale(sx, sy);
+		}		
+		
+		public void translate(Vector t) {
+			translate(t.x(), t.y());
+		}
+		public void scale(Vector s) {
+			scale(s.x(), s.y());
+		}
+		
+		public void rotate(float angle, boolean degrees) {
+			if(degrees)
+				g.rotate(Math.toRadians(angle));
+			else
+				g.rotate(               angle );
 		}
 		
 		private final LinkedList<RenderContext>
@@ -144,6 +177,11 @@ public interface Renderable {
 			this.fixed_dt = copy.fixed_dt;
 			this.canvas_w = copy.canvas_w;
 			this.canvas_h = copy.canvas_h;
+		}
+		
+		public static enum Angle {
+			DEGREES,
+			RADIANS
 		}
 	}
 }	
