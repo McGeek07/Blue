@@ -540,9 +540,6 @@ public class Engine implements Runnable {
 		WINDOW_LAYOUT = "window-layout",
 		WINDOW_TITLE  = "window-title";
 	
-	private static class InitEvent { }
-	private static class ExitEvent { }
-	
 	private static class SceneEvent {
 		public final Scene
 			scene;
