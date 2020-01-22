@@ -2,6 +2,7 @@ package blue.core;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.LinkedList;
 
@@ -24,6 +25,10 @@ public interface Renderable {
 		
 		protected RenderContext() {
 			//do nothing
+		}
+		
+		public void render(Renderable renderable) {
+			renderable.onRender(this);
 		}
 		
 		public void stroke(float w) {
@@ -129,25 +134,46 @@ public interface Renderable {
 			pixel(p.x(), p.y());
 		}
 		
-		public void translate(float tx, float ty) {
+		public void mov(float tx, float ty) {
 			g.translate(tx, ty);
 		}
-		public void scale(float sx, float sy) {
+		public void sca(float sx, float sy) {
 			g.scale(sx, sy);
 		}		
 		
-		public void translate(Vector t) {
-			translate(t.x(), t.y());
+		public void mov(Vector t) {
+			mov(t.x(), t.y());
 		}
-		public void scale(Vector s) {
-			scale(s.x(), s.y());
+		public void sca(Vector s) {
+			sca(s.x(), s.y());
 		}
 		
-		public void rotate(float angle, boolean degrees) {
+		public void rot(float angle, boolean degrees) {
 			if(degrees)
 				g.rotate(Math.toRadians(angle));
 			else
 				g.rotate(               angle );
+		}
+		
+		public void text(String text, float x, float y) {
+			g.drawString(text, x, y);
+		}		
+		public void text(String text, Vector p) {
+			text(text, p.x(), p.y());
+		}
+		public void text(String text) {
+			text(text, 0f, 0f);
+		}
+		
+		public void font(Font font) {
+			g.setFont(font);
+		}		
+		public void font(
+				String font_name, 
+				int    font_type,
+				int    font_size
+				) {
+			font(new Font(font_name, font_type, font_size));
 		}
 		
 		private final LinkedList<RenderContext>

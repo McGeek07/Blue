@@ -435,7 +435,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		wheel_buffer = e.getWheelRotation();
+		wheel_buffer += e.getWheelRotation();
 	}
 
 	@Override

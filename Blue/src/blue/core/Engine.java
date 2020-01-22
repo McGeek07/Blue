@@ -97,8 +97,14 @@ public class Engine implements Runnable {
 	protected final UpdateContext
 		update_context = new UpdateContext();
 	
-	private Engine() {
-		//do nothing
+	private Engine() {		
+		Event.attach(SceneEvent.class, (event) -> {
+			if(INSTANCE.scene != null)
+				INSTANCE.scene.onDetach();
+			INSTANCE.scene = event.scene;
+			if(INSTANCE.scene != null)
+				INSTANCE.scene.onAttach();
+		});
 	}
 	
 	public static synchronized void loop() {
@@ -133,12 +139,48 @@ public class Engine implements Runnable {
 		return INSTANCE.cfg;
 	}
 	
+	public static int background_w() {
+		return INSTANCE.background_w;
+	}
+	
+	public static int background_h() {
+		return INSTANCE.background_w;
+	}
+	
+	public static int foreground_w() {
+		return INSTANCE.foreground_w;
+	}
+	
+	public static int foreground_h() {
+		return INSTANCE.foreground_h;
+	}
+	
+	public static float canvas_scale() {
+		return INSTANCE.canvas_scale;
+	}
+	
+	public static final Vector2 screenToCanvas(Vector2 p) {
+		return screenToCanvas(p.x(), p.y());
+	}
+	
+	public static final Vector2 screenToCanvas(float x, float y) {
+		x = (x - INSTANCE.background_w / 2) / INSTANCE.canvas_scale + INSTANCE.foreground_w / 2;
+		y = (y - INSTANCE.background_h / 2) / INSTANCE.canvas_scale + INSTANCE.foreground_h / 2;
+		return new Vector2(x, y);
+	}
+	
+	public static Vector2 canvasToScreen(Vector2 p) {
+		return canvasToScreen(p.x(), p.y());
+	}
+	
+	public static Vector2 canvasToScreen(float x, float y) {
+		x = (x - INSTANCE.foreground_w / 2) * INSTANCE.canvas_scale + INSTANCE.background_w / 2;
+		y = (y - INSTANCE.foreground_h / 2) * INSTANCE.canvas_scale + INSTANCE.background_h / 2;
+		return new Vector2(x, y);
+	}
+	
 	public static void setScene(Scene scene) {
-		if(INSTANCE.scene != null)
-			INSTANCE.scene.onDetach();
-		INSTANCE.scene = scene;
-		if(INSTANCE.scene != null)
-			INSTANCE.scene.onAttach();
+		Event.queue(new SceneEvent(scene));
 	}
 	
 	public static void mouseMoved(Vector2 mouse) {
@@ -290,7 +332,7 @@ public class Engine implements Runnable {
 					true
 					);
 			if(scene != null) 
-				scene.onRender(render_context1);
+				render_context1.render(scene);
 		render_context1.pop();		
 		
 		render_context0.push();
@@ -374,7 +416,7 @@ public class Engine implements Runnable {
 		
 		update_context.push();
 		if(scene != null) 
-			scene.onUpdate(update_context);
+			update_context.update(scene);
 		update_context.pop();
 	}
 	
@@ -484,26 +526,6 @@ public class Engine implements Runnable {
 		}
 	}
 	
-	public static final Vector2 screenToCanvas(Vector2 p) {
-		return screenToCanvas(p.x(), p.y());
-	}
-	
-	public static final Vector2 screenToCanvas(float x, float y) {
-		x = (x - INSTANCE.background_w / 2) / INSTANCE.canvas_scale + INSTANCE.foreground_w / 2;
-		y = (y - INSTANCE.background_h / 2) / INSTANCE.canvas_scale + INSTANCE.foreground_h / 2;
-		return new Vector2(x, y);
-	}
-	
-	public static Vector2 canvasToScreen(Vector2 p) {
-		return canvasToScreen(p.x(), p.y());
-	}
-	
-	public static Vector2 canvasToScreen(float x, float y) {
-		x = (x - INSTANCE.foreground_w / 2) * INSTANCE.canvas_scale + INSTANCE.background_w / 2;
-		y = (y - INSTANCE.foreground_h / 2) * INSTANCE.canvas_scale + INSTANCE.background_h / 2;
-		return new Vector2(x, y);
-	}
-	
 	public static final String
 		CANVAS_BACKGROUND = "canvas-background",
 		CANVAS_FOREGROUND = "canvas-foreground",
@@ -517,4 +539,15 @@ public class Engine implements Runnable {
 		WINDOW_DEVICE = "window-device",
 		WINDOW_LAYOUT = "window-layout",
 		WINDOW_TITLE  = "window-title";
+	
+	private static class InitEvent { }
+	private static class ExitEvent { }
+	
+	private static class SceneEvent {
+		public final Scene
+			scene;
+		public SceneEvent(Scene scene) {
+			this.scene = scene;
+		}
+	}
 }

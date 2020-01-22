@@ -76,6 +76,10 @@ public class Sprite implements Renderable, Updateable {
 		return this.frames;
 	}
 	
+	public int n() {
+		return this._frames.length;
+	}
+	
 	public Effect getEffect() {
 		return this.effect;
 	}
@@ -250,12 +254,12 @@ public class Sprite implements Renderable, Updateable {
 		}
 	}
 	
-	public static Sprite fromName(String name, Effect paint) {
-		return new Sprite(Frames.getByName(name), paint);
+	public static Sprite fromName(String name, Effect effect) {
+		return new Sprite(Frames.getByName(name), effect);
 	}
 	
-	public static Sprite fromPath(String path, Effect paint) {
-		return new Sprite(Frames.getByPath(path), paint);
+	public static Sprite fromPath(String path, Effect effect) {
+		return new Sprite(Frames.getByPath(path), effect);
 	}
 	
 	public static class Frames implements Serializable {

@@ -18,6 +18,10 @@ public interface Updateable {
 			//do nothing
 		}
 		
+		public void update(Updateable updateable) {
+			updateable.onUpdate(this);
+		}
+		
 		private final LinkedList<UpdateContext>
 			stack = new LinkedList<>();
 	
