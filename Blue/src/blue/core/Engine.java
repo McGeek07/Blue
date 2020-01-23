@@ -411,8 +411,8 @@ public class Engine implements Runnable {
 		update_context.t  = t ;
 		update_context.dt = dt;
 		update_context.fixed_dt = fixed_dt;
-		update_context.canvas_w = background_w;
-		update_context.canvas_h = background_h;
+		update_context.canvas_w = foreground_w;
+		update_context.canvas_h = foreground_h;
 		
 		update_context.push();
 		if(scene != null) 
