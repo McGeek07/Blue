@@ -49,7 +49,7 @@ public interface Renderable {
 		}		
 		public void color4f(Vector color) {
 			g.setColor(Vector.toColor4f(color));
-		}
+		}		
 		
 		public void rect(float x, float y, float w, float h, boolean fill) {
 			if(fill)
@@ -124,14 +124,14 @@ public interface Renderable {
 		public void oval(Box<?> box, boolean fill) {
 			oval(box.x(), box.y(), box.w(), box.h(), fill);
 		}		
-		public void square(Vector p, float s, boolean fill) {
-			square(p.x(), p.y(), s, fill);					
+		public void square(Vector v, float s, boolean fill) {
+			square(v.x(), v.y(), s, fill);					
 		}		
-		public void circle(Vector p, float r, boolean fill) {
-			circle(p.x(), p.y(), r, fill);
+		public void circle(Vector v, float r, boolean fill) {
+			circle(v.x(), v.y(), r, fill);
 		}
-		public void pixel(Vector p) {
-			pixel(p.x(), p.y());
+		public void pixel(Vector v) {
+			pixel(v.x(), v.y());
 		}
 		
 		public void mov(float tx, float ty) {
@@ -140,6 +140,12 @@ public interface Renderable {
 		public void sca(float sx, float sy) {
 			g.scale(sx, sy);
 		}		
+		public void rot(float angle, boolean degrees) {
+			if(degrees)
+				g.rotate(Math.toRadians(angle));
+			else
+				g.rotate(               angle );
+		}
 		
 		public void mov(Vector t) {
 			mov(t.x(), t.y());
@@ -148,11 +154,28 @@ public interface Renderable {
 			sca(s.x(), s.y());
 		}
 		
-		public void rot(float angle, boolean degrees) {
-			if(degrees)
-				g.rotate(Math.toRadians(angle));
-			else
-				g.rotate(               angle );
+		public void clip(float w, float h) {
+			g.clipRect(
+					0,
+					0,
+					(int)w,
+					(int)h
+					);
+		}
+		public void clip(float x, float y, float w, float h) {
+			g.clipRect(
+					(int)x,
+					(int)y,
+					(int)w,
+					(int)h
+					);
+		}
+
+		public void clip(Box<?> box) {
+			clip(box.x(), box.y(), box.w(), box.h());
+		}
+		public void clip(Vector v) {
+			clip(v.x(), v.y());
 		}
 		
 		public void text(String text, float x, float y) {

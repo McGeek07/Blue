@@ -7,7 +7,7 @@ public class Blue extends Scene {
 	private static final long 
 		serialVersionUID = 1L;	
 	public static final Version
-		VERSION = new Version("Blue", 0, 0, 23);
+		VERSION = new Version("Blue", 0, 0, 24);
 	
 	public static void main(String[] args) {
 		

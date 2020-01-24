@@ -440,7 +440,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		mouse_buffer.set(Engine.screenToCanvas(
+		mouse_buffer.set(Engine.windowToCanvas(
 				e.getX(),
 				e.getY()
 				));
@@ -448,7 +448,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		mouse_buffer.set(Engine.screenToCanvas(
+		mouse_buffer.set(Engine.windowToCanvas(
 				e.getX(),
 				e.getY()
 				));

@@ -8,7 +8,6 @@ import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
 
 import blue.Blue;
 import blue.core.Renderable.RenderContext;
@@ -69,10 +68,10 @@ public class Engine implements Runnable {
 		render_dt,
 		update_dt;
 	protected int
-		background_w,
-		background_h,
-		foreground_w,
-		foreground_h;
+		window_w,
+		window_h,
+		canvas_w,
+		canvas_h;
 	protected float
 		canvas_scale;
 	
@@ -85,15 +84,12 @@ public class Engine implements Runnable {
 		scene;
 	
 	protected java.awt.Frame
-		window_component;
+		window;
 	protected java.awt.Canvas
-		canvas_component;
-	protected BufferedImage
 		canvas;
 	
 	protected final RenderContext
-		render_context0 = new RenderContext(),
-		render_context1 = new RenderContext();
+		render_context = new RenderContext();
 	protected final UpdateContext
 		update_context = new UpdateContext();
 	
@@ -139,44 +135,44 @@ public class Engine implements Runnable {
 		return INSTANCE.cfg;
 	}
 	
-	public static int background_w() {
-		return INSTANCE.background_w;
+	public static int window_w() {
+		return INSTANCE.window_w;
 	}
 	
-	public static int background_h() {
-		return INSTANCE.background_w;
+	public static int window_h() {
+		return INSTANCE.window_w;
 	}
 	
-	public static int foreground_w() {
-		return INSTANCE.foreground_w;
+	public static int canvas_w() {
+		return INSTANCE.canvas_w;
 	}
 	
-	public static int foreground_h() {
-		return INSTANCE.foreground_h;
+	public static int canvas_h() {
+		return INSTANCE.canvas_h;
 	}
 	
 	public static float canvas_scale() {
 		return INSTANCE.canvas_scale;
-	}
+	}	
 	
-	public static final Vector2 screenToCanvas(Vector2 p) {
-		return screenToCanvas(p.x(), p.y());
-	}
-	
-	public static final Vector2 screenToCanvas(float x, float y) {
-		x = (x - INSTANCE.background_w / 2) / INSTANCE.canvas_scale + INSTANCE.foreground_w / 2;
-		y = (y - INSTANCE.background_h / 2) / INSTANCE.canvas_scale + INSTANCE.foreground_h / 2;
+	public static final Vector2 windowToCanvas(float x, float y) {
+		x = (x - INSTANCE.window_w / 2) / INSTANCE.canvas_scale + INSTANCE.canvas_w / 2;
+		y = (y - INSTANCE.window_h / 2) / INSTANCE.canvas_scale + INSTANCE.canvas_h / 2;
 		return new Vector2(x, y);
 	}
 	
-	public static Vector2 canvasToScreen(Vector2 p) {
-		return canvasToScreen(p.x(), p.y());
+	public static final Vector2 canvasToWindow(float x, float y) {
+		x = (x - INSTANCE.canvas_w / 2) * INSTANCE.canvas_scale + INSTANCE.window_w / 2;
+		y = (y - INSTANCE.canvas_h / 2) * INSTANCE.canvas_scale + INSTANCE.window_h / 2;
+		return new Vector2(x, y);
 	}
 	
-	public static Vector2 canvasToScreen(float x, float y) {
-		x = (x - INSTANCE.foreground_w / 2) * INSTANCE.canvas_scale + INSTANCE.background_w / 2;
-		y = (y - INSTANCE.foreground_h / 2) * INSTANCE.canvas_scale + INSTANCE.background_h / 2;
-		return new Vector2(x, y);
+	public static final Vector2 canvasToWindow(Vector2 v) {
+		return canvasToWindow(v.x(), v.y());
+	}
+	
+	public static final Vector2 windowToCanvas(Vector2 v) {
+		return windowToCanvas(v.x(), v.y());
 	}
 	
 	public static void setScene(Scene scene) {
@@ -225,13 +221,13 @@ public class Engine implements Runnable {
 		foreground = Vector.toColor4i(canvas_foreground);
 		debug_font = new Font(debug_font_name, Font.PLAIN, debug_font_size);
 		
-		if(window_component != null)
-			window_component.dispose();
+		if(window != null)
+			window.dispose();
 		
-		window_component = new java.awt.Frame() ;
-		canvas_component = new java.awt.Canvas();
+		window = new java.awt.Frame() ;
+		canvas = new java.awt.Canvas();
 		
-		window_component.add(canvas_component);		
+		window.add(canvas);		
 		
 		Region2 a, b, c;
 		if(window_border)
@@ -240,44 +236,39 @@ public class Engine implements Runnable {
 			a = Util.computeMaximumScreenRegion(window_device);
 		b = window_layout.region(a);
 		
-		window_component.setUndecorated(!window_border);
-		window_component.setBounds(
+		window.setUndecorated(!window_border);
+		window.setBounds(
 				(int)b.x(), (int)b.y(),
 				(int)b.w(), (int)b.h()
 				);		
-		window_component.setTitle(window_title);
+		window.setTitle(window_title);
 		
-		window_component.addWindowListener(new WindowAdapter() {
+		window.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent we) {
 				Engine.exit();
 			}
 		});
-		window_component.setVisible(true);
+		window.setVisible(true);
 		
-		Insets insets = window_component.getInsets();
+		Insets insets = window.getInsets();
 		b = new Region2(
 			Vector.add(b.loc(), insets.left               , insets.top                ),
 			Vector.sub(b.dim(), insets.left + insets.right, insets.top + insets.bottom)
 		);		 
 		c = canvas_layout.region(b);
-		foreground_w = (int)c.w();
-		foreground_h = (int)c.h();
-		canvas = Util.createBufferedImage(
-				window_device,
-				foreground_w,
-				foreground_h
-				);
+		canvas_w = (int)c.w();
+		canvas_h = (int)c.h();
 		
-		canvas_component.setFocusable(true);
-		canvas_component.setFocusTraversalKeysEnabled(false);
+		canvas.setFocusable(true);
+		canvas.setFocusTraversalKeysEnabled(false);
 		
-		canvas_component.addKeyListener        (Input.INSTANCE);
-		canvas_component.addMouseListener      (Input.INSTANCE);
-		canvas_component.addMouseWheelListener (Input.INSTANCE);
-		canvas_component.addMouseMotionListener(Input.INSTANCE);
+		canvas.addKeyListener        (Input.INSTANCE);
+		canvas.addMouseListener      (Input.INSTANCE);
+		canvas.addMouseWheelListener (Input.INSTANCE);
+		canvas.addMouseMotionListener(Input.INSTANCE);
 		
-		canvas_component.requestFocus();
+		canvas.requestFocus();
 		
 		if(scene != null)
 			scene.onInit();
@@ -286,89 +277,84 @@ public class Engine implements Runnable {
 	public void onExit() {
 		if(scene != null)
 			scene.onExit();
-		if(window_component != null)
-			window_component.dispose();
+		if(window != null)
+			window.dispose();
 	}	
 	
 	protected BufferStrategy
 		b;	
 	public void onRender(float t, float dt, float fixed_dt) {
-		background_w = (int)canvas_component.getWidth ();
-		background_h = (int)canvas_component.getHeight();
+		window_w = (int)canvas.getWidth ();
+		window_h = (int)canvas.getHeight();
 		canvas_scale = Math.min(
-				(float)background_w / foreground_w,
-				(float)background_h / foreground_h
+				(float)window_w / canvas_w,
+				(float)window_h / canvas_h
 				);
 		
 		if(b == null || b.contentsLost()) {
-			canvas_component.createBufferStrategy(2);
-			b = canvas_component.getBufferStrategy();
+			canvas.createBufferStrategy(2);
+			b = canvas.getBufferStrategy();
 		}		
 		
 		Graphics2D 
-			g0 = (Graphics2D)b.getDrawGraphics(),
-			g1 = (Graphics2D)canvas.createGraphics();
+			g = (Graphics2D)b.getDrawGraphics();
 		
-		render_context0.g  = g0;
-		render_context0.t  = t ;
-		render_context0.dt = dt;		
-		render_context0.fixed_dt = fixed_dt;
-		render_context0.canvas_w = background_w;
-		render_context0.canvas_h = background_h;
+		render_context.g  = g ;
+		render_context.t  = t ;
+		render_context.dt = dt;		
+		render_context.fixed_dt = fixed_dt;
+		render_context.canvas_w = window_w;
+		render_context.canvas_h = window_h;				
 		
-		render_context1.g  = g1;
-		render_context1.t  = t ;
-		render_context1.dt = dt;		
-		render_context1.fixed_dt = fixed_dt;
-		render_context1.canvas_w = foreground_w;
-		render_context1.canvas_h = foreground_h;
-		
-		render_context1.push();		
-			render_context1.color(foreground);
-			render_context1.rect(
+		render_context.push();
+			render_context.color(background);
+			render_context.rect(
 					0, 0,
-					foreground_w,
-					foreground_h,
+					window_w,
+					window_h,
 					true
 					);
-			if(scene != null) 
-				render_context1.render(scene);
-		render_context1.pop();		
-		
-		render_context0.push();
-			render_context0.color(background);
-			render_context0.rect(
-					0, 0,
-					background_w,
-					background_h,
-					true
+			render_context.mov(
+					(window_w - canvas_w * canvas_scale) / 2,
+					(window_h - canvas_h * canvas_scale) / 2
 					);
-			render_context0.g.translate(
-					background_w / 2,
-					background_h / 2
-					);
-			render_context0.g.scale(
+			render_context.sca(
 					canvas_scale,
 					canvas_scale
 					);
-			render_context0.g.drawImage(
-					this.canvas,
-					- foreground_w / 2,
-					- foreground_h / 2,
-					null
+			render_context.clip(
+					0,
+					0,
+					canvas_w,
+					canvas_h
 					);
-		render_context0.pop();
+			render_context.canvas_w = canvas_w;
+			render_context.canvas_h = canvas_h;
+			
+			render_context.push();		
+				render_context.color(foreground);
+				render_context.rect(
+						0, 0,
+						canvas_w,
+						canvas_h,
+						true
+						);
+				if(scene != null) 
+					render_context.render(scene);
+			render_context.pop();
+			
+		render_context.pop();
 		
 		if(debug) {
-			render_context0.push();
+			render_context.push();
 			
-			render_context0.g.setFont(debug_font);
-			FontMetrics fm = render_context0.g.getFontMetrics();
+			render_context.font(debug_font);
+			FontMetrics fm = render_context.g.getFontMetrics();
 			
 			String[] debug_info = {
 						String.format("FPS: %1$d hz @ %2$.2f ms%n", render_hz, render_dt),
 						String.format("TPS: %1$d hz @ %2$.2f ms%n", update_hz, update_dt),
-						String.format("Canvas: %1$d x %2$d @ %3$.1f%%", foreground_w, foreground_h, canvas_scale * 100)
+						String.format("Canvas: %1$d x %2$d @ %3$.1f%%", canvas_w, canvas_h, canvas_scale * 100)
 					};
 			int
 				debug_info_w = 0,
@@ -386,21 +372,20 @@ public class Engine implements Runnable {
 				x = 0,
 				y = 0;
 			
-			render_context0.color(Color.BLACK);
-			render_context0.rect(
+			render_context.color(Color.BLACK);
+			render_context.rect(
 					0, 0,
 					debug_info_w,
 					debug_info_h,
 					true
 					);
-			render_context0.color(Color.WHITE);
+			render_context.color(Color.WHITE);
 			for(int i = 0; i < debug_info.length; i ++)
-				render_context0.g.drawString(debug_info[i], x, y += fm_h);				
-			render_context0.pop();
+				render_context.text(debug_info[i], x, y += fm_h);				
+			render_context.pop();
 		}
 		
-		g0.dispose();
-		g1.dispose();
+		g.dispose();
 		b.show();		
 	}	
 	
@@ -411,8 +396,8 @@ public class Engine implements Runnable {
 		update_context.t  = t ;
 		update_context.dt = dt;
 		update_context.fixed_dt = fixed_dt;
-		update_context.canvas_w = foreground_w;
-		update_context.canvas_h = foreground_h;
+		update_context.canvas_w = canvas_w;
+		update_context.canvas_h = canvas_h;
 		
 		update_context.push();
 		if(scene != null) 
