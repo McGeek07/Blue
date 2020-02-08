@@ -13,10 +13,9 @@ public class Scene implements Serializable, Renderable, Updateable {
 	@Override
 	public void onUpdate(UpdateContext context) { }
 	
-	public void onInit() { }
-	public void onExit() { }
 	public void onAttach() { }
 	public void onDetach() { }
+	public void onResize() { }
 	public void onMouseMoved(Vector2 mouse) { }
 	public void onWheelMoved(float   wheel) { }
 	public void onKeyDn(int key) { }	

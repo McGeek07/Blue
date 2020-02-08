@@ -207,7 +207,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 			
 			case KeyEvent.VK_TAB       : key_buffer[KEY_TAB   ] = true; break;
 			case KeyEvent.VK_BACK_SPACE: key_buffer[KEY_BSPACE] = true; break;				
-			case KeyEvent.VK_ENTER     : key_buffer[KEY_RETURN] = true; break;
+			case KeyEvent.VK_ENTER     : key_buffer[KEY_ENTER] = true; break;
 			
 			case KeyEvent.VK_SPACE   : key_buffer[KEY_SPACE ] = true; break;
 			case KeyEvent.VK_QUOTE   : key_buffer[KEY_QUOTE ] = true; break;
@@ -321,7 +321,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 			
 			case KeyEvent.VK_TAB       : key_buffer[KEY_TAB   ] = false; break;
 			case KeyEvent.VK_BACK_SPACE: key_buffer[KEY_BSPACE] = false; break;				
-			case KeyEvent.VK_ENTER     : key_buffer[KEY_RETURN] = false; break;
+			case KeyEvent.VK_ENTER     : key_buffer[KEY_ENTER] = false; break;
 			
 			case KeyEvent.VK_SPACE   : key_buffer[KEY_SPACE ] = false; break;
 			case KeyEvent.VK_QUOTE   : key_buffer[KEY_QUOTE ] = false; break;
@@ -603,7 +603,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		
 		KEY_TAB    = 29,
 		KEY_BSPACE = 30,				
-		KEY_RETURN = 31,
+		KEY_ENTER = 31,
 		
 		KEY_SPACE  = ' ',     // #32
 		KEY_QUOTE  = '\'',    // #39

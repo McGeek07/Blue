@@ -49,7 +49,7 @@ public interface Renderable {
 		}		
 		public void color4f(Vector color) {
 			g.setColor(Vector.toColor4f(color));
-		}		
+		}			
 		
 		public void rect(float x, float y, float w, float h, boolean fill) {
 			if(fill)
@@ -117,6 +117,14 @@ public interface Renderable {
 					1
 					);
 		}
+		public void line(float x1, float y1, float x2, float y2) {
+			g.drawLine(
+					(int)x1,
+					(int)y1,
+					(int)x2,
+					(int)y2
+					);
+		}
 		
 		public void rect(Box<?> box, boolean fill) {
 			rect(box.x(), box.y(), box.w(), box.h(), fill);
@@ -132,6 +140,9 @@ public interface Renderable {
 		}
 		public void pixel(Vector v) {
 			pixel(v.x(), v.y());
+		}
+		public void line(Vector v0, Vector v1) {
+			line(v0.x(), v0.y(), v1.x(), v1.y());
 		}
 		
 		public void mov(float tx, float ty) {

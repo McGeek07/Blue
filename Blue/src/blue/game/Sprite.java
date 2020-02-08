@@ -245,12 +245,13 @@ public class Sprite implements Renderable, Updateable {
 				);
 	}
 	
-	public static void load(String name, String path, int frame_w, int frame_h) {
+	public static Sprite load(String name, String path, int frame_w, int frame_h) {
 		try {
-			Frames.load(name, path, frame_w, frame_h);
+			return new Sprite(Frames.load(name, path, frame_w, frame_h), null);
 		} catch (Exception ex) {
 			System.err.println("[ERROR] Sprite.load(" + name + ", " + path + ", " + frame_w + ", " + frame_h + ")");
 			ex.printStackTrace();
+			return null;
 		}
 	}
 	

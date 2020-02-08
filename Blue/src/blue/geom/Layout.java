@@ -435,6 +435,13 @@ public class Layout implements Serializable {
 		}
 	}
 	
+	public static final Layout fixed(int preferred_w, int preferred_h) {
+		Attribute
+			w = new Attribute(preferred_w, true),
+			h = new Attribute(preferred_h, true);
+		return new Layout(.5f, .5f, .5f, .5f, w, h, w, h, w, h);
+	}
+	
 	public static final Layout
 		//DEFAULT
 		DEFAULT = new Layout(.5f, .5f, .5f, .5f,  1f,  1f),
@@ -473,18 +480,18 @@ public class Layout implements Serializable {
 		BM_NINTH = new Layout(.5f,  1f, .5f,  1f, 1f/3f, 1f/3f),
 		BR_NINTH = new Layout( 1f,  1f,  1f,  1f, 1f/3f, 1f/3f),
 		//16:9
-		_1920x1080 = new Layout(.5f, .5f, .5f, .5f, "#1920", "#1080", "#1920", "#1080", "#1920", "#1080"),
-		_1600x900  = new Layout(.5f, .5f, .5f, .5f, "#1600", "#900" , "#1600", "#900" , "#1600", "#900" ),
-		_1366x768  = new Layout(.5f, .5f, .5f, .5f, "#1366", "#768" , "#1366", "#768" , "#1366", "#768" ),
-		_1280x720  = new Layout(.5f, .5f, .5f, .5f, "#1280", "#720" , "#1280", "#720" , "#1280", "#720" ),
-		_1024x576  = new Layout(.5f, .5f, .5f, .5f, "#1024", "#576" , "#1024", "#576" , "#1024", "#576" ),
+		_1920x1080 = Layout.fixed(1920, 1080),
+		_1600x900  = Layout.fixed(1600,  900),
+		_1366x768  = Layout.fixed(1366,  768),
+		_1280x720  = Layout.fixed(1280,  720),
+		_1024x576  = Layout.fixed(1024,  576),
 		//4:3
-		_1600x1200 = new Layout(.5f, .5f, .5f, .5f, "#1600", "#1200", "#1600", "#1200", "#1600", "#1200"),
-		_1440x1080 = new Layout(.5f, .5f, .5f, .5f, "#1440", "#1080", "#1440", "#1080", "#1440", "#1080"),
-		_1400x1050 = new Layout(.5f, .5f, .5f, .5f, "#1400", "#1050", "#1400", "#1050", "#1400", "#1050"),
-		_1152x864  = new Layout(.5f, .5f, .5f, .5f, "#1152", "#864" , "#1152", "#864" , "#1152", "#864" ),
-		_1024x768  = new Layout(.5f, .5f, .5f, .5f, "#1024", "#768" , "#1024", "#768" , "#1024", "#768" ),
-		_800x600   = new Layout(.5f, .5f, .5f, .5f, "#800" , "#600" , "#800" , "#600" , "#800" , "#600" ),
-		_768x576   = new Layout(.5f, .5f, .5f, .5f, "#768" , "#576" , "#768" , "#576" , "#768" , "#576" ),
-		_640x480   = new Layout(.5f, .5f, .5f, .5f, "#640" , "#480" , "#640" , "#480" , "#640" , "#480" );
+		_1600x1200 = Layout.fixed(1600, 1200),
+		_1440x1080 = Layout.fixed(1440, 1080),
+		_1400x1050 = Layout.fixed(1400, 1050),
+		_1152x864  = Layout.fixed(1152,  864),
+		_1024x768  = Layout.fixed(1024,  768),
+		_800x600   = Layout.fixed( 800,  600),
+		_768x576   = Layout.fixed( 768,  576),
+		_640x480   = Layout.fixed( 640,  480);
 }

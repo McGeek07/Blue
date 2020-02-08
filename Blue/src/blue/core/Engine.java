@@ -4,9 +4,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.Insets;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 
 import blue.Blue;
@@ -35,6 +35,7 @@ public class Engine implements Runnable {
 		debug_font_name = "Monospaced";
 	protected int
 		debug_font_size = 14;
+	
 	protected float
 		engine_fps = 60,
 		engine_tps = 60;
@@ -101,6 +102,9 @@ public class Engine implements Runnable {
 			if(INSTANCE.scene != null)
 				INSTANCE.scene.onAttach();
 		});
+		Event.attach(WindowEvent.class, (event) -> {
+			INSTANCE.onResize(event);
+		});
 	}
 	
 	public static synchronized void loop() {
@@ -135,25 +139,19 @@ public class Engine implements Runnable {
 		return INSTANCE.cfg;
 	}
 	
-	public static int window_w() {
-		return INSTANCE.window_w;
+	public static final Region2 window() {
+		return new Region2(
+				INSTANCE.window_w,
+				INSTANCE.window_h
+				);
 	}
 	
-	public static int window_h() {
-		return INSTANCE.window_w;
+	public static final Region2 canvas() {
+		return new Region2(
+				INSTANCE.canvas_w,
+				INSTANCE.canvas_h
+				);
 	}
-	
-	public static int canvas_w() {
-		return INSTANCE.canvas_w;
-	}
-	
-	public static int canvas_h() {
-		return INSTANCE.canvas_h;
-	}
-	
-	public static float canvas_scale() {
-		return INSTANCE.canvas_scale;
-	}	
 	
 	public static final Vector2 windowToCanvas(float x, float y) {
 		x = (x - INSTANCE.window_w / 2) / INSTANCE.canvas_scale + INSTANCE.canvas_w / 2;
@@ -206,16 +204,16 @@ public class Engine implements Runnable {
 	public void onInit() {		
 		canvas_background = cfg.get(Vector4::parseVector4, CANVAS_BACKGROUND, canvas_background);
 		canvas_foreground = cfg.get(Vector4::parseVector4, CANVAS_FOREGROUND, canvas_foreground);
-		canvas_layout = cfg.get(Layout::parseLayout, CANVAS_LAYOUT, canvas_layout);
-		debug         = cfg.getBoolean(DEBUG, debug);
-		debug_font_name = cfg.get       (DEBUG_FONT_NAME, debug_font_name);
-		debug_font_size = cfg.getInteger(DEBUG_FONT_SIZE, debug_font_size);
-		engine_fps    = cfg.getFloat(ENGINE_FPS, engine_fps);
-		engine_tps    = cfg.getFloat(ENGINE_TPS, engine_tps);
-		window_border = cfg.getBoolean(WINDOW_BORDER, window_border);
-		window_device = cfg.getInteger(WINDOW_DEVICE, window_device);
-		window_layout = cfg.get(Layout::parseLayout, WINDOW_LAYOUT, window_layout);
-		window_title  = cfg.get(WINDOW_TITLE, window_title);
+		canvas_layout     = cfg.get(Layout::parseLayout, CANVAS_LAYOUT, canvas_layout);
+		debug		      = cfg.getBoolean(DEBUG, debug);
+		debug_font_name   = cfg.get	      (DEBUG_FONT_NAME, debug_font_name);
+		debug_font_size   = cfg.getInteger(DEBUG_FONT_SIZE, debug_font_size);
+		engine_fps	      = cfg.getFloat(ENGINE_FPS, engine_fps);
+		engine_tps	      = cfg.getFloat(ENGINE_TPS, engine_tps);
+		window_border     = cfg.getBoolean(WINDOW_BORDER, window_border);
+		window_device     = cfg.getInteger(WINDOW_DEVICE, window_device);
+		window_layout     = cfg.get(Layout::parseLayout, WINDOW_LAYOUT, window_layout);
+		window_title      = cfg.get(WINDOW_TITLE, window_title);
 		
 		background = Vector.toColor4i(canvas_background);
 		foreground = Vector.toColor4i(canvas_foreground);
@@ -229,7 +227,7 @@ public class Engine implements Runnable {
 		
 		window.add(canvas);		
 		
-		Region2 a, b, c;
+		Region2 a, b;
 		if(window_border)
 			a = Util.computeMaximumWindowRegion(window_device);
 		else
@@ -245,56 +243,53 @@ public class Engine implements Runnable {
 		
 		window.addWindowListener(new WindowAdapter() {
 			@Override
-			public void windowClosing(WindowEvent we) {
+			public void windowClosing(java.awt.event.WindowEvent we) {
 				Engine.exit();
 			}
-		});
-		window.setVisible(true);
-		
-		Insets insets = window.getInsets();
-		b = new Region2(
-			Vector.add(b.loc(), insets.left               , insets.top                ),
-			Vector.sub(b.dim(), insets.left + insets.right, insets.top + insets.bottom)
-		);		 
-		c = canvas_layout.region(b);
-		canvas_w = (int)c.w();
-		canvas_h = (int)c.h();
+		});	
 		
 		canvas.setFocusable(true);
 		canvas.setFocusTraversalKeysEnabled(false);
 		
-		canvas.addKeyListener        (Input.INSTANCE);
-		canvas.addMouseListener      (Input.INSTANCE);
+		canvas.addKeyListener		 (Input.INSTANCE);
+		canvas.addMouseListener	     (Input.INSTANCE);
 		canvas.addMouseWheelListener (Input.INSTANCE);
 		canvas.addMouseMotionListener(Input.INSTANCE);
+		canvas.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent ce) {
+				int
+					window_w = (int)canvas.getWidth (),
+					window_h = (int)canvas.getHeight();
+				if(
+						INSTANCE.window_w != window_w ||
+						INSTANCE.window_h != window_h ){
+					Event.queue(new WindowEvent(
+							window_w,
+							window_h
+							));
+				}				
+			}
+		});
 		
+		window.setVisible(true);
 		canvas.requestFocus();
-		
-		if(scene != null)
-			scene.onInit();
 	}
 	
 	public void onExit() {
 		if(scene != null)
-			scene.onExit();
+			scene.onDetach();
 		if(window != null)
 			window.dispose();
 	}	
 	
 	protected BufferStrategy
 		b;	
-	public void onRender(float t, float dt, float fixed_dt) {
-		window_w = (int)canvas.getWidth ();
-		window_h = (int)canvas.getHeight();
-		canvas_scale = Math.min(
-				(float)window_w / canvas_w,
-				(float)window_h / canvas_h
-				);
-		
+	public void onRender(float t, float dt, float fixed_dt) {		
 		if(b == null || b.contentsLost()) {
 			canvas.createBufferStrategy(2);
 			b = canvas.getBufferStrategy();
-		}		
+		}
 		
 		Graphics2D 
 			g = (Graphics2D)b.getDrawGraphics();
@@ -429,9 +424,29 @@ public class Engine implements Runnable {
 		if(scene != null) scene.onBtnUp(btn);
 	}
 	
+	public void onResize(WindowEvent we) {
+		window_w = we.window_w;
+		window_h = we.window_h;
+		
+		Region2 a, b;								
+		a = new Region2(
+				window_w, 
+				window_h
+		);
+		b = canvas_layout.region(a);
+		canvas_w = (int)b.w();
+		canvas_h = (int)b.h();
+		canvas_scale = Math.min(
+				(float)window_w / canvas_w,
+				(float)window_h / canvas_h
+				);
+		if(scene != null)
+			scene.onResize();
+	}
+	
 	private static final long
 		ONE_SECOND = 1000000000L, //one second in nanoseconds
-		ONE_MILLIS =    1000000L; //one millis in nanoseconds
+		ONE_MILLIS =	1000000L; //one millis in nanoseconds
 
 	@Override
 	public void run() {
@@ -441,20 +456,20 @@ public class Engine implements Runnable {
 				render_fixed_nanos = engine_fps > 0 ? (long)(ONE_SECOND / engine_fps) : 0, //fixed time-per-render in nanoseconds
 				update_fixed_nanos = engine_tps > 0 ? (long)(ONE_SECOND / engine_tps) : 0; //fixed time-per-update in nanoseconds
 			float
-				render_fixed_dt = (float)render_fixed_nanos / ONE_SECOND, 				   //fixed time-per-render in seconds
-				update_fixed_dt = (float)update_fixed_nanos / ONE_SECOND; 				   //fixed time-per-update in seconds
+				render_fixed_dt = (float)render_fixed_nanos / ONE_SECOND,				   //fixed time-per-render in seconds
+				update_fixed_dt = (float)update_fixed_nanos / ONE_SECOND;				   //fixed time-per-update in seconds
 			long
 				render_lag_nanos = 0,													   //dynamic render lag in nanoseconds
 				update_lag_nanos = 0,													   //dynamic update lag in nanoseconds
 				render_avg_nanos = 0,													   //dynamic average time-per-render in nanoseconds
 				update_avg_nanos = 0,													   //dynamic average time-per-update in nanoseconds
-				render_nanos = 0,                                                          //elapsed render time in nanoseconds				
+				render_nanos = 0,														   //elapsed render time in nanoseconds				
 				update_nanos = 0;														   //elapsed update time in nanoseconds
 			int
 				render_count = 0,														   //number of render calls in the last one second
 				update_count = 0;														   //number of update calls in the last one second
 			long
-				elapsed_nanos = 0,                                                         //current elapsed time in nanoseconds
+				elapsed_nanos = 0,														   //current elapsed time in nanoseconds
 				current_nanos = System.nanoTime();										   //current time in nanoseconds
 			while(running) {
 				long delta_nanos = - current_nanos + (current_nanos = System.nanoTime());  //delta time in nanoseconds
@@ -465,7 +480,7 @@ public class Engine implements Runnable {
 				if(update_nanos + update_lag_nanos >= update_fixed_nanos) {
 					float
 						update_t  = (float)current_nanos / ONE_SECOND,
-						update_dt = (float) update_nanos / ONE_SECOND;					
+						update_dt = (float) update_nanos / ONE_SECOND;
 					onUpdate(update_t, update_dt, update_fixed_dt);
 					
 					update_lag_nanos = Util.clamp(update_lag_nanos + update_nanos - update_fixed_nanos, - update_fixed_nanos, update_fixed_nanos);
@@ -478,7 +493,7 @@ public class Engine implements Runnable {
 					float
 						render_t  = (float)current_nanos / ONE_SECOND,
 						render_dt = (float) render_nanos / ONE_SECOND;
-					onRender(render_t, render_dt, render_fixed_dt);		
+					onRender(render_t, render_dt, render_fixed_dt);
 					
 					render_lag_nanos = Util.clamp(render_lag_nanos + render_nanos - render_fixed_nanos, - render_fixed_nanos, render_fixed_nanos);
 					render_avg_nanos += render_nanos;
@@ -494,7 +509,7 @@ public class Engine implements Runnable {
 					render_avg_nanos = 0;
 					update_avg_nanos = 0;
 					render_count  = 0;
-					update_count  = 0;					
+					update_count  = 0;
 					elapsed_nanos = 0;
 				}
 				
@@ -514,22 +529,34 @@ public class Engine implements Runnable {
 	public static final String
 		CANVAS_BACKGROUND = "canvas-background",
 		CANVAS_FOREGROUND = "canvas-foreground",
-		CANVAS_LAYOUT = "canvas-layout",
-		DEBUG         = "debug",
-		DEBUG_FONT_NAME = "debug-font-name",
-		DEBUG_FONT_SIZE = "debug-font-size",		
-		ENGINE_FPS    = "engine-fps",
-		ENGINE_TPS    = "engine-tps",
-		WINDOW_BORDER = "window-border",
-		WINDOW_DEVICE = "window-device",
-		WINDOW_LAYOUT = "window-layout",
-		WINDOW_TITLE  = "window-title";
+		CANVAS_LAYOUT     = "canvas-layout",
+		DEBUG             = "debug",
+		DEBUG_FONT_NAME   = "debug-font-name",
+		DEBUG_FONT_SIZE   = "debug-font-size",
+		ENGINE_FPS        = "engine-fps",
+		ENGINE_TPS        = "engine-tps",
+		WINDOW_BORDER     = "window-border",
+		WINDOW_DEVICE     = "window-device",
+		WINDOW_LAYOUT     = "window-layout",
+		WINDOW_TITLE      = "window-title";
 	
 	private static class SceneEvent {
 		public final Scene
-			scene;
+			scene;		
+		
 		public SceneEvent(Scene scene) {
 			this.scene = scene;
+		}
+	}
+	
+	private static class WindowEvent {
+		public final int
+			window_w,
+			window_h;
+		
+		public WindowEvent(int window_w, int window_h) {
+			this.window_w = window_w;
+			this.window_h = window_h;
 		}
 	}
 }
