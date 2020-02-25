@@ -60,6 +60,22 @@ public final class Util {
 		return x;
 	}
 	
+	public static int sign(int x) {
+		return x != 0 ? x > 0 ? 1 : -1 : 0;
+	}
+	
+	public static float sign(float x) {
+		return x != 0f ? x > 0f ? 1f : -1f : 0f;
+	}
+	
+	public static long sign(long x) {
+		return x != 0 ? x > 0 ? 1 : -1 : 0;
+	}
+	
+	public static double sign(double x) {
+		return x != 0. ? x > 0. ? 1. : -1. : 0.;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> typeOf(T t) {
 		return (Class<T>)t.getClass();

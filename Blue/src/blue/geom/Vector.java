@@ -44,9 +44,9 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				return 0;
 		}
 		throw new UnsupportedOperationException();
-	}
-	
+	}	
 
+	/*IMMUTABLE ADD*/
 	public static Vector2 add(Vector2 a, Vector2 b) {
 		return new Vector2(
 				a.x + b.x,
@@ -68,24 +68,6 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				a.w + b.w
 				);
 	}	
-	public static Vector2.Mutable add(Vector2.Mutable a, Vector2 b) {
-		a.x += b.x;
-		a.y += b.y;
-		return a;
-	}
-	public static Vector3.Mutable add(Vector3.Mutable a, Vector3 b) {
-		a.x += b.x;
-		a.y += b.y;
-		a.z += b.z;
-		return a;
-	}
-	public static Vector4.Mutable add(Vector4.Mutable a, Vector4 b) {
-		a.x += b.x;
-		a.y += b.y;
-		a.z += b.z;
-		a.w += b.w;
-		return a;
-	}
 	public static Vector2 add(Vector2 a, float x, float y) {
 		return new Vector2(
 				a.x + x,
@@ -106,26 +88,9 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				a.z + z,
 				a.w + w
 				);
-	}	
-	public static Vector2.Mutable add(Vector2.Mutable a, float x, float y) {
-		a.x += x;
-		a.y += y;
-		return a;
-	}
-	public static Vector3.Mutable add(Vector3.Mutable a, float x, float y, float z) {
-		a.x += x;
-		a.y += y;
-		a.z += z;
-		return a;
-	}
-	public static Vector4.Mutable add(Vector4.Mutable a, float x, float y, float z, float w) {
-		a.x += x;
-		a.y += y;
-		a.z += z;
-		a.w += w;
-		return a;
 	}
 	
+	/*IMMUTABLE SUB*/
 	public static Vector2 sub(Vector2 a, Vector2 b) {
 		return new Vector2(
 				a.x - b.x,
@@ -138,7 +103,7 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				a.y - b.y,
 				a.z - b.z
 				);
-	}
+	}	
 	public static Vector4 sub(Vector4 a, Vector4 b) {
 		return new Vector4(
 				a.x - b.x,
@@ -146,25 +111,7 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				a.z - b.z,
 				a.w - b.w
 				);
-	}
-	public static Vector2.Mutable sub(Vector2.Mutable a, Vector2 b) {
-		a.x -= b.x;
-		a.y -= b.y;
-		return a;
-	}
-	public static Vector3.Mutable sub(Vector3.Mutable a, Vector3 b) {
-		a.x -= b.x;
-		a.y -= b.y;
-		a.z -= b.z;
-		return a;
-	}
-	public static Vector4.Mutable sub(Vector4.Mutable a, Vector4 b) {
-		a.x -= b.x;
-		a.y -= b.y;
-		a.z -= b.z;
-		a.w -= b.w;
-		return a;
-	}
+	}	
 	public static Vector2 sub(Vector2 a, float x, float y) {
 		return new Vector2(
 				a.x - x,
@@ -185,24 +132,130 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				a.z - z,
 				a.w - w
 				);
+	}
+	
+	/*IMMUTABLE MUL*/
+	public static Vector2 mul(Vector2 a, Vector2 b) {
+		return new Vector2(
+				a.x * b.x,
+				a.y * b.y
+				);
+	}
+	public static Vector3 mul(Vector3 a, Vector3 b) {
+		return new Vector3(
+				a.x * b.x,
+				a.y * b.y,
+				a.z * b.z
+				);
 	}	
-	public static Vector2.Mutable sub(Vector2.Mutable a, float x, float y) {
-		a.x -= x;
-		a.y -= y;
-		return a;
+	public static Vector4 mul(Vector4 a, Vector4 b) {
+		return new Vector4(
+				a.x * b.x,
+				a.y * b.y,
+				a.z * b.z,
+				a.w * b.w
+				);
 	}
-	public static Vector3.Mutable sub(Vector3.Mutable a, float x, float y, float z) {
-		a.x -= x;
-		a.y -= y;
-		a.z -= z;
-		return a;
+	public static Vector2 mul(Vector2 a, float x, float y) {
+		return new Vector2(
+				a.x * x,
+				a.y * y
+				);
 	}
-	public static Vector4.Mutable sub(Vector4.Mutable a, float x, float y, float z, float w) {
-		a.x -= x;
-		a.y -= y;
-		a.z -= z;
-		a.w -= w;
-		return a;
+	public static Vector3 mul(Vector3 a, float x, float y, float z) {
+		return new Vector3(
+				a.x * x,
+				a.y * y,
+				a.z * z
+				);
+	}	
+	public static Vector4 mul(Vector4 a, float x, float y, float z, float w) {
+		return new Vector4(
+				a.x * x,
+				a.y * y,
+				a.z * z,
+				a.w * w
+				);
+	}
+	public static Vector2 mul(Vector2 a, Matrix2 b) {
+		return new Vector2(
+				Vector.dot(a, b.xx, b.yx),
+				Vector.dot(a, b.xy, b.yy)
+				);
+	}	
+	public static Vector2 mul(Vector2 a, Matrix3 b) {
+		Vector3 h = Vector.hom(a);
+		return new Vector2(
+				Vector.dot(h, b.xx, b.yx, b.zx),
+				Vector.dot(h, b.xy, b.yy, b.zy)
+				);
+	}
+	public static Vector3 mul(Vector3 a, Matrix3 b) {
+		return new Vector3(
+				Vector.dot(a, b.xx, b.yx, b.zx),
+				Vector.dot(a, b.xy, b.yy, b.zy),
+				Vector.dot(a, b.xz, b.yz, b.zz)
+				);
+	}	
+	public static Vector3 mul(Vector3 a, Matrix4 b) {
+		Vector4 h = Vector.hom(a);
+		return new Vector3(
+				Vector.dot(h, b.xx, b.yx, b.zx, b.wx),
+				Vector.dot(h, b.xy, b.yy, b.zy, b.wy),
+				Vector.dot(h, b.xz, b.yz, b.zz, b.wz)
+				);
+	}
+	public static Vector4 mul(Vector4 a, Matrix4 b) {
+		return new Vector4(
+				Vector.dot(a, b.xx, b.yx, b.zx, b.wx),
+				Vector.dot(a, b.xy, b.yy, b.zy, b.wy),
+				Vector.dot(a, b.xz, b.yz, b.zz, b.wz),
+				Vector.dot(a, b.xw, b.yw, b.zw, b.ww)
+				);
+	}
+	
+	/*IMMUTABLE DIV*/
+	public static Vector2 div(Vector2 a, Vector2 b) {
+		return new Vector2(
+				a.x / b.x,
+				a.y / b.y
+				);
+	}
+	public static Vector3 div(Vector3 a, Vector3 b) {
+		return new Vector3(
+				a.x / b.x,
+				a.y / b.y,
+				a.z / b.z
+				);
+	}
+	public static Vector4 div(Vector4 a, Vector4 b) {
+		return new Vector4(
+				a.x / b.x,
+				a.y / b.y,
+				a.z / b.z,
+				a.w / b.w
+				);
+	}	
+	public static Vector2 div(Vector2 a, float x, float y) {
+		return new Vector2(
+				a.x / x,
+				a.y / y
+				);
+	}
+	public static Vector3 div(Vector3 a, float x, float y, float z) {
+		return new Vector3(
+				a.x / x,
+				a.y / y,
+				a.z / z
+				);
+	}	
+	public static Vector4 div(Vector4 a, float x, float y, float z, float w) {
+		return new Vector4(
+				a.x / x,
+				a.y / y,
+				a.z / z,
+				a.w / w
+				);
 	}
 	
 	public static Vector3 hom(Vector2 a) {
@@ -247,176 +300,14 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 	}
 	public static float dot(float x1, float y1, float z1, float w1, float x2, float y2, float z2, float w2) {
 		return x1 * x2 + y1 * y2 + z1 * z2 + w1 * w2;
-	}
-	
-	public static Vector2 mul(Vector2 a, Vector2 b) {
-		return new Vector2(
-				a.x * b.x,
-				a.y * b.y
-				);
-	}
-	public static Vector3 mul(Vector3 a, Vector3 b) {
-		return new Vector3(
-				a.x * b.x,
-				a.y * b.y,
-				a.z * b.z
-				);
-	}
-	public static Vector4 mul(Vector4 a, Vector4 b) {
-		return new Vector4(
-				a.x * b.x,
-				a.y * b.y,
-				a.z * b.z,
-				a.w * b.w
-				);
-	}
-	public static Vector2.Mutable mul(Vector2.Mutable a, Vector2 b) {
-		return a.set(
-				a.x * b.x,
-				a.y * b.y
-				);
-	}
-	public static Vector3.Mutable mul(Vector3.Mutable a, Vector3 b) {
-		return a.set(
-				a.x * b.x,
-				a.y * b.y,
-				a.z * b.z
-				);
-	}
-	public static Vector4.Mutable mul(Vector4.Mutable a, Vector4 b) {
-		return a.set(
-				a.x * b.x,
-				a.y * b.y,
-				a.z * b.z,
-				a.w * b.w
-				);
-	}
-	
-	public static Vector2 div(Vector2 a, Vector2 b) {
-		return new Vector2(
-				a.x / b.x,
-				a.y / b.y
-				);
-	}
-	public static Vector3 div(Vector3 a, Vector3 b) {
-		return new Vector3(
-				a.x / b.x,
-				a.y / b.y,
-				a.z / b.z
-				);
-	}
-	public static Vector4 div(Vector4 a, Vector4 b) {
-		return new Vector4(
-				a.x / b.x,
-				a.y / b.y,
-				a.z / b.z,
-				a.w / b.w
-				);
-	}
-	public static Vector2.Mutable div(Vector2.Mutable a, Vector2 b) {
-		return a.set(
-				a.x / b.x,
-				a.y / b.y
-				);
-	}
-	public static Vector3.Mutable div(Vector3.Mutable a, Vector3 b) {
-		return a.set(
-				a.x / b.x,
-				a.y / b.y,
-				a.z / b.z
-				);
-	}
-	public static Vector4.Mutable div(Vector4.Mutable a, Vector4 b) {
-		return a.set(
-				a.x / b.x,
-				a.y / b.y,
-				a.z / b.z,
-				a.w / b.w
-				);
-	}
-	
-	public static Vector2 mul(Vector2 a, Matrix2 b) {
-		return new Vector2(
-				Vector.dot(a, b.xx, b.yx),
-				Vector.dot(a, b.xy, b.yy)
-				);
 	}	
-	public static Vector2 mul(Vector2 a, Matrix3 b) {
-		Vector3 h = Vector.hom(a);
-		return new Vector2(
-				Vector.dot(h, b.xx, b.yx, b.zx),
-				Vector.dot(h, b.xy, b.yy, b.zy)
-				);
-	}
-	public static Vector3 mul(Vector3 a, Matrix3 b) {
-		return new Vector3(
-				Vector.dot(a, b.xx, b.yx, b.zx),
-				Vector.dot(a, b.xy, b.yy, b.zy),
-				Vector.dot(a, b.xz, b.yz, b.zz)
-				);
-	}	
-	public static Vector3 mul(Vector3 a, Matrix4 b) {
-		Vector4 h = Vector.hom(a);
-		return new Vector3(
-				Vector.dot(h, b.xx, b.yx, b.zx, b.wx),
-				Vector.dot(h, b.xy, b.yy, b.zy, b.wy),
-				Vector.dot(h, b.xz, b.yz, b.zz, b.wz)
-				);
-	}
-	public static Vector4 mul(Vector4 a, Matrix4 b) {
-		return new Vector4(
-				Vector.dot(a, b.xx, b.yx, b.zx, b.wx),
-				Vector.dot(a, b.xy, b.yy, b.zy, b.wy),
-				Vector.dot(a, b.xz, b.yz, b.zz, b.wz),
-				Vector.dot(a, b.xw, b.yw, b.zw, b.ww)
-				);
-	}
-	public static Vector2.Mutable mul(Vector2.Mutable a, Matrix2 b) {
-		return a.set(
-				Vector.dot(a, b.xx, b.yx),
-				Vector.dot(a, b.xy, b.yy)
-				);
-	}	
-	public static Vector2.Mutable mul(Vector2.Mutable a, Matrix3 b) {
-		Vector3 h = Vector.hom(a);
-		return a.set(
-				Vector.dot(h, b.xx, b.yx, b.zx),
-				Vector.dot(h, b.xy, b.yy, b.zy)
-				);
-	}
-	public static Vector3.Mutable mul(Vector3.Mutable a, Matrix3 b) {
-		return a.set(
-				Vector.dot(a, b.xx, b.yx, b.zx),
-				Vector.dot(a, b.xy, b.yy, b.zy),
-				Vector.dot(a, b.xz, b.yz, b.zz)
-				);
-	}	
-	public static Vector3.Mutable mul(Vector3.Mutable a, Matrix4 b) {
-		Vector4 h = Vector.hom(a);
-		return a.set(
-				Vector.dot(h, b.xx, b.yx, b.zx, b.wx),
-				Vector.dot(h, b.xy, b.yy, b.zy, b.wy),
-				Vector.dot(h, b.xz, b.yz, b.zz, b.wz)
-				);
-	}
-	public static Vector4.Mutable mul(Vector4.Mutable a, Matrix4 b) {
-		return a.set(
-				Vector.dot(a, b.xx, b.yx, b.zx, b.wx),
-				Vector.dot(a, b.xy, b.yy, b.zy, b.wy),
-				Vector.dot(a, b.xz, b.yz, b.zz, b.wz),
-				Vector.dot(a, b.xw, b.yw, b.zw, b.ww)
-				);
-	}
 	
 	public static Vector2 transform(Vector2 a, Transform2 t) {
 		return Vector.mul(a, t.xform);
-	}
-	
+	}	
 	public static Vector3 transform(Vector3 a, Transform3 t) {
 		return null;
-	}
-	
-	
+	}	
 	
 	public static java.awt.Color toColor3i(Vector v) {
 		return new java.awt.Color((int)v.x(), (int)v.y(), (int)v.z(), 1f);
@@ -464,5 +355,193 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				rgba[2],
 				rgba[3]
 				);
+	}
+	
+	/*MUTABLE ADD*/
+	public static Vector2.Mutable m_add(Vector2.Mutable a, Vector2 b) {
+		a.x += b.x;
+		a.y += b.y;
+		return a;
+	}
+	public static Vector3.Mutable m_add(Vector3.Mutable a, Vector3 b) {
+		a.x += b.x;
+		a.y += b.y;
+		a.z += b.z;
+		return a;
+	}
+	public static Vector4.Mutable m_add(Vector4.Mutable a, Vector4 b) {
+		a.x += b.x;
+		a.y += b.y;
+		a.z += b.z;
+		a.w += b.w;
+		return a;
+	}
+	public static Vector2.Mutable m_add(Vector2.Mutable a, float x, float y) {
+		a.x += x;
+		a.y += y;
+		return a;
+	}
+	public static Vector3.Mutable m_add(Vector3.Mutable a, float x, float y, float z) {
+		a.x += x;
+		a.y += y;
+		a.z += z;
+		return a;
+	}
+	public static Vector4.Mutable m_add(Vector4.Mutable a, float x, float y, float z, float w) {
+		a.x += x;
+		a.y += y;
+		a.z += z;
+		a.w += w;
+		return a;
+	}
+	
+	/*MUTABLE SUB*/
+	public static Vector2.Mutable m_sub(Vector2.Mutable a, Vector2 b) {
+		a.x -= b.x;
+		a.y -= b.y;
+		return a;
+	}
+	public static Vector3.Mutable m_sub(Vector3.Mutable a, Vector3 b) {
+		a.x -= b.x;
+		a.y -= b.y;
+		a.z -= b.z;
+		return a;
+	}
+	public static Vector4.Mutable m_sub(Vector4.Mutable a, Vector4 b) {
+		a.x -= b.x;
+		a.y -= b.y;
+		a.z -= b.z;
+		a.w -= b.w;
+		return a;
+	}
+	public static Vector2.Mutable m_sub(Vector2.Mutable a, float x, float y) {
+		a.x -= x;
+		a.y -= y;
+		return a;
+	}
+	public static Vector3.Mutable m_sub(Vector3.Mutable a, float x, float y, float z) {
+		a.x -= x;
+		a.y -= y;
+		a.z -= z;
+		return a;
+	}
+	public static Vector4.Mutable m_sub(Vector4.Mutable a, float x, float y, float z, float w) {
+		a.x -= x;
+		a.y -= y;
+		a.z -= z;
+		a.w -= w;
+		return a;
+	}
+	
+	/*MUTABLE MUL*/
+	public static Vector2.Mutable m_mul(Vector2.Mutable a, Vector2 b) {
+		a.x *= b.x;
+		a.y *= b.y;
+		return a;
+	}
+	public static Vector3.Mutable m_mul(Vector3.Mutable a, Vector3 b) {
+		a.x *= b.x;
+		a.y *= b.y;
+		a.z *= b.z;
+		return a;
+	}
+	public static Vector4.Mutable m_mul(Vector4.Mutable a, Vector4 b) {
+		a.x *= b.x;
+		a.y *= b.y;
+		a.z *= b.z;
+		a.w *= b.w;
+		return a;
+	}
+	public static Vector2.Mutable m_mul(Vector2.Mutable a, float x, float y) {
+		a.x *= x;
+		a.y *= y;
+		return a;
+	}
+	public static Vector3.Mutable m_mul(Vector3.Mutable a, float x, float y, float z) {
+		a.x *= x;
+		a.y *= y;
+		a.z *= z;
+		return a;
+	}
+	public static Vector4.Mutable m_mul(Vector4.Mutable a, float x, float y, float z, float w) {
+		a.x *= x;
+		a.y *= y;
+		a.z *= z;
+		a.w *= w;
+		return a;
+	}
+	public static Vector2.Mutable m_mul(Vector2.Mutable a, Matrix2 b) {
+		return a.set(
+				Vector.dot(a, b.xx, b.yx),
+				Vector.dot(a, b.xy, b.yy)
+				);
+	}	
+	public static Vector2.Mutable m_mul(Vector2.Mutable a, Matrix3 b) {
+		Vector3 h = Vector.hom(a);
+		return a.set(
+				Vector.dot(h, b.xx, b.yx, b.zx),
+				Vector.dot(h, b.xy, b.yy, b.zy)
+				);
+	}
+	public static Vector3.Mutable m_mul(Vector3.Mutable a, Matrix3 b) {
+		return a.set(
+				Vector.dot(a, b.xx, b.yx, b.zx),
+				Vector.dot(a, b.xy, b.yy, b.zy),
+				Vector.dot(a, b.xz, b.yz, b.zz)
+				);
+	}	
+	public static Vector3.Mutable m_mul(Vector3.Mutable a, Matrix4 b) {
+		Vector4 h = Vector.hom(a);
+		return a.set(
+				Vector.dot(h, b.xx, b.yx, b.zx, b.wx),
+				Vector.dot(h, b.xy, b.yy, b.zy, b.wy),
+				Vector.dot(h, b.xz, b.yz, b.zz, b.wz)
+				);
+	}
+	public static Vector4.Mutable m_mul(Vector4.Mutable a, Matrix4 b) {
+		return a.set(
+				Vector.dot(a, b.xx, b.yx, b.zx, b.wx),
+				Vector.dot(a, b.xy, b.yy, b.zy, b.wy),
+				Vector.dot(a, b.xz, b.yz, b.zz, b.wz),
+				Vector.dot(a, b.xw, b.yw, b.zw, b.ww)
+				);
+	}
+	
+	/*MUTABLE DIV*/
+	public static Vector2.Mutable m_div(Vector2.Mutable a, Vector2 b) {
+		a.x /= b.x;
+		a.y /= b.y;
+		return a;
+	}
+	public static Vector3.Mutable m_div(Vector3.Mutable a, Vector3 b) {
+		a.x /= b.x;
+		a.y /= b.y;
+		a.z /= b.z;
+		return a;
+	}
+	public static Vector4.Mutable m_div(Vector4.Mutable a, Vector4 b) {
+		a.x /= b.x;
+		a.y /= b.y;
+		a.z /= b.z;
+		a.w /= b.w;
+		return a;
+	}
+	public static Vector2.Mutable m_div(Vector2.Mutable a, float x, float y) {
+		a.x /= x;
+		a.y /= y;
+		return a;
+	}
+	public static Vector3.Mutable m_div(Vector3.Mutable a, float x, float y, float z) {
+		a.x /= x;
+		a.y /= y;
+		a.z /= z;
+		return a;
+	}
+	public static Vector4.Mutable m_div(Vector4.Mutable a, float x, float y, float z, float w) {
+		a.x /= x;
+		a.y /= y;
+		a.z /= z;
+		a.w /= w;
+		return a;
 	}
 }

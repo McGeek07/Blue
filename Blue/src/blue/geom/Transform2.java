@@ -30,7 +30,7 @@ public class Transform2 extends Transform<Matrix3> {
 		return mov(t.x, t.y);
 	}	
 	public Transform2 mov(float tx, float ty) {
-		Matrix.mul(xform, Transform.mov2(tx, ty));
+		Matrix.m_mul(xform, Transform.mov2(tx, ty));
 		return this;
 	}
 	
@@ -38,7 +38,7 @@ public class Transform2 extends Transform<Matrix3> {
 		return mov(s.x, s.y);
 	}	
 	public Transform2 sca(float sx, float sy) {
-		Matrix.mul(xform, Transform.sca2(sx, sy));
+		Matrix.m_mul(xform, Transform.sca2(sx, sy));
 		return this;
 	}	
 	
