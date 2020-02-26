@@ -1,7 +1,8 @@
 package blue;
 
 import blue.core.Engine;
-import blue.geom.Layout;
+import blue.core.Input;
+import blue.core.Input.KeyAction;
 import blue.util.Version;
 
 public class Blue {
@@ -11,11 +12,15 @@ public class Blue {
 	public static void main(String[] args) {
 		System.out.println(VERSION);
 		
-		Engine.getConfiguration().set(Engine.CANVAS_LAYOUT, Layout._640x480);
-		Engine.getConfiguration().set(Engine.WINDOW_BORDER, true);
-		Engine.getConfiguration().set(Engine.WINDOW_DEVICE,    1);
-		Engine.getConfiguration().set(Engine.ENGINE_FPS, 0);
+		Engine.getConfiguration().set(Engine.WINDOW_BORDER, false);
+		Engine.getConfiguration().set(Engine.WINDOW_DEVICE,     0);
+		Engine.getConfiguration().set(Engine.ENGINE_FPS, 60);
 		Engine.getConfiguration().set(Engine.DEBUG, true);
 		Engine.init();
+		
+		Input.attach(KeyAction.class, (event) -> {
+			if(event.isDn() && event.isKey(Input.KEY_ESCAPE))
+				Engine.exit();
+		});
 	}
 }
