@@ -6,30 +6,5 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/lwjgl-glfw.jar" sourcepath="lib/sources/lwjgl-glfw-sources.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Blue/lib/natives"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/lwjgl-jemalloc.jar" sourcepath="lib/sources/lwjgl-jemalloc-sources.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Blue/lib/natives"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/lwjgl-openal.jar" sourcepath="lib/sources/lwjgl-openal-sources.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Blue/lib/natives"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/lwjgl-opengl.jar" sourcepath="lib/sources/lwjgl-opengl-sources.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Blue/lib/natives"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/lwjgl.jar" sourcepath="lib/sources/lwjgl-sources.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Blue/lib/natives"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
