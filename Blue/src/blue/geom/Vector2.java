@@ -60,8 +60,6 @@ public class Vector2 extends Vector {
             throw new IllegalArgumentException("Null Vector");
         if (str == null)
             throw new IllegalArgumentException("Null String");
-        if ((str = str.trim()).isEmpty())
-            throw new IllegalArgumentException("Empty String");
         int
             a = str.indexOf("<"),
             b = str.indexOf(">");

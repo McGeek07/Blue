@@ -40,6 +40,10 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 			v0 = new Vector2.Mutable(),
 			v1 = new Vector2.Mutable();
 		
+		public boolean contains(float x, float y, boolean include_edge) {
+			return Box.contains(this, x, y, include_edge);
+		}
+		
 		@Override
 		public boolean contains(Vector b, boolean include_edge) {
 			return Box.contains(this, b, include_edge);
@@ -70,11 +74,9 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 		
 		protected static final <B extends Box2> B parseBox2(B b2, String str) {
 			if(b2 == null)
-	            throw new IllegalArgumentException("Null Box");
+	            throw new IllegalArgumentException("Null Box2");
 	        if (str == null)
 	            throw new IllegalArgumentException("Null String");
-	        if ((str = str.trim()).isEmpty())
-	            throw new IllegalArgumentException("Empty String");
 	        int
 	            a = str.indexOf("<"),
 	            b = str.indexOf(">");
@@ -113,6 +115,10 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 			v0 = new Vector3.Mutable(),
 			v1 = new Vector3.Mutable();
 		
+		public boolean contains(float x, float y, float z, boolean include_edge) {
+			return Box.contains(this, x, y, z, include_edge);
+		}
+		
 		@Override
 		public boolean contains(Vector b, boolean include_edge) {
 			return Box.contains(this, b, include_edge);
@@ -145,11 +151,9 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 		
 		protected static final <B extends Box3> B parseBox3(B b3, String str) {
 			if(b3 == null)
-	            throw new IllegalArgumentException("Null Box");
+	            throw new IllegalArgumentException("Null Box3");
 	        if (str == null)
 	            throw new IllegalArgumentException("Null String");
-	        if ((str = str.trim()).isEmpty())
-	            throw new IllegalArgumentException("Empty String");
 	        int
 	            a = str.indexOf("<"),
 	            b = str.indexOf(">");
@@ -186,77 +190,120 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 	}	
 	
 	public static boolean contains(Box2 a, Vector b, boolean include_edge) {
-		return contains(a.min(), a.max(), b      , b      , include_edge);			
+		return contains(a, b.x(), b.y(), b.x(), b.y(), include_edge);			
 	}
 	
 	public static boolean contains(Box2 a, Box<?> b, boolean include_edge) {
-		return contains(a.min(), a.max(), b.min(), b.max(), include_edge);
+		return contains(a, b.x1(), b.y1(), b.x2(), b.y2(), include_edge);
 	}
 	
 	public static boolean contacts(Box2 a, Box<?> b, boolean include_edge) {
-		return contacts(a.min(), a.max(), b.min(), b.max(), include_edge);
+		return contacts(a, b.x1(), b.y1(), b.x2(), b.y2(), include_edge);
+	}
+	
+	public static boolean contains(Box2 a, float x, float y, boolean include_edge) {
+		return contains(a, x, y, x, y, include_edge);
+	}
+	
+	public static boolean contains(Box2 a, float x1, float y1, float x2, float y2, boolean include_edge) {
+		if(include_edge)
+			return
+					a.x1() <= x1 && a.x2() >= x2 &&
+					a.y1() <= y1 && a.y2() >= y2;
+		else
+			return
+					a.x1() <  x1 && a.x2() >  x2 &&
+					a.y1() <  y1 && a.y2() >  y2;
+	}
+	
+	public static boolean contacts(Box2 a, float x1, float y1, float x2, float y2, boolean include_edge) {
+		if(include_edge)
+			return
+					a.x1() <= x2 && a.x2() >= x1 &&
+					a.y1() <= y2 && a.y2() >= y1;
+		else
+			return
+					a.x1() <  x2 && a.x2() >  x1 &&
+					a.y1() <  y2 && a.y2() >  y1;
 	}
 	
 	public static boolean contains(Box3 a, Vector b, boolean include_edge) {
-		return contains(a.min(), a.max(), b      , b      , include_edge);			
+		return contains(a, b.x(), b.y(), b.z(), b.x(), b.y(), b.z(), include_edge);			
 	}
 	
 	public static boolean contains(Box3 a, Box<?> b, boolean include_edge) {
-		return contains(a.min(), a.max(), b.min(), b.max(), include_edge);
+		return contains(a, b.x1(), b.y1(), b.z1(), b.x2(), b.y2(), b.z2(), include_edge);
 	}
 	
 	public static boolean contacts(Box3 a, Box<?> b, boolean include_edge) {
-		return contacts(a.min(), a.max(), b.min(), b.max(), include_edge);
+		return contacts(a, b.x1(), b.y1(), b.z1(), b.x2(), b.y2(), b.z2(), include_edge);
 	}
 	
-	public static boolean contains(Vector2 a1, Vector2 a2, Vector b1, Vector b2, boolean include_edge) {
+	public static boolean contains(Box3 a, float x, float y, float z, boolean include_edge) {
+		return contains(a, x, y, z, x, y, z, include_edge);
+	}
+	
+	public static boolean contains(Box3 a, float x1, float y1, float z1, float x2, float y2, float z2, boolean include_edge) {
 		if(include_edge)
 			return
-					a1.x <= b1.x() && a2.x >= b2.x() &&
-					a1.y <= b1.y() && a2.y >= b2.y();
+					a.x1() <= x1 && a.x2() >= x2 &&
+					a.y1() <= y1 && a.y2() >= y2 &&
+					a.z1() <= z1 && a.z2() >= z2;
 		else
-			return 	
-					a1.x <  b1.x() && a2.x >  b2.x() &&
-					a1.y <  b1.y() && a2.y >  b2.y();
+			return
+					a.x1() <  x1 && a.x2() >  x2 &&
+					a.y1() <  y1 && a.y2() >  y2 &&
+					a.z1() <  z1 && a.z2() >  z2;
 	}
 	
-	public static boolean contains(Vector3 a1, Vector3 a2, Vector b1, Vector b2, boolean include_edge) {
+	public static boolean contacts(Box3 a, float x1, float y1, float z1, float x2, float y2, float z2, boolean include_edge) {
 		if(include_edge)
 			return
-					a1.x <= b1.x() && a2.x >= b2.x() &&
-					a1.y <= b1.y() && a2.y >= b2.y() &&
-					a1.z <= b1.z() && a2.z >= b2.z();
+					a.x1() <= x2 && a.x2() >= x1 &&
+					a.y1() <= y2 && a.y2() >= y1 &&
+					a.z1() <= z2 && a.z2() >= z1;
 		else
-			return 	
-					a1.x <  b1.x() && a2.x >  b2.x() &&
-					a1.y <  b1.y() && a2.y >  b2.y() &&
-					a1.z <  b1.z() && a2.z >  b2.z();
-	}
-	
-	public static boolean contacts(Vector2 a1, Vector2 a2, Vector b1, Vector b2, boolean include_edge) {
-		if(include_edge)
 			return
-					a1.x <= b2.x() && a2.x >= b1.x() &&
-					a1.y <= b2.y() && a2.y >= b1.y();
-		else
-			return 	
-					a1.x <  b2.x() && a2.x >  b1.x() &&
-					a1.y <  b2.y() && a2.y >  b1.y();
+					a.x1() <  x2 && a.x2() >  x1 &&
+					a.y1() <  y2 && a.y2() >  y1 &&
+					a.z1() <  z2 && a.z2() >  z1;
 	}
 	
-	public static boolean contacts(Vector3 a1, Vector3 a2, Vector b1, Vector b2, boolean include_edge) {
-		if(include_edge)
-			return
-					a1.x <= b2.x() && a2.x >= b1.x() &&
-					a1.y <= b2.y() && a2.y >= b1.y() &&
-					a1.z <= b2.z() && a2.z >= b1.z();
-		else
-			return 	
-					a1.x <  b2.x() && a2.x >  b1.x() &&
-					a1.y <  b2.y() && a2.y >  b1.y() &&
-					a1.z <  b2.z() && a2.z >  b1.z();
+	public static Bounds2 align(Bounds2 a, Box<?> b) {
+		float
+			w2 = a.w() / 2,
+			h2 = a.h() / 2;
+		Vector
+			c = b.mid();
+		return new Bounds2(
+				c.x() - w2,
+				c.y() - h2,
+				c.x() + w2,
+				c.y() + h2
+				);
 	}
-	
+	public static Bounds2 align(Bounds2 a, Vector b) {
+		float
+			w2 = a.w() / 2,
+			h2 = a.h() / 2;
+		return new Bounds2(
+				b.x() - w2,
+				b.y() - h2,
+				b.x() + w2,
+				b.y() + h2
+				);
+	}
+	public static Bounds2 align(Bounds2 a, float x, float y) {
+		float
+			w2 = a.w() / 2,
+			h2 = a.h() / 2;
+		return new Bounds2(
+				x - w2,
+				y - h2,
+				x + w2,
+				y + h2
+				);
+	}
 	public static Region2 align(Region2 a, Box<?> b) {
 		Vector 
 			c = b.mid();
@@ -267,7 +314,6 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 				a.h()
 				);
 	}
-	
 	public static Region2 align(Region2 a, Vector b) {
 		return new Region2(
 				b.x() - a.w() / 2,
@@ -276,7 +322,6 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 				a.h()
 				);
 	}
-	
 	public static Region2 align(Region2 a, float x, float y) {
 		return new Region2(
 				x - a.w() / 2,
@@ -285,7 +330,118 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 				a.h()
 				);
 	}
+	public static Bounds3 align(Bounds3 a, Box<?> b) {
+		float
+			w2 = a.w() / 2,
+			h2 = a.h() / 2,
+			d2 = a.d() / 2;
+		Vector
+			c = b.mid();
+		return new Bounds3(
+				c.x() - w2,
+				c.y() - h2,
+				c.z() - d2,
+				c.x() + w2,
+				c.y() + h2,
+				c.z() + d2
+				);
+	}
+	public static Bounds3 align(Bounds3 a, Vector b) {
+		float
+			w2 = a.w() / 2,
+			h2 = a.h() / 2,
+			d2 = a.d() / 2;
+		return new Bounds3(
+				b.x() - w2,
+				b.y() - h2,
+				b.z() - d2,
+				b.x() + w2,
+				b.y() + h2,
+				b.z() + d2
+				);
+	}
+	public static Bounds3 align(Bounds3 a, float x, float y, float z) {
+		float
+			w2 = a.w() / 2,
+			h2 = a.h() / 2,
+			d2 = a.d() / 2;
+		return new Bounds3(
+				x - w2,
+				y - h2,
+				z - d2,
+				x + w2,
+				y + h2,
+				z + d2
+				);
+	}
+	public static Region3 align(Region3 a, Box<?> b) {
+		Vector 
+			c = b.mid();
+		return new Region3(
+				c.x() - a.w() / 2,
+				c.y() - a.h() / 2,
+				c.z() - a.d() / 2,
+				a.w(),
+				a.h(),
+				a.d()
+				);
+	}	
+	public static Region3 align(Region3 a, Vector b) {
+		return new Region3(
+				b.x() - a.w() / 2,
+				b.y() - a.h() / 2,
+				b.z() - a.d() / 2,
+				a.w(),
+				a.h(),
+				a.d()
+				);
+	}	
+	public static Region3 align(Region3 a, float x, float y, float z) {
+		return new Region3(
+				x - a.w() / 2,
+				y - a.h() / 2,
+				z - a.d() / 2,
+				a.w(),
+				a.h(),
+				a.d()
+				);
+	}
 	
+	public static Bounds2.Mutable m_align(Bounds2.Mutable a, Box<?> b) {
+		float
+			w2 = a.w() / 2,
+			h2 = a.h() / 2;
+		Vector
+			c = b.mid();
+		return a.set(
+				c.x() - w2,
+				c.y() - h2,
+				c.x() + w2,
+				c.y() + h2
+				);
+	}	
+	public static Bounds2.Mutable m_align(Bounds2.Mutable a, Vector b) {
+		float
+			w2 = a.w() / 2,
+			h2 = a.h() / 2;
+		return a.set(
+				b.x() - w2,
+				b.y() - h2,
+				b.x() + w2,
+				b.y() + h2
+				);
+	}
+	public static Bounds2.Mutable m_align(Bounds2.Mutable a, float x, float y) {
+		float
+			w2 = a.w() / 2,
+			h2 = a.h() / 2;
+		return a.set(
+				x - w2,
+				y - h2,
+				x + w2,
+				y + h2
+				);
+	}
 	public static Region2.Mutable m_align(Region2.Mutable a, Box<?> b) {
 		Vector 
 			c = b.mid();
@@ -295,8 +451,7 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 				a.w(),
 				a.h()
 				);
-	}
-	
+	}	
 	public static Region2.Mutable m_align(Region2.Mutable a, Vector b) {
 		return a.set(
 				b.x() - a.w() / 2,
@@ -304,14 +459,89 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 				a.w(),
 				a.h()
 				);
-	}
-	
+	}	
 	public static Region2.Mutable m_align(Region2.Mutable a, float x, float y) {
 		return a.set(
 				x - a.w() / 2,
 				y - a.h() / 2,
 				a.w(),
 				a.h()
+				);
+	}
+	public static Bounds3.Mutable m_align(Bounds3.Mutable a, Box<?> b) {
+		float
+			w2 = a.w() / 2,
+			h2 = a.h() / 2,
+			d2 = a.d() / 2;
+		Vector
+			c = b.mid();
+		return a.set(
+				c.x() - w2,
+				c.y() - h2,
+				c.z() - d2,
+				c.x() + w2,
+				c.y() + h2,
+				c.z() + d2
+				);
+	}	
+	public static Bounds3.Mutable m_align(Bounds3.Mutable a, Vector b) {
+		float
+			w2 = a.w() / 2,
+			h2 = a.h() / 2,
+			d2 = a.d() / 2;
+		return a.set(
+				b.x() - w2,
+				b.y() - h2,
+				b.z() - d2,
+				b.x() + w2,
+				b.y() + h2,
+				b.z() + d2
+				);
+	}
+	public static Bounds3.Mutable m_align(Bounds3.Mutable a, float x, float y, float z) {
+		float
+			w2 = a.w() / 2,
+			h2 = a.h() / 2,
+			d2 = a.d() / 2;
+		return a.set(
+				x - w2,
+				y - h2,
+				z - d2,
+				x + w2,
+				y + h2,
+				z + d2
+				);
+	}
+	public static Region3.Mutable m_align(Region3.Mutable a, Box<?> b) {
+		Vector 
+			c = b.mid();
+		return a.set(
+				c.x() - a.w() / 2,
+				c.y() - a.h() / 2,
+				c.z() - a.d() / 2,
+				a.w(),
+				a.h(),
+				a.d()
+				);
+	}	
+	public static Region3.Mutable m_align(Region3.Mutable a, Vector b) {
+		return a.set(
+				b.x() - a.w() / 2,
+				b.y() - a.h() / 2,
+				b.z() - a.d() / 2,
+				a.w(),
+				a.h(),
+				a.d()
+				);
+	}	
+	public static Region3.Mutable m_align(Region3.Mutable a, float x, float y, float z) {
+		return a.set(
+				x - a.w() / 2,
+				y - a.h() / 2,
+				z - a.d() / 2,
+				a.w(),
+				a.h(),
+				a.d()
 				);
 	}
 }

@@ -11,7 +11,7 @@ public class Matrix2 extends Matrix {
 		//do nothing
 	}
 	
-	public Matrix2(Matrix m) {		
+	public Matrix2(Matrix m) {
 		this.mSet(m);
 	}
 	
@@ -157,8 +157,6 @@ public class Matrix2 extends Matrix {
 			throw new IllegalArgumentException("Null Matrix");
         if (str == null)
             throw new IllegalArgumentException("Null String");
-        if ((str = str.trim()).isEmpty())
-            throw new IllegalArgumentException("Empty String");
         str = str.replace("[", "");
         str = str.replace("]", "");
         String[] tmp = str.split("\n");

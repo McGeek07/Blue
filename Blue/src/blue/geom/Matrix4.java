@@ -215,8 +215,6 @@ public class Matrix4 extends Matrix {
 			throw new IllegalArgumentException("Null Matrix");
 	    if (str == null)
 	        throw new IllegalArgumentException("Null String");
-	    if ((str = str.trim()).isEmpty())
-	        throw new IllegalArgumentException("Empty String");
 	    str = str.replace("[", "");
 	    str = str.replace("]", "");
 	    String[] tmp = str.split("\n");

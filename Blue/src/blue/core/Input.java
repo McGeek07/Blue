@@ -170,14 +170,10 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 	}
 	
 	public void onLoseFocus() {
-		for(int i = 0; i < NUM_KEYS; i ++) {
+		for(int i = 0; i < NUM_KEYS; i ++)
 			key_buffer[i] = false;
-			keys[i] = UP;
-		}
-		for(int i = 0; i < NUM_BTNS; i ++) {
+		for(int i = 0; i < NUM_BTNS; i ++)
 			btn_buffer[i] = false;
-			btns[i] = UP;
-		}
 	}
 
 	@Override

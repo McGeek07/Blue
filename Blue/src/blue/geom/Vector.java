@@ -21,10 +21,10 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 	
 	@Override
 	public boolean equals(Object o) {
-		return o instanceof Vector ? Vector.compare(this, (Vector)o) == 0 : false;
+		return o instanceof Vector && Vector.compare(this, (Vector)o) == 0;
 	}
 	
-	public static int compare(Vector a, Vector b) {	
+	public static int compare(Vector a, Vector b) {
 		float tmp;
 		switch(Math.max(a.n(), b.n())) {
 			case 4:
@@ -156,6 +156,27 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				a.w * b.w
 				);
 	}
+	public static Vector2 mul(Vector2 a, float b) {
+		return new Vector2(
+				a.x * b,
+				a.y * b
+				);
+	}
+	public static Vector3 mul(Vector3 a, float b) {
+		return new Vector3(
+				a.x * b,
+				a.y * b,
+				a.z * b
+				);
+	}
+	public static Vector4 mul(Vector4 a, float b) {
+		return new Vector4(
+				a.x * b,
+				a.y * b,
+				a.z * b,
+				a.w * b
+				);
+	}
 	public static Vector2 mul(Vector2 a, float x, float y) {
 		return new Vector2(
 				a.x * x,
@@ -236,6 +257,27 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				a.w / b.w
 				);
 	}	
+	public static Vector2 div(Vector2 a, float b) {
+		return new Vector2(
+				a.x / b,
+				a.y / b
+				);
+	}
+	public static Vector3 div(Vector3 a, float b) {
+		return new Vector3(
+				a.x / b,
+				a.y / b,
+				a.z / b
+				);
+	}
+	public static Vector4 div(Vector4 a, float b) {
+		return new Vector4(
+				a.x / b,
+				a.y / b,
+				a.z / b,
+				a.w / b
+				);
+	}
 	public static Vector2 div(Vector2 a, float x, float y) {
 		return new Vector2(
 				a.x / x,
@@ -452,6 +494,27 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 		a.w *= b.w;
 		return a;
 	}
+	public static Vector2.Mutable m_mul(Vector2.Mutable a, float b) {
+		return a.set(
+				a.x * b,
+				a.y * b
+				);
+	}
+	public static Vector3.Mutable m_mul(Vector3.Mutable a, float b) {
+		return a.set(
+				a.x * b,
+				a.y * b,
+				a.z * b
+				);
+	}
+	public static Vector4.Mutable m_mul(Vector4.Mutable a, float b) {
+		return a.set(
+				a.x * b,
+				a.y * b,
+				a.z * b,
+				a.w * b
+				);
+	}
 	public static Vector2.Mutable m_mul(Vector2.Mutable a, float x, float y) {
 		a.x *= x;
 		a.y *= y;
@@ -525,6 +588,27 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 		a.z /= b.z;
 		a.w /= b.w;
 		return a;
+	}
+	public static Vector2.Mutable m_div(Vector2.Mutable a, float b) {
+		return a.set(
+				a.x / b,
+				a.y / b
+				);
+	}
+	public static Vector3.Mutable m_div(Vector3.Mutable a, float b) {
+		return a.set(
+				a.x / b,
+				a.y / b,
+				a.z / b
+				);
+	}
+	public static Vector4.Mutable m_div(Vector4.Mutable a, float b) {
+		return a.set(
+				a.x / b,
+				a.y / b,
+				a.z / b,
+				a.w / b
+				);
 	}
 	public static Vector2.Mutable m_div(Vector2.Mutable a, float x, float y) {
 		a.x /= x;
