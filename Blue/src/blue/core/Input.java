@@ -101,15 +101,10 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 	}
 	
 	public void onPollWheel() {
-		if(
-				wheel_buffer != 0f &&
-				wheel_buffer != wheel
-				) {
-			wheel = wheel_buffer;
-			wheel_buffer = 0f;
-			//event
+		wheel        = wheel_buffer;
+		wheel_buffer = 0           ;
+		if(wheel != 0)
 			Engine.wheelMoved(getWheel());
-		}
 	}
 	
 	public void onPollKeys() {
@@ -169,7 +164,21 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 			}
 		}
 	}
-
+	
+	public void onGainFocus() {
+		//do nothing
+	}
+	
+	public void onLoseFocus() {
+		for(int i = 0; i < NUM_KEYS; i ++) {
+			key_buffer[i] = false;
+			keys[i] = UP;
+		}
+		for(int i = 0; i < NUM_BTNS; i ++) {
+			btn_buffer[i] = false;
+			btns[i] = UP;
+		}
+	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {

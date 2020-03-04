@@ -256,4 +256,62 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 					a1.y <  b2.y() && a2.y >  b1.y() &&
 					a1.z <  b2.z() && a2.z >  b1.z();
 	}
+	
+	public static Region2 align(Region2 a, Box<?> b) {
+		Vector 
+			c = b.mid();
+		return new Region2(
+				c.x() - a.w() / 2,
+				c.y() - a.h() / 2,
+				a.w(),
+				a.h()
+				);
+	}
+	
+	public static Region2 align(Region2 a, Vector b) {
+		return new Region2(
+				b.x() - a.w() / 2,
+				b.y() - a.h() / 2,
+				a.w(),
+				a.h()
+				);
+	}
+	
+	public static Region2 align(Region2 a, float x, float y) {
+		return new Region2(
+				x - a.w() / 2,
+				y - a.h() / 2,
+				a.w(),
+				a.h()
+				);
+	}
+	
+	public static Region2.Mutable m_align(Region2.Mutable a, Box<?> b) {
+		Vector 
+			c = b.mid();
+		return a.set(
+				c.x() - a.w() / 2,
+				c.y() - a.h() / 2,
+				a.w(),
+				a.h()
+				);
+	}
+	
+	public static Region2.Mutable m_align(Region2.Mutable a, Vector b) {
+		return a.set(
+				b.x() - a.w() / 2,
+				b.y() - a.h() / 2,
+				a.w(),
+				a.h()
+				);
+	}
+	
+	public static Region2.Mutable m_align(Region2.Mutable a, float x, float y) {
+		return a.set(
+				x - a.w() / 2,
+				y - a.h() / 2,
+				a.w(),
+				a.h()
+				);
+	}
 }

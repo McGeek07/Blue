@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
@@ -96,14 +97,16 @@ public class Engine implements Runnable {
 	
 	private Engine() {		
 		Event.attach(SceneEvent.class, (event) -> {
-			if(INSTANCE.scene != null)
-				INSTANCE.scene.onDetach();
-			INSTANCE.scene = event.scene;
-			if(INSTANCE.scene != null)
-				INSTANCE.scene.onAttach();
+			INSTANCE.onSetScene(event);
 		});
 		Event.attach(WindowEvent.class, (event) -> {
 			INSTANCE.onResize(event);
+		});
+		Event.attach(FocusEvent.class, (event) -> {
+			switch(event) {
+				case GAIN_FOCUS: INSTANCE.onGainFocus(event);
+				case LOSE_FOCUS: INSTANCE.onLoseFocus(event);
+			}
 		});
 	}
 	
@@ -139,14 +142,14 @@ public class Engine implements Runnable {
 		return INSTANCE.cfg;
 	}
 	
-	public static final Region2 window() {
+	public static final Region2 getWindowBounds() {
 		return new Region2(
 				INSTANCE.window_w,
 				INSTANCE.window_h
 				);
 	}
 	
-	public static final Region2 canvas() {
+	public static final Region2 getCanvasBounds() {
 		return new Region2(
 				INSTANCE.canvas_w,
 				INSTANCE.canvas_h
@@ -225,7 +228,7 @@ public class Engine implements Runnable {
 		window = new java.awt.Frame() ;
 		canvas = new java.awt.Canvas();
 		
-		window.add(canvas);		
+		window.add(canvas);
 		
 		Region2 a, b;
 		if(window_border)
@@ -238,13 +241,38 @@ public class Engine implements Runnable {
 		window.setBounds(
 				(int)b.x(), (int)b.y(),
 				(int)b.w(), (int)b.h()
-				);		
+				);
 		window.setTitle(window_title);
+		
+		Insets insets = window.getInsets();
+		a = new Region2(
+			Vector.add(b.loc(), insets.left               , insets.top                ),
+			Vector.sub(b.dim(), insets.left + insets.right, insets.top + insets.bottom)
+		);		 
+		b = canvas_layout.region(a);
+		window_w = (int)a.w();
+		window_h = (int)a.h();
+		canvas_w = (int)b.w();
+		canvas_h = (int)b.h();
+		canvas_scale = Math.min(
+				(float)window_w / canvas_w,
+				(float)window_h / canvas_h
+				);		
 		
 		window.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent we) {
 				Engine.exit();
+			}
+		});
+		window.addWindowFocusListener(new WindowAdapter() {
+			@Override
+			public void windowGainedFocus(java.awt.event.WindowEvent we) {
+				Event.queue(FocusEvent.GAIN_FOCUS);
+			}
+			@Override
+			public void windowLostFocus(java.awt.event.WindowEvent we) {
+				Event.queue(FocusEvent.LOSE_FOCUS);
 			}
 		});	
 		
@@ -283,6 +311,9 @@ public class Engine implements Runnable {
 			window.dispose();
 	}	
 	
+	protected static final Color
+		debug_background = new Color(0f, 0f, 0f, .5f),
+		debug_foreground = new Color(1f, 1f, 1f, .5f);
 	protected BufferStrategy
 		b;	
 	public void onRender(float t, float dt, float fixed_dt) {		
@@ -367,14 +398,14 @@ public class Engine implements Runnable {
 				x = 0,
 				y = 0;
 			
-			render_context.color(Color.BLACK);
+			render_context.color(debug_background);
 			render_context.rect(
 					0, 0,
 					debug_info_w,
 					debug_info_h,
 					true
 					);
-			render_context.color(Color.WHITE);
+			render_context.color(debug_foreground);
 			for(int i = 0; i < debug_info.length; i ++)
 				render_context.text(debug_info[i], x, y += fm_h);				
 			render_context.pop();
@@ -398,6 +429,14 @@ public class Engine implements Runnable {
 		if(scene != null) 
 			update_context.update(scene);
 		update_context.pop();
+	}
+	
+	public void onSetScene(SceneEvent se) {
+		if(INSTANCE.scene != null)
+			INSTANCE.scene.onDetach();
+		INSTANCE.scene = se.scene;
+		if(INSTANCE.scene != null)
+			INSTANCE.scene.onAttach();
 	}
 	
 	public void onMouseMoved(Vector2 mouse) {
@@ -442,6 +481,18 @@ public class Engine implements Runnable {
 				);
 		if(scene != null)
 			scene.onResize();
+	}
+	
+	public void onGainFocus(FocusEvent fe) {
+		Input.INSTANCE.onGainFocus();
+		 if(scene != null)
+			 scene.onGainFocus();
+	}
+	
+	public void onLoseFocus(FocusEvent fe) {
+		Input.INSTANCE.onLoseFocus();
+		if(scene != null)
+			scene.onLoseFocus();
 	}
 	
 	private static final long
@@ -558,5 +609,10 @@ public class Engine implements Runnable {
 			this.window_w = window_w;
 			this.window_h = window_h;
 		}
+	}
+	
+	private static enum FocusEvent {
+		GAIN_FOCUS,
+		LOSE_FOCUS;
 	}
 }
