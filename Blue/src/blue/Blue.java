@@ -7,7 +7,7 @@ import blue.util.Version;
 
 public class Blue {
 	public static final Version
-		VERSION = new Version("Blue", 0, 0, 28);
+		VERSION = new Version("Blue", 0, 0, 29);
 	
 	public static void main(String[] args) {
 		System.out.println(VERSION);
