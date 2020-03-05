@@ -352,7 +352,7 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 	}	
 	
 	public static java.awt.Color toColor3i(Vector v) {
-		return new java.awt.Color((int)v.x(), (int)v.y(), (int)v.z(), 1f);
+		return new java.awt.Color((int)v.x(), (int)v.y(), (int)v.z(), 255);
 	}	
 	public static java.awt.Color toColor3f(Vector v) {
 		return new java.awt.Color(v.x(), v.y(), v.z(), 1f);
