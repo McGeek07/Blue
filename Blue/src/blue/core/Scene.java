@@ -3,7 +3,6 @@ package blue.core;
 import blue.geom.Vector2;
 
 public class Scene implements Renderable, Updateable {
-	
 	@Override
 	public void onRender(RenderContext context) { }
 	@Override

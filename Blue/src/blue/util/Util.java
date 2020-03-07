@@ -23,7 +23,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -83,7 +82,7 @@ public final class Util {
 	
 	public static int stringToInt(String str) {
 		return stringToInt(str, 0);
-	}
+	}	
 	
 	public static int stringToInt(String str, int alt) {
 		try {
@@ -557,83 +556,5 @@ public final class Util {
 		} catch(IOException ioe) {
 			ioe.printStackTrace();
 		}
-	}
-	
-	public static class ForwardIterable<T> implements Iterable<T> {
-		protected T[]
-			list;
-		
-		public ForwardIterable(T[] list) {
-			this.list = list;
-		}
-
-		@Override
-		public Iterator<T> iterator() {
-			return new ForwardIterator<T>(this);
-		}		
-	}
-	
-	public static class ReverseIterable<T> implements Iterable<T> {
-		protected T[]
-			list;
-		
-		public ReverseIterable(T[] list) {
-			this.list = list;
-		}
-
-		@Override
-		public Iterator<T> iterator() {
-			return new ReverseIterator<T>(this);
-		}		
-	}
-	
-	public static class ForwardIterator<T> implements Iterator<T> {
-		private ForwardIterable<T>
-			forward;
-		private int
-			a,
-			b;
-		
-		public ForwardIterator(ForwardIterable<T> forward) {
-			this.forward = forward;
-			
-			this.a = 0;
-			this.b = forward.list.length;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return a < b;
-		}
-
-		@Override
-		public T next() {
-			return forward.list[a ++];
-		}		
-	}
-	
-	public static class ReverseIterator<T> implements Iterator<T> {
-		private ReverseIterable<T>
-			reverse;
-		private int
-			a,
-			b;
-		
-		public ReverseIterator(ReverseIterable<T> reverse) {
-			this.reverse = reverse;
-			
-			this.a = 0;
-			this.b = reverse.list.length;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return a < b;
-		}
-
-		@Override
-		public T next() {
-			return reverse.list[-- b];
-		}		
-	}
+	}	
 }

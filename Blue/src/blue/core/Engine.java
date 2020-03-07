@@ -142,14 +142,14 @@ public class Engine implements Runnable {
 		return INSTANCE.cfg;
 	}
 	
-	public static final Region2 getWindowBounds() {
+	public static final Region2 window() {
 		return new Region2(
 				INSTANCE.window_w,
 				INSTANCE.window_h
 				);
 	}
 	
-	public static final Region2 getCanvasBounds() {
+	public static final Region2 canvas() {
 		return new Region2(
 				INSTANCE.canvas_w,
 				INSTANCE.canvas_h

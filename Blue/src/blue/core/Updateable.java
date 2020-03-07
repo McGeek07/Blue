@@ -1,5 +1,6 @@
 package blue.core;
 
+import java.util.Deque;
 import java.util.LinkedList;
 
 public interface Updateable {
@@ -22,7 +23,7 @@ public interface Updateable {
 			updateable.onUpdate(this);
 		}
 		
-		private final LinkedList<UpdateContext>
+		private final Deque<UpdateContext>
 			stack = new LinkedList<>();
 	
 		public void push() {

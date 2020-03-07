@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.util.Deque;
 import java.util.LinkedList;
 
 import blue.geom.Box;
@@ -210,7 +211,7 @@ public interface Renderable {
 			font(new Font(font_name, font_type, font_size));
 		}
 		
-		private final LinkedList<RenderContext>
+		private final Deque<RenderContext>
 			stack = new LinkedList<>();
 		
 		public void push() {
@@ -237,11 +238,6 @@ public interface Renderable {
 			this.fixed_dt = copy.fixed_dt;
 			this.canvas_w = copy.canvas_w;
 			this.canvas_h = copy.canvas_h;
-		}
-		
-		public static enum Angle {
-			DEGREES,
-			RADIANS
 		}
 	}
 }	

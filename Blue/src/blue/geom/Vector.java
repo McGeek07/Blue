@@ -300,6 +300,17 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				);
 	}
 	
+	/*IMMUTABLE NORMALIZE*/
+	public static Vector2 nom(Vector2 a) {
+		return div(a, mag(a));
+	}
+	public static Vector3 nom(Vector3 a) {
+		return div(a, mag(a));
+	}
+	public static Vector4 nom(Vector4 a) {
+		return div(a, mag(a));
+	}
+	
 	public static Vector3 hom(Vector2 a) {
 		return new Vector3(a.x, a.y, 1f);
 	}	
@@ -342,7 +353,56 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 	}
 	public static float dot(float x1, float y1, float z1, float w1, float x2, float y2, float z2, float w2) {
 		return x1 * x2 + y1 * y2 + z1 * z2 + w1 * w2;
-	}	
+	}
+	
+	public static float mag(Vector2 a) {
+		return (float)Math.sqrt(dot(a));
+	}
+	public static float mag(Vector3 a) {
+		return (float)Math.sqrt(dot(a));
+	}
+	public static float mag(Vector4 a) {
+		return (float)Math.sqrt(dot(a));
+	}
+	
+	public static float dist(Vector2 a, Vector2 b) {
+		return mag(sub(a, b));
+	}
+	public static float dist(Vector3 a, Vector3 b) {
+		return mag(sub(a, b));
+	}
+	public static float dist(Vector4 a, Vector4 b) {
+		return mag(sub(a, b));
+	}
+	public static float dist(Vector2 a, float x, float y) {
+		return mag(sub(a, x, y));
+	}
+	public static float dist(Vector3 a, float x, float y, float z) {
+		return mag(sub(a, x, y, z));
+	}
+	public static float dist(Vector4 a, float x, float y, float z, float w) {
+		return mag(sub(a, x, y, z, w));
+	}
+	
+	/*IMMUTABLE PROJECTION*/
+	public static Vector2 v_pro(Vector2 a, Vector2 b) {
+		return Vector.mul(b, s_pro(a, b));
+	}
+	public static Vector3 v_pro(Vector3 a, Vector3 b) {
+		return Vector.mul(b, s_pro(a, b));
+	}
+	public static Vector4 v_pro(Vector4 a, Vector4 b) {
+		return Vector.mul(b, s_pro(a, b));
+	}
+	public static float s_pro(Vector2 a, Vector2 b) {
+		return dot(a, b) / dot(b, b);
+	}
+	public static float s_pro(Vector3 a, Vector3 b) {
+		return dot(a, b) / dot(b, b);
+	}
+	public static float s_pro(Vector4 a, Vector4 b) {
+		return dot(a, b) / dot(b, b);
+	}
 	
 	public static Vector2 transform(Vector2 a, Transform2 t) {
 		return Vector.mul(a, t.xform);
@@ -401,113 +461,129 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 	
 	/*MUTABLE ADD*/
 	public static Vector2.Mutable m_add(Vector2.Mutable a, Vector2 b) {
-		a.x += b.x;
-		a.y += b.y;
-		return a;
+		return a.set(
+				a.x + b.x,
+				a.y + b.y
+				);
 	}
 	public static Vector3.Mutable m_add(Vector3.Mutable a, Vector3 b) {
-		a.x += b.x;
-		a.y += b.y;
-		a.z += b.z;
-		return a;
-	}
+		return a.set(
+				a.x + b.x,
+				a.y + b.y,
+				a.z + b.z
+				);
+	}	
 	public static Vector4.Mutable m_add(Vector4.Mutable a, Vector4 b) {
-		a.x += b.x;
-		a.y += b.y;
-		a.z += b.z;
-		a.w += b.w;
-		return a;
-	}
+		return a.set(
+				a.x + b.x,
+				a.y + b.y,
+				a.z + b.z,
+				a.w + b.w
+				);
+	}	
 	public static Vector2.Mutable m_add(Vector2.Mutable a, float x, float y) {
-		a.x += x;
-		a.y += y;
-		return a;
+		return a.set(
+				a.x + x,
+				a.y + y
+				);
 	}
 	public static Vector3.Mutable m_add(Vector3.Mutable a, float x, float y, float z) {
-		a.x += x;
-		a.y += y;
-		a.z += z;
-		return a;
-	}
+		return a.set(
+				a.x + x,
+				a.y + y,
+				a.z + z
+				);
+	}	
 	public static Vector4.Mutable m_add(Vector4.Mutable a, float x, float y, float z, float w) {
-		a.x += x;
-		a.y += y;
-		a.z += z;
-		a.w += w;
-		return a;
+		return a.set(
+				a.x + x,
+				a.y + y,
+				a.z + z,
+				a.w + w
+				);
 	}
 	
 	/*MUTABLE SUB*/
 	public static Vector2.Mutable m_sub(Vector2.Mutable a, Vector2 b) {
-		a.x -= b.x;
-		a.y -= b.y;
-		return a;
+		return a.set(
+				a.x - b.x,
+				a.y - b.y
+				);
 	}
 	public static Vector3.Mutable m_sub(Vector3.Mutable a, Vector3 b) {
-		a.x -= b.x;
-		a.y -= b.y;
-		a.z -= b.z;
-		return a;
-	}
+		return a.set(
+				a.x - b.x,
+				a.y - b.y,
+				a.z - b.z
+				);
+	}	
 	public static Vector4.Mutable m_sub(Vector4.Mutable a, Vector4 b) {
-		a.x -= b.x;
-		a.y -= b.y;
-		a.z -= b.z;
-		a.w -= b.w;
-		return a;
-	}
+		return a.set(
+				a.x - b.x,
+				a.y - b.y,
+				a.z - b.z,
+				a.w - b.w
+				);
+	}	
 	public static Vector2.Mutable m_sub(Vector2.Mutable a, float x, float y) {
-		a.x -= x;
-		a.y -= y;
-		return a;
+		return a.set(
+				a.x - x,
+				a.y - y
+				);
 	}
 	public static Vector3.Mutable m_sub(Vector3.Mutable a, float x, float y, float z) {
-		a.x -= x;
-		a.y -= y;
-		a.z -= z;
-		return a;
-	}
+		return a.set(
+				a.x - x,
+				a.y - y,
+				a.z - z
+				);
+	}	
 	public static Vector4.Mutable m_sub(Vector4.Mutable a, float x, float y, float z, float w) {
-		a.x -= x;
-		a.y -= y;
-		a.z -= z;
-		a.w -= w;
-		return a;
+		return a.set(
+				a.x - x,
+				a.y - y,
+				a.z - z,
+				a.w - w
+				);
 	}
 	
 	/*MUTABLE MUL*/
 	public static Vector2.Mutable m_mul(Vector2.Mutable a, Vector2 b) {
-		a.x *= b.x;
-		a.y *= b.y;
-		return a;
+		return a.set(
+				a.x * b.x,
+				a.y * b.y
+				);
 	}
 	public static Vector3.Mutable m_mul(Vector3.Mutable a, Vector3 b) {
-		a.x *= b.x;
-		a.y *= b.y;
-		a.z *= b.z;
-		return a;
-	}
+		return a.set(
+				a.x * b.x,
+				a.y * b.y,
+				a.z * b.z
+				);
+	}	
 	public static Vector4.Mutable m_mul(Vector4.Mutable a, Vector4 b) {
-		a.x *= b.x;
-		a.y *= b.y;
-		a.z *= b.z;
-		a.w *= b.w;
-		return a;
+		return a.set(
+				a.x * b.x,
+				a.y * b.y,
+				a.z * b.z,
+				a.w * b.w
+				);
 	}
-	public static Vector2.Mutable m_mul(Vector2.Mutable a, float b) {
+
+	public static Vector2.Mutable mul(Vector2.Mutable a, float b) {
 		return a.set(
 				a.x * b,
 				a.y * b
 				);
 	}
-	public static Vector3.Mutable m_mul(Vector3.Mutable a, float b) {
+	public static Vector3.Mutable mul(Vector3.Mutable a, float b) {
 		return a.set(
 				a.x * b,
 				a.y * b,
 				a.z * b
 				);
 	}
-	public static Vector4.Mutable m_mul(Vector4.Mutable a, float b) {
+	public static Vector4.Mutable mul(Vector4.Mutable a, float b) {
 		return a.set(
 				a.x * b,
 				a.y * b,
@@ -516,22 +592,25 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				);
 	}
 	public static Vector2.Mutable m_mul(Vector2.Mutable a, float x, float y) {
-		a.x *= x;
-		a.y *= y;
-		return a;
+		return a.set(
+				a.x * x,
+				a.y * y
+				);
 	}
 	public static Vector3.Mutable m_mul(Vector3.Mutable a, float x, float y, float z) {
-		a.x *= x;
-		a.y *= y;
-		a.z *= z;
-		return a;
-	}
+		return a.set(
+				a.x * x,
+				a.y * y,
+				a.z * z
+				);
+	}	
 	public static Vector4.Mutable m_mul(Vector4.Mutable a, float x, float y, float z, float w) {
-		a.x *= x;
-		a.y *= y;
-		a.z *= z;
-		a.w *= w;
-		return a;
+		return a.set(
+				a.x * x,
+				a.y * y,
+				a.z * z,
+				a.w * w
+				);
 	}
 	public static Vector2.Mutable m_mul(Vector2.Mutable a, Matrix2 b) {
 		return a.set(
@@ -572,22 +651,46 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 	
 	/*MUTABLE DIV*/
 	public static Vector2.Mutable m_div(Vector2.Mutable a, Vector2 b) {
-		a.x /= b.x;
-		a.y /= b.y;
-		return a;
+		return a.set(
+				a.x / b.x,
+				a.y / b.y
+				);
 	}
 	public static Vector3.Mutable m_div(Vector3.Mutable a, Vector3 b) {
-		a.x /= b.x;
-		a.y /= b.y;
-		a.z /= b.z;
-		return a;
-	}
+		return a.set(
+				a.x / b.x,
+				a.y / b.y,
+				a.z / b.z
+				);
+	}	
 	public static Vector4.Mutable m_div(Vector4.Mutable a, Vector4 b) {
-		a.x /= b.x;
-		a.y /= b.y;
-		a.z /= b.z;
-		a.w /= b.w;
-		return a;
+		return a.set(
+				a.x / b.x,
+				a.y / b.y,
+				a.z / b.z,
+				a.w / b.w
+				);
+	}	
+	public static Vector2.Mutable m_div(Vector2.Mutable a, float x, float y) {
+		return a.set(
+				a.x / x,
+				a.y / y
+				);
+	}
+	public static Vector3.Mutable m_div(Vector3.Mutable a, float x, float y, float z) {
+		return a.set(
+				a.x / x,
+				a.y / y,
+				a.z / z
+				);
+	}	
+	public static Vector4.Mutable m_div(Vector4.Mutable a, float x, float y, float z, float w) {
+		return a.set(
+				a.x / x,
+				a.y / y,
+				a.z / z,
+				a.w / w
+				);
 	}
 	public static Vector2.Mutable m_div(Vector2.Mutable a, float b) {
 		return a.set(
@@ -610,22 +713,26 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				a.w / b
 				);
 	}
-	public static Vector2.Mutable m_div(Vector2.Mutable a, float x, float y) {
-		a.x /= x;
-		a.y /= y;
-		return a;
+	
+	/*MUTABLE NORMALIZE*/
+	public static Vector2.Mutable m_nom(Vector2.Mutable a) {
+		return m_div(a, mag(a));
 	}
-	public static Vector3.Mutable m_div(Vector3.Mutable a, float x, float y, float z) {
-		a.x /= x;
-		a.y /= y;
-		a.z /= z;
-		return a;
+	public static Vector3.Mutable m_nom(Vector3.Mutable a) {
+		return m_div(a, mag(a));
 	}
-	public static Vector4.Mutable m_div(Vector4.Mutable a, float x, float y, float z, float w) {
-		a.x /= x;
-		a.y /= y;
-		a.z /= z;
-		a.w /= w;
-		return a;
+	public static Vector4.Mutable m_nom(Vector4.Mutable a) {
+		return m_div(a, mag(a));
+	}
+
+	/*MUTABLE PROJECTION*/
+	public static Vector2.Mutable m_pro(Vector2.Mutable a, Vector2 b) {
+		return a.set(v_pro(a, b));
+	}
+	public static Vector3.Mutable m_pro(Vector3.Mutable a, Vector3 b) {
+		return a.set(v_pro(a, b));
+	}
+	public static Vector4.Mutable m_pro(Vector4.Mutable a, Vector4 b) {
+		return a.set(v_pro(a, b));
 	}
 }
