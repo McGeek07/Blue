@@ -476,7 +476,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 	}	
 	
 	public static byte getKey(int key) {
-		return key > 0 && key < NUM_KEYS ? INSTANCE.keys[key] : 0;
+		return key >= 0 && key < NUM_KEYS ? INSTANCE.keys[key] : 0;
 	}
 	
 	public static boolean isKeyDn(int key) {
