@@ -26,6 +26,7 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
+import blue.core.Debug;
 import blue.geom.Bounds2;
 import blue.geom.Region2;
 
@@ -287,7 +288,7 @@ public final class Util {
 					file.getParentFile().mkdirs();
 				file.createNewFile();
 			} catch(Exception ex) {
-				System.err.println("Unable to create file \"" + file + "\"");
+				Debug.log(Debug.ERROR, Util.class, "Unable to create file \"" + file + "\"");
 				ex.printStackTrace();
 			}
 		return file;
@@ -298,7 +299,7 @@ public final class Util {
 			try {
 				file.delete();
 			} catch(Exception ex) {
-				System.err.println("Unable to delete file \"" + file + "\"");
+				Debug.log(Debug.ERROR, Util.class, "Unable to delete file \"" + file + "\"");
 				ex.printStackTrace();
 			}
 		}
@@ -313,7 +314,7 @@ public final class Util {
 		try {
 			return new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(createFile(file), append)));
 		} catch (IOException ioe) {
-			System.err.println("Unable to open file \"" + file + "\"");
+			Debug.log(Debug.ERROR, Util.class, "Unable to open file \"" + file + "\"");
 		}
 		return null;
 	}
@@ -326,7 +327,7 @@ public final class Util {
 		try {
 			return new ObjectInputStream(new BufferedInputStream(new FileInputStream(createFile(file))));
 		} catch(IOException ioe) {
-			System.err.println("Unable to open file \"" + file + "\"");
+			Debug.log(Debug.ERROR, Util.class, "Unable to open file \"" + file + "\"");
 		}
 		return null;
 	}
@@ -339,7 +340,7 @@ public final class Util {
 		try {
 			return new BufferedWriter(new FileWriter(createFile(file), append));
 		} catch(IOException ioe) {
-			System.err.println("Unable to open file \"" + file + "\"");
+			Debug.log(Debug.ERROR, Util.class, "Unable to open file \"" + file + "\"");
 		}
 		return null;
 	}
@@ -352,7 +353,7 @@ public final class Util {
 		try {
 			return new PrintWriter(new BufferedWriter(new FileWriter(createFile(file), append)));
 		} catch(IOException ioe) {
-			System.err.println("Unable to open file \"" + file + "\"");
+			Debug.log(Debug.ERROR, Util.class, "Unable to open file \"" + file + "\"");
 		}
 		return null;
 	}
@@ -365,7 +366,7 @@ public final class Util {
 		try {
 			return new BufferedReader(new FileReader(createFile(file)));
 		} catch(IOException ioe) {
-			System.err.println("Unable to open file \"" + file + "\"");
+			Debug.log(Debug.ERROR, Util.class, "Unable to open file \"" + file + "\"");
 		}
 		return null;
 	}
@@ -556,5 +557,5 @@ public final class Util {
 		} catch(IOException ioe) {
 			ioe.printStackTrace();
 		}
-	}	
+	}
 }

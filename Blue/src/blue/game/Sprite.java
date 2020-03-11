@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+import blue.core.Debug;
 import blue.core.Renderable;
 import blue.core.Updateable;
 import blue.geom.Region2;
@@ -21,12 +22,12 @@ public class Sprite implements Renderable, Updateable {
 		PLAY = 1,
 		LOOP = 2;
 	
-	protected Frames
-		frames;
-	protected Effect
-		effect;
+	protected Atlas
+		atlas;
+	protected Paint
+		paint;
 	protected BufferedImage[]
-		_frames;
+		frames;
 	
 	protected float
 		frame = 0f,
@@ -45,43 +46,39 @@ public class Sprite implements Renderable, Updateable {
 		bounds = new Region2.Mutable();
 	
 	public Sprite(			
-			Frames frames,
-			Effect effect
+			Atlas atlas,
+			Paint effect
 			) {
-		this.frames = frames;
-		this.effect = effect;
+		this.atlas = atlas;
+		this.paint = effect;
 		
 		this.bounds.set(
 				0, 0,
-				frames.frame_w,
-				frames.frame_h
+				atlas.frame_w,
+				atlas.frame_h
 				);
 		
-		this._frames = this.frames != null ? this.frames.filter(this.effect) : null;
+		this.frames = this.atlas != null ? this.atlas.paint(this.paint) : null;
 	}
 	
-	public void setFrames(Frames frames) {
-		this.frames = frames;
+	public void setAtlas(Atlas frames) {
+		this.atlas = frames;
 		
-		this._frames = this.frames != null ? this.frames.filter(this.effect) : null;
+		this.frames = this.atlas != null ? this.atlas.paint(this.paint) : null;
 	}
 	
-	public void setEffect(Effect effect) {		
-		this.effect = effect;
+	public void setPaint(Paint paint) {		
+		this.paint = paint;
 		
-		this._frames = this.frames != null ? this.frames.filter(this.effect) : null;
+		this.frames = this.atlas != null ? this.atlas.paint(this.paint) : null;
 	}
 	
-	public Frames getFrames() {
-		return this.frames;
+	public Atlas getAtlas() {
+		return this.atlas;
 	}
 	
-	public int n() {
-		return this._frames.length;
-	}
-	
-	public Effect getEffect() {
-		return this.effect;
+	public Paint getPaint() {
+		return this.paint;
 	}
 	
 	public void setFrame(float frame) {
@@ -199,24 +196,24 @@ public class Sprite implements Renderable, Updateable {
 				
 				context.g.setComposite(alpha_composite);
 				context.g.drawImage(
-						_frames[(int)frame],
+						frames[(int)frame],
 						x1, y1,
 						x2, y2,
 						0 , 0 ,
-						frames.frame_w,
-						frames.frame_h,
+						atlas.frame_w,
+						atlas.frame_h,
 						null
 						);	
 				
 				context.pop();
 			} else
 				context.g.drawImage(
-						_frames[(int)frame],
+						frames[(int)frame],
 						x1, y1,
 						x2, y2,
 						0 , 0 ,
-						frames.frame_w,
-						frames.frame_h,
+						atlas.frame_w,
+						atlas.frame_h,
 						null
 						);
 		}
@@ -229,46 +226,40 @@ public class Sprite implements Renderable, Updateable {
 			switch(mode) {
 				case PLAY: 
 					if(frame <  0f            ) stop(0f                );
-					if(frame >= _frames.length) stop(_frames.length - 1);
+					if(frame >= frames.length) stop(frames.length - 1);
 					break;
 				case LOOP:
-					while(frame <  0f            ) frame += _frames.length;
-					while(frame >= _frames.length) frame -= _frames.length;
+					while(frame <  0f            ) frame += frames.length;
+					while(frame >= frames.length) frame -= frames.length;
 			}
 		}
 	}
 	
-	public Sprite filter(Effect effect) {
+	public Sprite paint(Paint paint) {
 		return new Sprite(
-				frames,
-				effect
+				atlas,
+				paint
 				);
 	}
 	
 	public static Sprite load(String name, String path, int frame_w, int frame_h) {
-		try {
-			return new Sprite(Frames.load(name, path, frame_w, frame_h), null);
-		} catch (Exception ex) {
-			System.err.println("[ERROR] Sprite.load(" + name + ", " + path + ", " + frame_w + ", " + frame_h + ")");
-			ex.printStackTrace();
-			return null;
-		}
+		return new Sprite(Atlas.load(name, path, frame_w, frame_h), null);
 	}
 	
-	public static Sprite fromName(String name, Effect effect) {
-		return new Sprite(Frames.getByName(name), effect);
+	public static Sprite fromName(String name, Paint effect) {
+		return new Sprite(Atlas.getByName(name), effect);
 	}
 	
-	public static Sprite fromPath(String path, Effect effect) {
-		return new Sprite(Frames.getByPath(path), effect);
+	public static Sprite fromPath(String path, Paint effect) {
+		return new Sprite(Atlas.getByPath(path), effect);
 	}
 	
-	public static class Frames implements Serializable {
+	public static class Atlas implements Serializable {
 		private static final long 
 			serialVersionUID = 1L;
-		private static final HashMap<String, Frames>
-			NAME_INDEX = new HashMap<String, Frames>(),
-			PATH_INDEX = new HashMap<String, Frames>();
+		private static final HashMap<String, Atlas>
+			NAME_INDEX = new HashMap<String, Atlas>(),
+			PATH_INDEX = new HashMap<String, Atlas>();
 		private static int
 			HASH = 0;
 		
@@ -278,38 +269,38 @@ public class Sprite implements Renderable, Updateable {
 			name,
 			path;
 		public final BufferedImage
-			atlas;
+			image;
 		public final int
-			atlas_w,
-			atlas_h,
+			image_w,
+			image_h,
 			frame_w,
 			frame_h;
 		
-		private final HashMap<Effect, BufferedImage[]>
-			cached = new HashMap<Effect, BufferedImage[]>();
+		private final HashMap<Paint, BufferedImage[]>
+			cached = new HashMap<Paint, BufferedImage[]>();
 		
-		public Frames(
+		public Atlas(
 				String name,
 				String path,
-				BufferedImage atlas,
+				BufferedImage image,
 				int frame_w,
 				int frame_h
 				) {			
 			this.name = name;
 			this.path = path;
-			this.atlas = atlas;
+			this.image = image;
 			this.frame_w = frame_w;
 			this.frame_h = frame_h;
-			this.atlas_w = atlas.getWidth() ;
-			this.atlas_h = atlas.getHeight();
+			this.image_w = image.getWidth() ;
+			this.image_h = image.getHeight();
 			
 			int
-				w = atlas_w / frame_w,
-				h = atlas_h / frame_h;
+				w = image_w / frame_w,
+				h = image_h / frame_h;
 			BufferedImage[] frames = new BufferedImage[w * h];
 			for(int x = 0; x < w; x ++)
 				for(int y = 0; y < h; y ++)
-					frames[h * y + x] = atlas.getSubimage(
+					frames[h * y + x] = image.getSubimage(
 							x * frame_w,
 							y * frame_h,
 							frame_w,
@@ -319,10 +310,10 @@ public class Sprite implements Renderable, Updateable {
 			cached.put(null, frames);
 		}
 		
-		public BufferedImage[] filter(Effect effect) {
+		public BufferedImage[] paint(Paint paint) {
 			BufferedImage[]
-					sprite_frames = cached.get(null  ),
-					effect_frames = cached.get(effect);
+					sprite_frames = cached.get(null ),
+					effect_frames = cached.get(paint);
 			if(effect_frames == null) {
 				effect_frames = new BufferedImage[sprite_frames.length];
 				for(int i = 0; i < sprite_frames.length; i ++) {
@@ -335,55 +326,58 @@ public class Sprite implements Renderable, Updateable {
 								frame_w,
 								frame_h,
 								BufferedImage.TYPE_INT_ARGB
-								);
+								);					
 					int[] frame_data = new int[frame_w * frame_h];
 					sprite_frame.getRGB(0, 0, frame_w, frame_h, frame_data, 0, frame_w);
 					
-					effect.filter(frame_data, frame_w, frame_h);
+					paint.filter(frame_data, frame_w, frame_h);
 					effect_frame.setRGB(0, 0, frame_w, frame_h, frame_data, 0, frame_w);
 					
 					effect_frames[i] = effect_frame;
 				}
-				cached.put(effect, effect_frames);
+				cached.put(paint, effect_frames);
 			}			
 			return effect_frames;
 		}
 		
-		public static Frames getByName(String name) {
-			Frames atlas = NAME_INDEX.get(name);
+		public static Atlas getByName(String name) {
+			Atlas atlas = NAME_INDEX.get(name);
 			if(atlas == null)
-				throw new IllegalArgumentException("A Sprite.Atlas with name '" + name + "' does not exist");
+				Debug.log(Debug.WARN, Atlas.class, "An Atlas with name '" + name + "' does not exist.");
 			return atlas;
 		}
 		
-		public static Frames getByPath(String path) {
-			Frames atlas = PATH_INDEX.get(path);
+		public static Atlas getByPath(String path) {
+			Atlas atlas = PATH_INDEX.get(path);
 			if(atlas == null)
-				throw new IllegalArgumentException("A Sprite.Atlas with path '" + path + "' does not exist");
+				Debug.log(Debug.WARN, Atlas.class, "An Atlas with path '" + path + "' does not exist.");
 			return atlas;
 		}
 		
-		public static Frames load(String name, String path, int frame_w, int frame_h) throws IOException {
+		public static Atlas load(String name, String path, int frame_w, int frame_h) {
 			if(NAME_INDEX.containsKey(name))
-				throw new IllegalArgumentException("A Sprite.Atlas with name '" + name + "' already exists.");
-			if(PATH_INDEX.containsKey(name))
-				throw new IllegalArgumentException("A Sprite.Atlas with path '" + path + "' already exists.");
+				Debug.log(Debug.WARN, Atlas.class, "An Atlas with name '" + name + "' already exists.");
+			if(PATH_INDEX.containsKey(path))
+				Debug.log(Debug.WARN, Atlas.class, "An Atlas with path '" + path + "' already exists.");
 			
-			BufferedImage 
-				image = ImageIO.read(new File(path));			
-			Frames 
-				atlas = new Frames(
+			try {
+				BufferedImage image = ImageIO.read(new File(path));
+				Atlas atlas = new Atlas(
 					name,
 					path,
 					image,
 					frame_w,
 					frame_h
-					);
-			
-			NAME_INDEX.put(name, atlas);
-			PATH_INDEX.put(path, atlas);
-			
-			return atlas;
+					);				
+				NAME_INDEX.put(name, atlas);
+				PATH_INDEX.put(path, atlas);				
+				return atlas;
+				
+			} catch(IOException ioe) {
+				Debug.log(Debug.ERROR, Atlas.class, "Failed to load atlas (" + name + ", " + path + ", " + frame_w + ", " + frame_h + ").");
+				ioe.printStackTrace();				
+				return null;
+			}
 		}
 	}
 	
@@ -391,10 +385,10 @@ public class Sprite implements Renderable, Updateable {
 		BLACK = 0xFF000000,
 		WHITE = 0xFFFFFFFF;
 	
-	public static interface Effect {
+	public static interface Paint {
 		public void filter(int[] frame_data, int frame_w, int frame_h);
 		
-		public static final Effect
+		public static final Paint
 			BLACKOUT = (frame_data, frame_w, frame_h) -> {
 				for(int i = 0; i < frame_data.length; i ++) {
 					int alpha = (frame_data[i] >> 24) & 0xFF;
