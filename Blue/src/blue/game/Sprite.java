@@ -47,10 +47,10 @@ public class Sprite implements Renderable, Updateable {
 	
 	public Sprite(			
 			Atlas atlas,
-			Paint effect
+			Paint paint
 			) {
 		this.atlas = atlas;
-		this.paint = effect;
+		this.paint = paint;
 		
 		this.bounds.set(
 				0, 0,
@@ -246,12 +246,12 @@ public class Sprite implements Renderable, Updateable {
 		return new Sprite(Atlas.load(name, path, frame_w, frame_h), null);
 	}
 	
-	public static Sprite fromName(String name, Paint effect) {
-		return new Sprite(Atlas.getByName(name), effect);
+	public static Sprite fromName(String name, Paint paint) {
+		return new Sprite(Atlas.getByName(name), paint);
 	}
 	
-	public static Sprite fromPath(String path, Paint effect) {
-		return new Sprite(Atlas.getByPath(path), effect);
+	public static Sprite fromPath(String path, Paint paint) {
+		return new Sprite(Atlas.getByPath(path), paint);
 	}
 	
 	public static class Atlas implements Serializable {
@@ -313,16 +313,16 @@ public class Sprite implements Renderable, Updateable {
 		public BufferedImage[] paint(Paint paint) {
 			BufferedImage[]
 					sprite_frames = cached.get(null ),
-					effect_frames = cached.get(paint);
-			if(effect_frames == null) {
-				effect_frames = new BufferedImage[sprite_frames.length];
+					filter_frames = cached.get(paint);
+			if(filter_frames == null) {
+				filter_frames = new BufferedImage[sprite_frames.length];
 				for(int i = 0; i < sprite_frames.length; i ++) {
 					int
 						frame_w = sprite_frames[i].getWidth() ,
 						frame_h = sprite_frames[i].getHeight();
 					BufferedImage
 						sprite_frame = sprite_frames[i],
-						effect_frame = new BufferedImage(
+						filter_frame = new BufferedImage(
 								frame_w,
 								frame_h,
 								BufferedImage.TYPE_INT_ARGB
@@ -331,13 +331,13 @@ public class Sprite implements Renderable, Updateable {
 					sprite_frame.getRGB(0, 0, frame_w, frame_h, frame_data, 0, frame_w);
 					
 					paint.filter(frame_data, frame_w, frame_h);
-					effect_frame.setRGB(0, 0, frame_w, frame_h, frame_data, 0, frame_w);
+					filter_frame.setRGB(0, 0, frame_w, frame_h, frame_data, 0, frame_w);
 					
-					effect_frames[i] = effect_frame;
+					filter_frames[i] = filter_frame;
 				}
-				cached.put(paint, effect_frames);
+				cached.put(paint, filter_frames);
 			}			
-			return effect_frames;
+			return filter_frames;
 		}
 		
 		public static Atlas getByName(String name) {
