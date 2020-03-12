@@ -269,13 +269,13 @@ public class Layout implements Serializable, Copyable<Layout> {
 	        //FOURTH
 	        case "tl_fourth": return (LAYOUT)layout.mSet(TL_FOURTH);
 	        case "tm_fourth": return (LAYOUT)layout.mSet(TM_FOURTH);
-	        case "tr_FOURTH": return (LAYOUT)layout.mSet(TR_FOURTH);
-	        case "ml_FOURTH": return (LAYOUT)layout.mSet(ML_FOURTH);
-	        case "mm_FOURTH": return (LAYOUT)layout.mSet(MM_FOURTH);
-	        case "mr_FOURTH": return (LAYOUT)layout.mSet(MR_FOURTH);
-	        case "bl_FOURTH": return (LAYOUT)layout.mSet(BL_FOURTH);
-	        case "bm_FOURTH": return (LAYOUT)layout.mSet(BM_FOURTH);
-	        case "br_FOURTH": return (LAYOUT)layout.mSet(BR_FOURTH);
+	        case "tr_fourth": return (LAYOUT)layout.mSet(TR_FOURTH);
+	        case "ml_fourth": return (LAYOUT)layout.mSet(ML_FOURTH);
+	        case "mm_fourth": return (LAYOUT)layout.mSet(MM_FOURTH);
+	        case "mr_fourth": return (LAYOUT)layout.mSet(MR_FOURTH);
+	        case "bl_fourth": return (LAYOUT)layout.mSet(BL_FOURTH);
+	        case "bm_fourth": return (LAYOUT)layout.mSet(BM_FOURTH);
+	        case "br_fourth": return (LAYOUT)layout.mSet(BR_FOURTH);
 	        //NINTH
 	        case "tl_ninth": return (LAYOUT)layout.mSet(TL_NINTH);
 	        case "tm_ninth": return (LAYOUT)layout.mSet(TM_NINTH);
