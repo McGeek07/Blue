@@ -700,37 +700,37 @@ public class Layout implements Serializable, Copyable<Layout> {
 		float
 			dst_w = preferred_w.value >= 0 ? 
 					preferred_w.fixed ?         preferred_w.value :         preferred_w.value * src_w :
-					preferred_w.fixed ? src_w - preferred_w.value : src_w - preferred_w.value * src_w ,
+					preferred_w.fixed ? src_w + preferred_w.value : src_w + preferred_w.value * src_w ,
 			dst_h = preferred_h.value >= 0 ? 
 					preferred_h.fixed ?         preferred_h.value :         preferred_h.value * src_h :
-					preferred_h.fixed ? src_h - preferred_h.value : src_h - preferred_h.value * src_h ,
+					preferred_h.fixed ? src_h + preferred_h.value : src_h + preferred_h.value * src_h ,
 			min_w = minimum_w.value >= 0 ? 
 					minimum_w.fixed ?         minimum_w.value :         minimum_w.value * src_w :
-					minimum_w.fixed ? src_w - minimum_w.value : src_w - minimum_w.value * src_w ,
+					minimum_w.fixed ? src_w + minimum_w.value : src_w + minimum_w.value * src_w ,
 			min_h = minimum_h.value >= 0 ? 
 					minimum_h.fixed ?         minimum_h.value :         minimum_h.value * src_h :
-					minimum_h.fixed ? src_h - minimum_h.value : src_h - minimum_h.value * src_h ,
+					minimum_h.fixed ? src_h + minimum_h.value : src_h + minimum_h.value * src_h ,
 			max_w = maximum_w.value >= 0 ? 
 					maximum_w.fixed ?         maximum_w.value :         maximum_w.value * src_w :
-					maximum_w.fixed ? src_w - maximum_w.value : src_w - maximum_w.value * src_w ,
+					maximum_w.fixed ? src_w + maximum_w.value : src_w + maximum_w.value * src_w ,
 			max_h = maximum_h.value >= 0 ? 
 					maximum_h.fixed ?         maximum_h.value :         maximum_h.value * src_h :
-					maximum_h.fixed ? src_h - maximum_h.value : src_h - maximum_h.value * src_h ;
+					maximum_h.fixed ? src_h + maximum_h.value : src_h + maximum_h.value * src_h ;
 		dst_w = minimum_w.fixed ? clamp_force_min(dst_w, min_w, max_w) : clamp_force_max(dst_w, min_w, max_w);
 		dst_h = minimum_h.fixed ? clamp_force_min(dst_h, min_h, max_h) : clamp_force_max(dst_h, min_h, max_h);
 		float
 			x1 = anchor_x.value >= 0 ? 
 					anchor_x.fixed ?         anchor_x.value :         src_w * anchor_x.value :
-					anchor_x.fixed ? src_w - anchor_x.value : src_w - src_w * anchor_x.value ,
+					anchor_x.fixed ? src_w + anchor_x.value : src_w + src_w * anchor_x.value ,
 			y1 = anchor_y.value >= 0 ? 
 					anchor_y.fixed ?         anchor_y.value :         src_h * anchor_y.value :
-					anchor_y.fixed ? src_h - anchor_y.value : src_h - src_h * anchor_y.value ,
+					anchor_y.fixed ? src_h + anchor_y.value : src_h + src_h * anchor_y.value ,
 			x2 = offset_x.value >= 0 ? 
 					offset_x.fixed ?         offset_x.value :         dst_w * offset_x.value :
-					offset_x.fixed ? dst_w - offset_x.value : dst_w - dst_w * offset_x.value ,
+					offset_x.fixed ? dst_w + offset_x.value : dst_w + dst_w * offset_x.value ,
 			y2 = offset_y.value >= 0 ? 
 					offset_y.fixed ?         offset_y.value :         dst_h * offset_y.value :
-					offset_y.fixed ? dst_h - offset_y.value : dst_h - dst_h * offset_y.value ,
+					offset_y.fixed ? dst_h + offset_y.value : dst_h + dst_h * offset_y.value ,
 			dst_x = src_x + x1 - x2,
 			dst_y = src_y + y1 - y2;
 		return new float[] {
