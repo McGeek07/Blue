@@ -9,6 +9,9 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferStrategy;
+import java.io.File;
+import java.util.Map;
+import java.util.TreeMap;
 
 import blue.Blue;
 import blue.core.Renderable.RenderContext;
@@ -18,14 +21,16 @@ import blue.geom.Region2;
 import blue.geom.Vector;
 import blue.geom.Vector2;
 import blue.geom.Vector4;
-import blue.util.Configuration;
 import blue.util.Util;
+import blue.util.Util.ObjectToString;
+import blue.util.Util.StringToObject;
 
 public class Engine implements Runnable {
 	protected static final Engine
 		INSTANCE = new Engine();
 	
 	protected Vector4
+		window_background = new Vector4(  0,   0,   0, 255),
 		canvas_background = new Vector4(  0,   0,   0, 255),
 		canvas_foreground = new Vector4(255, 255, 255, 255);
 	protected Layout
@@ -49,26 +54,22 @@ public class Engine implements Runnable {
 	protected String
 		window_title = Blue.VERSION.toString();
 	
-	protected final Configuration
-		cfg = new Configuration(
-				CANVAS_BACKGROUND, canvas_background,
-				CANVAS_FOREGROUND, canvas_foreground,
+	protected final Map<String, String>
+		cfg = Util.configure( 
+				new TreeMap<String, String>(),
 				CANVAS_LAYOUT, canvas_layout,
 				WINDOW_BORDER, window_border,
 				WINDOW_DEVICE, window_device,
 				WINDOW_LAYOUT, window_layout
 				);
+	
 	protected Color
-		foreground,
-		background;
+		canvas_background_color,
+		canvas_foreground_color,
+		window_background_color;
 	protected Font
 		debug_font;
-	protected int
-		render_hz,
-		update_hz;
-	protected float
-		render_dt,
-		update_dt;
+	
 	protected int
 		window_w,
 		window_h,
@@ -76,6 +77,13 @@ public class Engine implements Runnable {
 		canvas_h;
 	protected float
 		canvas_scale;
+	
+	protected int
+		render_hz,
+		update_hz;
+	protected float
+		render_dt,
+		update_dt;
 	
 	protected Thread
 		thread;
@@ -138,8 +146,88 @@ public class Engine implements Runnable {
 			Engine.stop();
 	}
 	
-	public static Configuration getConfiguration() {
-		return INSTANCE.cfg;
+	public static void configure(Object... args) {
+		Util.configure(INSTANCE.cfg, args);
+	}
+	
+	public static void setProperty(Object key, Object val) {
+		Util.setEntry(INSTANCE.cfg, key, val);
+	}
+	
+	public static <T> void setProperty(ObjectToString<T> o2s, Object key, T val) {
+		Util.setEntry(INSTANCE.cfg, o2s, key, val);
+	}
+	
+	public static String getProperty(Object key) {
+		return Util.getEntry(INSTANCE.cfg, key);
+	}
+	
+	public static String getProperty(Object key, Object alt) {
+		return Util.getEntry(INSTANCE.cfg, key, alt);
+	}
+	
+	public static <T> T getProperty(StringToObject<T> s2o, Object key) {
+		return Util.getEntry(INSTANCE.cfg, s2o, key);
+	}
+	
+	public static <T> T getProperty(StringToObject<T> s2o, Object key, T alt) {
+		return Util.getEntry(INSTANCE.cfg, s2o, key, alt);
+	}
+	
+	public static int getPropertyAsInt(Object key) {
+		return Util.getEntryAsInt(INSTANCE.cfg, key);
+	}
+	
+	public static int getPropertyAsInt(Object key, int alt) {
+		return Util.getEntryAsInt(INSTANCE.cfg, key, alt);
+	}
+	
+	public static long getPropertyAsLong(Object key) {
+		return Util.getEntryAsLong(INSTANCE.cfg, key);
+	}
+	
+	public static long getPropertyAsLong(Object key, long alt) {
+		return Util.getEntryAsLong(INSTANCE.cfg, key, alt);
+	}
+	
+	public static float getPropertyAsFloat(Object key) {
+		return Util.getEntryAsFloat(INSTANCE.cfg, key);
+	}
+	
+	public static float getPropertyAsFloat(Object key, float alt) {
+		return Util.getEntryAsFloat(INSTANCE.cfg, key, alt);
+	}
+	
+	public static double getPropertyAsDouble(Object key) {
+		return Util.getEntryAsDouble(INSTANCE.cfg, key);
+	}
+	
+	public static double getPropertyAsDouble(Object key, double alt) {
+		return Util.getEntryAsDouble(INSTANCE.cfg, key, alt);
+	}
+	
+	public static boolean getPropertyAsBoolean(Object key) {
+		return Util.getEntryAsBoolean(INSTANCE.cfg, key);
+	}
+	
+	public static boolean getPropertyAsBoolean(Object key, boolean alt) {
+		return Util.getEntryAsBoolean(INSTANCE.cfg, key, alt);
+	}
+	
+	public static void loadConfiguration(String path) {
+		loadConfiguration(new File(path));
+	}
+	
+	public static void loadConfiguration(File   file) {
+		Util.parseFromFile(file, INSTANCE.cfg);
+	}
+	
+	public static void saveConfiguration(String path) {
+		saveConfiguration(new File(path));
+	}
+	
+	public static void saveConfiguration(File   file) {
+		Util.printToFile(file, false, INSTANCE.cfg);
 	}
 	
 	public static final Region2 window() {
@@ -205,21 +293,23 @@ public class Engine implements Runnable {
 	}
 	
 	public void onInit() {		
-		canvas_background = cfg.get(Vector4::parseVector4, CANVAS_BACKGROUND, canvas_background);
-		canvas_foreground = cfg.get(Vector4::parseVector4, CANVAS_FOREGROUND, canvas_foreground);
-		canvas_layout     = cfg.get(Layout::parseLayout, CANVAS_LAYOUT, canvas_layout);
-		debug		      = cfg.getBoolean(DEBUG, debug);
-		debug_font_name   = cfg.get	      (DEBUG_FONT_NAME, debug_font_name);
-		debug_font_size   = cfg.getInteger(DEBUG_FONT_SIZE, debug_font_size);
-		engine_fps	      = cfg.getFloat(ENGINE_FPS, engine_fps);
-		engine_tps	      = cfg.getFloat(ENGINE_TPS, engine_tps);
-		window_border     = cfg.getBoolean(WINDOW_BORDER, window_border);
-		window_device     = cfg.getInteger(WINDOW_DEVICE, window_device);
-		window_layout     = cfg.get(Layout::parseLayout, WINDOW_LAYOUT, window_layout);
-		window_title      = cfg.get(WINDOW_TITLE, window_title);
+		canvas_background = getProperty(Vector4::parseVector4, CANVAS_BACKGROUND, canvas_background);
+		canvas_foreground = getProperty(Vector4::parseVector4, CANVAS_FOREGROUND, canvas_foreground);
+		canvas_layout     = getProperty(Layout::parseLayout, CANVAS_LAYOUT, canvas_layout);
+		debug		      = getPropertyAsBoolean(DEBUG, debug);
+		debug_font_name   = getProperty     (DEBUG_FONT_NAME, debug_font_name);
+		debug_font_size   = getPropertyAsInt(DEBUG_FONT_SIZE, debug_font_size);
+		engine_fps	      = getPropertyAsFloat(ENGINE_FPS, engine_fps);
+		engine_tps	      = getPropertyAsFloat(ENGINE_TPS, engine_tps);
+		window_background = getProperty(Vector4::parseVector4, WINDOW_BACKGROUND, window_background);
+		window_border     = getPropertyAsBoolean(WINDOW_BORDER, window_border);
+		window_device     = getPropertyAsInt    (WINDOW_DEVICE, window_device);
+		window_layout     = getProperty(Layout::parseLayout, WINDOW_LAYOUT, window_layout);
+		window_title      = getProperty(WINDOW_TITLE, window_title);
 		
-		background = Vector.toColor4i(canvas_background);
-		foreground = Vector.toColor4i(canvas_foreground);
+		window_background_color = Vector.toColor4i(window_background);
+		canvas_background_color = Vector.toColor4i(canvas_background);
+		canvas_foreground_color = Vector.toColor4i(canvas_foreground);
 		debug_font = new Font(debug_font_name, Font.PLAIN, debug_font_size);
 		
 		if(window != null)
@@ -333,7 +423,7 @@ public class Engine implements Runnable {
 		render_context.canvas_h = window_h;				
 		
 		render_context.push();
-			render_context.color(background);
+			render_context.color(window_background_color);
 			render_context.rect(
 					0, 0,
 					window_w,
@@ -358,13 +448,14 @@ public class Engine implements Runnable {
 			render_context.canvas_h = canvas_h;
 			
 			render_context.push();		
-				render_context.color(foreground);
+				render_context.color(canvas_background_color);
 				render_context.rect(
 						0, 0,
 						canvas_w,
 						canvas_h,
 						true
 						);
+				render_context.color(canvas_foreground_color);
 				if(scene != null) 
 					render_context.render(scene);
 			render_context.pop();
@@ -586,6 +677,7 @@ public class Engine implements Runnable {
 		DEBUG_FONT_SIZE   = "debug-font-size",
 		ENGINE_FPS        = "engine-fps",
 		ENGINE_TPS        = "engine-tps",
+		WINDOW_BACKGROUND = "window-background",
 		WINDOW_BORDER     = "window-border",
 		WINDOW_DEVICE     = "window-device",
 		WINDOW_LAYOUT     = "window-layout",

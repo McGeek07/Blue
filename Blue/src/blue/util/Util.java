@@ -170,6 +170,99 @@ public final class Util {
 	public static final ObjectToString<?>
 		OBJECT_TO_STRING = Object::toString;
 	
+	public static Map<String, String> configure(Map<String, String> map, Object... args) {
+		int length = args.length - (args.length & 1);
+		for(int i = 0; i < length; i += 2) {
+			int 
+				a = i + 0,
+				b = i + 1;
+			setEntry(map, args[a], args[b]);
+		}		
+		return map;
+	}
+	
+	public static Map<String, String> setEntry(Map<String, String> map, Object key, Object val) {
+		String
+			_key = key != null ? key.toString() : null,
+			_val = val != null ? val.toString() : null;
+		map.put(
+				_key,
+				_val
+				);
+		return map;
+	}
+	
+	public static <T> Map<String, String> setEntry(Map<String, String> map, ObjectToString<T> o2s, Object key, T val) {
+		String
+			_key = key != null ?                                   key.toString() : null,
+			_val = val != null ? o2s != null ? o2s.toString(val) : val.toString() : null;
+		map.put(
+				_key,
+				_val
+				);
+		return map;
+	}
+
+	public static String getEntry(Map<String, String> map, Object key) {
+		return getEntry(map, key, null);
+	}
+	
+	public static String getEntry(Map<String, String> map, Object key, Object alt) {
+		String 
+			_key = key != null ? key.toString() : null,
+			_alt = alt != null ? alt.toString() : null,
+			_val = map.get(_key);
+		return _val != null ? _val : _alt;
+	}
+	
+	public static <T> T getEntry(Map<String, String> map, StringToObject<T> s2o, Object key) {
+		return getEntry(map, s2o, key, null);
+	}
+	
+	public static <T> T getEntry(Map<String, String> map, StringToObject<T> s2o, Object key, T alt) {
+		return Util.stringToObject(s2o, getEntry(map, key), alt);
+	}
+	
+	public static int getEntryAsInt(Map<String, String> map, Object key) {
+		return getEntryAsInt(map, key, 0);
+	}
+	
+	public static int getEntryAsInt(Map<String, String> map, Object key, int alt) {
+		return Util.stringToInt(getEntry(map, key), alt);
+	}
+	
+	public static long getEntryAsLong(Map<String, String> map, Object key) {
+		return getEntryAsLong(map, key, 0l);
+	}
+	
+	public static long getEntryAsLong(Map<String, String> map, Object key, long alt) {
+		return Util.stringToLong(getEntry(map, key), alt);
+	}
+	
+	public static float getEntryAsFloat(Map<String, String> map, Object key) {
+		return getEntryAsFloat(map, key, 0f);
+	}
+	
+	public static float getEntryAsFloat(Map<String, String> map, Object key, float alt) {
+		return Util.stringToFloat(getEntry(map, key), alt);
+	}
+	
+	public static double getEntryAsDouble(Map<String, String> map, Object key) {
+		return getEntryAsDouble(map, key, 0d);
+	}
+	
+	public static double getEntryAsDouble(Map<String, String> map, Object key, double alt) {
+		return Util.stringToDouble(getEntry(map, key), alt);
+	}
+	
+	public static boolean getEntryAsBoolean(Map<String, String> map, Object key) {
+		return getEntryAsBoolean(map, key, false);
+	}
+	
+	public static boolean getEntryAsBoolean(Map<String, String> map, Object key, boolean alt) {
+		return Util.stringToBoolean(getEntry(map, key), alt);
+	}
+	
 	public static GraphicsDevice getGraphicsDevice(int i) {
 		GraphicsDevice[] gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 		if(i >= 0 && i < gd.length)
@@ -239,17 +332,25 @@ public final class Util {
 	}
 	
 	public static BufferedImage createBufferedImage(int i, int w, int h) {
-		GraphicsDevice        gd = getGraphicsDevice(i);
-		GraphicsConfiguration gc = gd.getDefaultConfiguration();
-		
-		return gc.createCompatibleImage(w, h, Transparency.TRANSLUCENT);
+		return createBufferedImage(w, h, Transparency.TRANSLUCENT);
 	}
 	
 	public static VolatileImage createVolatileImage(int i, int w, int h) {
+		return createVolatileImage(w, h, Transparency.TRANSLUCENT);
+	}
+	
+	public static BufferedImage createBufferedImage(int i, int w, int h, int transparency) {
 		GraphicsDevice        gd = getGraphicsDevice(i);
 		GraphicsConfiguration gc = gd.getDefaultConfiguration();
 		
-		return gc.createCompatibleVolatileImage(w, h, Transparency.TRANSLUCENT);
+		return gc.createCompatibleImage(w, h, transparency);
+	}
+	
+	public static VolatileImage createVolatileImage(int i, int w, int h, int transparency) {
+		GraphicsDevice        gd = getGraphicsDevice(i);
+		GraphicsConfiguration gc = gd.getDefaultConfiguration();
+		
+		return gc.createCompatibleVolatileImage(w, h, transparency);
 	}
 	
 	

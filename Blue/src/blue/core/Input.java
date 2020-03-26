@@ -24,8 +24,8 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		UP = 0, UP_ACTION = 1,
 		DN = 2, DN_ACTION = 3;	
 	public static final int
-		NUM_KEYS = 128,
-		NUM_BTNS = 25;
+		NUM_KEYS = 149,
+		NUM_BTNS = 6;
 	
 	protected final Handle
 		handle;
@@ -85,7 +85,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		INSTANCE.broker.flush(action);
 	}
 	
-	public static void poll() {
+	protected static void poll() {
 		INSTANCE.onPollMouse();
 		INSTANCE.onPollWheel();
 		INSTANCE.onPollKeys();
@@ -185,44 +185,20 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		switch(key) {
-			case KeyEvent.VK_ESCAPE: key_buffer[KEY_ESCAPE] = true; break;	
+			/*ASCII:   0 -  31*/
+			case KeyEvent.VK_BACK_SPACE: key_buffer[KEY_BACK_SPACE] = true; break;
+			case KeyEvent.VK_TAB       : key_buffer[KEY_TAB       ] = true; break;
+			case KeyEvent.VK_ENTER     : key_buffer[KEY_RETURN    ] = true; break;
+			case KeyEvent.VK_ESCAPE    : key_buffer[KEY_ESCAPE    ] = true; break;
 			
-			case KeyEvent.VK_F1 : key_buffer[KEY_F1 ] = true; break;	
-			case KeyEvent.VK_F2 : key_buffer[KEY_F2 ] = true; break;	
-			case KeyEvent.VK_F3 : key_buffer[KEY_F3 ] = true; break;	
-			case KeyEvent.VK_F4 : key_buffer[KEY_F4 ] = true; break;	
-			case KeyEvent.VK_F5 : key_buffer[KEY_F5 ] = true; break;
-			case KeyEvent.VK_F6 : key_buffer[KEY_F6 ] = true; break;
-			case KeyEvent.VK_F7 : key_buffer[KEY_F7 ] = true; break;
-			case KeyEvent.VK_F8 : key_buffer[KEY_F8 ] = true; break;
-			case KeyEvent.VK_F9 : key_buffer[KEY_F9 ] = true; break;
-			case KeyEvent.VK_F10: key_buffer[KEY_F10] = true; break;
-			case KeyEvent.VK_F11: key_buffer[KEY_F11] = true; break;
-			case KeyEvent.VK_F12: key_buffer[KEY_F12] = true; break;				
-					
-			case KeyEvent.VK_INSERT   : key_buffer[KEY_INSERT ] = true; break;
-			case KeyEvent.VK_DELETE   : key_buffer[KEY_DELETE ] = true; break;
-			case KeyEvent.VK_PAGE_UP  : key_buffer[KEY_PAGE_UP] = true; break;
-			case KeyEvent.VK_PAGE_DOWN: key_buffer[KEY_PAGE_DN] = true; break;
-			
-			case KeyEvent.VK_LEFT : key_buffer[KEY_L_ARROW ] = true; break;
-			case KeyEvent.VK_UP   : key_buffer[KEY_UP_ARROW] = true; break;
-			case KeyEvent.VK_RIGHT: key_buffer[KEY_R_ARROW ] = true; break;
-			case KeyEvent.VK_DOWN : key_buffer[KEY_DN_ARROW] = true; break;
-			
-			case KeyEvent.VK_TAB       : key_buffer[KEY_TAB   ] = true; break;
-			case KeyEvent.VK_BACK_SPACE: key_buffer[KEY_BSPACE] = true; break;				
-			case KeyEvent.VK_ENTER     : key_buffer[KEY_ENTER] = true; break;
-			
-			case KeyEvent.VK_SPACE   : key_buffer[KEY_SPACE ] = true; break;
-			case KeyEvent.VK_QUOTE   : key_buffer[KEY_QUOTE ] = true; break;
-			case KeyEvent.VK_MULTIPLY: key_buffer[KEY_STAR  ] = true; break;
-			case KeyEvent.VK_PLUS    : key_buffer[KEY_PLUS  ] = true; break;
-			case KeyEvent.VK_COMMA   : key_buffer[KEY_COMMA ] = true; break;
-			case KeyEvent.VK_MINUS   : key_buffer[KEY_MINUS ] = true; break;
-			case KeyEvent.VK_PERIOD  : key_buffer[KEY_PERIOD] = true; break;
-			case KeyEvent.VK_SLASH   : key_buffer[KEY_SLASH ] = true; break;
+			/*ASCII:  32 -  47*/
+			case KeyEvent.VK_SPACE : key_buffer[KEY_SPACE ] = true; break;
+			case KeyEvent.VK_QUOTE : key_buffer[KEY_QUOTE ] = true; break;	
+			case KeyEvent.VK_COMMA : key_buffer[KEY_COMMA ] = true; break;
+			case KeyEvent.VK_PERIOD: key_buffer[KEY_PERIOD] = true; break;
+			case KeyEvent.VK_SLASH : key_buffer[KEY_SLASH ] = true; break;
 		
+			/*ASCII:  48 -  57*/
 			case KeyEvent.VK_0: key_buffer[KEY_0] = true; break;
 			case KeyEvent.VK_1: key_buffer[KEY_1] = true; break;
 			case KeyEvent.VK_2: key_buffer[KEY_2] = true; break;
@@ -234,9 +210,10 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 			case KeyEvent.VK_8: key_buffer[KEY_8] = true; break;
 			case KeyEvent.VK_9: key_buffer[KEY_9] = true; break;
 			
+			/*ASCII:  58 -  64*/
 			case KeyEvent.VK_SEMICOLON: key_buffer[KEY_SEMICOLON] = true; break;
-			case KeyEvent.VK_EQUALS   : key_buffer[KEY_EQUALS   ] = true; break;
 			
+			/*ASCII:  65 -  90*/
 			case KeyEvent.VK_A: key_buffer[KEY_A] = true; break;
 			case KeyEvent.VK_B: key_buffer[KEY_B] = true; break;
 			case KeyEvent.VK_C: key_buffer[KEY_C] = true; break;
@@ -264,23 +241,36 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 			case KeyEvent.VK_Y: key_buffer[KEY_Y] = true; break;
 			case KeyEvent.VK_Z: key_buffer[KEY_Z] = true; break;
 			
-			case KeyEvent.VK_OPEN_BRACKET : key_buffer[KEY_L_BRACKET] = true; break; 
-			case KeyEvent.VK_BACK_SLASH   : key_buffer[KEY_BSLASH   ] = true; break; 
-			case KeyEvent.VK_CLOSE_BRACKET: key_buffer[KEY_R_BRACKET] = true; break; 
-			case KeyEvent.VK_BACK_QUOTE   : key_buffer[KEY_BQUOTE   ] = true; break;
-					
-			case KeyEvent.VK_NUMPAD0: key_buffer[KEY_NUMPAD_0] = true; break;
-			case KeyEvent.VK_NUMPAD1: key_buffer[KEY_NUMPAD_1] = true; break;
-			case KeyEvent.VK_NUMPAD2: key_buffer[KEY_NUMPAD_2] = true; break;
-			case KeyEvent.VK_NUMPAD3: key_buffer[KEY_NUMPAD_3] = true; break;
-			case KeyEvent.VK_NUMPAD4: key_buffer[KEY_NUMPAD_4] = true; break;
-			case KeyEvent.VK_NUMPAD5: key_buffer[KEY_NUMPAD_5] = true; break;
-			case KeyEvent.VK_NUMPAD6: key_buffer[KEY_NUMPAD_6] = true; break;
-			case KeyEvent.VK_NUMPAD7: key_buffer[KEY_NUMPAD_7] = true; break;
-			case KeyEvent.VK_NUMPAD8: key_buffer[KEY_NUMPAD_8] = true; break;
-			case KeyEvent.VK_NUMPAD9: key_buffer[KEY_NUMPAD_9] = true; break;
+			/*ASCII:  91 -  96*/
+			case KeyEvent.VK_OPEN_BRACKET : key_buffer[KEY_L_BRACKET ] = true; break;
+			case KeyEvent.VK_BACK_SLASH   : key_buffer[KEY_BACK_SLASH] = true; break;
+			case KeyEvent.VK_CLOSE_BRACKET: key_buffer[KEY_R_BRACKET ] = true; break;
+			case KeyEvent.VK_BACK_QUOTE   : key_buffer[KEY_BACK_QUOTE] = true; break;
 			
-			case KeyEvent.VK_SHIFT: 
+			/*ASCII: 123 - 127*/
+			case KeyEvent.VK_DELETE: key_buffer[KEY_DELETE] = true; break;
+			
+			/*MISC*/
+			
+			case KeyEvent.VK_UP   : key_buffer[KEY_UP_ARROW] = true; break;
+			case KeyEvent.VK_DOWN : key_buffer[KEY_DN_ARROW] = true; break;
+			case KeyEvent.VK_RIGHT: key_buffer[KEY_R_ARROW ] = true; break;
+			case KeyEvent.VK_LEFT : key_buffer[KEY_L_ARROW ] = true; break;
+			
+			case KeyEvent.VK_F1 : key_buffer[KEY_F1 ] = true; break;
+			case KeyEvent.VK_F2 : key_buffer[KEY_F2 ] = true; break;
+			case KeyEvent.VK_F3 : key_buffer[KEY_F3 ] = true; break;
+			case KeyEvent.VK_F4 : key_buffer[KEY_F4 ] = true; break;
+			case KeyEvent.VK_F5 : key_buffer[KEY_F5 ] = true; break;
+			case KeyEvent.VK_F6 : key_buffer[KEY_F6 ] = true; break;
+			case KeyEvent.VK_F7 : key_buffer[KEY_F7 ] = true; break;
+			case KeyEvent.VK_F8 : key_buffer[KEY_F8 ] = true; break;
+			case KeyEvent.VK_F9 : key_buffer[KEY_F9 ] = true; break;
+			case KeyEvent.VK_F10: key_buffer[KEY_F10] = true; break;
+			case KeyEvent.VK_F11: key_buffer[KEY_F11] = true; break;
+			case KeyEvent.VK_F12: key_buffer[KEY_F12] = true; break;
+			
+			case KeyEvent.VK_SHIFT:
 				if(e.getKeyLocation() == KeyEvent.KEY_LOCATION_LEFT ) key_buffer[KEY_L_SHIFT] = true;
 				if(e.getKeyLocation() == KeyEvent.KEY_LOCATION_RIGHT) key_buffer[KEY_R_SHIFT] = true;
 				break;
@@ -291,7 +281,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 			case KeyEvent.VK_ALT:
 				if(e.getKeyLocation() == KeyEvent.KEY_LOCATION_LEFT ) key_buffer[KEY_L_ALT] = true;
 				if(e.getKeyLocation() == KeyEvent.KEY_LOCATION_RIGHT) key_buffer[KEY_R_ALT] = true;
-				break;	
+				break;		
 		}
 	}
 
@@ -299,44 +289,20 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
 		switch(key) {
-			case KeyEvent.VK_ESCAPE: key_buffer[KEY_ESCAPE] = false; break;		
+			/*ASCII:   0 -  31*/
+			case KeyEvent.VK_BACK_SPACE: key_buffer[KEY_BACK_SPACE] = false; break;
+			case KeyEvent.VK_TAB       : key_buffer[KEY_TAB       ] = false; break;
+			case KeyEvent.VK_ENTER     : key_buffer[KEY_RETURN    ] = false; break;
+			case KeyEvent.VK_ESCAPE    : key_buffer[KEY_ESCAPE    ] = false; break;
 			
-			case KeyEvent.VK_F1 : key_buffer[KEY_F1 ] = false; break;	
-			case KeyEvent.VK_F2 : key_buffer[KEY_F2 ] = false; break;	
-			case KeyEvent.VK_F3 : key_buffer[KEY_F3 ] = false; break;	
-			case KeyEvent.VK_F4 : key_buffer[KEY_F4 ] = false; break;	
-			case KeyEvent.VK_F5 : key_buffer[KEY_F5 ] = false; break;
-			case KeyEvent.VK_F6 : key_buffer[KEY_F6 ] = false; break;
-			case KeyEvent.VK_F7 : key_buffer[KEY_F7 ] = false; break;
-			case KeyEvent.VK_F8 : key_buffer[KEY_F8 ] = false; break;
-			case KeyEvent.VK_F9 : key_buffer[KEY_F9 ] = false; break;
-			case KeyEvent.VK_F10: key_buffer[KEY_F10] = false; break;
-			case KeyEvent.VK_F11: key_buffer[KEY_F11] = false; break;
-			case KeyEvent.VK_F12: key_buffer[KEY_F12] = false; break;				
-					
-			case KeyEvent.VK_INSERT   : key_buffer[KEY_INSERT ] = false; break;
-			case KeyEvent.VK_DELETE   : key_buffer[KEY_DELETE ] = false; break;
-			case KeyEvent.VK_PAGE_UP  : key_buffer[KEY_PAGE_UP] = false; break;
-			case KeyEvent.VK_PAGE_DOWN: key_buffer[KEY_PAGE_DN] = false; break;
-			
-			case KeyEvent.VK_LEFT : key_buffer[KEY_L_ARROW ] = false; break;
-			case KeyEvent.VK_UP   : key_buffer[KEY_UP_ARROW] = false; break;
-			case KeyEvent.VK_RIGHT: key_buffer[KEY_R_ARROW ] = false; break;
-			case KeyEvent.VK_DOWN : key_buffer[KEY_DN_ARROW] = false; break;
-			
-			case KeyEvent.VK_TAB       : key_buffer[KEY_TAB   ] = false; break;
-			case KeyEvent.VK_BACK_SPACE: key_buffer[KEY_BSPACE] = false; break;				
-			case KeyEvent.VK_ENTER     : key_buffer[KEY_ENTER] = false; break;
-			
-			case KeyEvent.VK_SPACE   : key_buffer[KEY_SPACE ] = false; break;
-			case KeyEvent.VK_QUOTE   : key_buffer[KEY_QUOTE ] = false; break;
-			case KeyEvent.VK_MULTIPLY: key_buffer[KEY_STAR  ] = false; break;
-			case KeyEvent.VK_PLUS    : key_buffer[KEY_PLUS  ] = false; break;
-			case KeyEvent.VK_COMMA   : key_buffer[KEY_COMMA ] = false; break;
-			case KeyEvent.VK_MINUS   : key_buffer[KEY_MINUS ] = false; break;
-			case KeyEvent.VK_PERIOD  : key_buffer[KEY_PERIOD] = false; break;
-			case KeyEvent.VK_SLASH   : key_buffer[KEY_SLASH ] = false; break;
+			/*ASCII:  32 -  47*/
+			case KeyEvent.VK_SPACE : key_buffer[KEY_SPACE ] = false; break;
+			case KeyEvent.VK_QUOTE : key_buffer[KEY_QUOTE ] = false; break;	
+			case KeyEvent.VK_COMMA : key_buffer[KEY_COMMA ] = false; break;
+			case KeyEvent.VK_PERIOD: key_buffer[KEY_PERIOD] = false; break;
+			case KeyEvent.VK_SLASH : key_buffer[KEY_SLASH ] = false; break;
 		
+			/*ASCII:  48 -  57*/
 			case KeyEvent.VK_0: key_buffer[KEY_0] = false; break;
 			case KeyEvent.VK_1: key_buffer[KEY_1] = false; break;
 			case KeyEvent.VK_2: key_buffer[KEY_2] = false; break;
@@ -348,9 +314,10 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 			case KeyEvent.VK_8: key_buffer[KEY_8] = false; break;
 			case KeyEvent.VK_9: key_buffer[KEY_9] = false; break;
 			
+			/*ASCII:  58 -  64*/
 			case KeyEvent.VK_SEMICOLON: key_buffer[KEY_SEMICOLON] = false; break;
-			case KeyEvent.VK_EQUALS   : key_buffer[KEY_EQUALS   ] = false; break;
 			
+			/*ASCII:  65 -  90*/
 			case KeyEvent.VK_A: key_buffer[KEY_A] = false; break;
 			case KeyEvent.VK_B: key_buffer[KEY_B] = false; break;
 			case KeyEvent.VK_C: key_buffer[KEY_C] = false; break;
@@ -378,23 +345,36 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 			case KeyEvent.VK_Y: key_buffer[KEY_Y] = false; break;
 			case KeyEvent.VK_Z: key_buffer[KEY_Z] = false; break;
 			
-			case KeyEvent.VK_OPEN_BRACKET : key_buffer[KEY_L_BRACKET] = false; break; 
-			case KeyEvent.VK_BACK_SLASH   : key_buffer[KEY_BSLASH   ] = false; break; 
-			case KeyEvent.VK_CLOSE_BRACKET: key_buffer[KEY_R_BRACKET] = false; break; 
-			case KeyEvent.VK_BACK_QUOTE   : key_buffer[KEY_BQUOTE   ] = false; break;
-					
-			case KeyEvent.VK_NUMPAD0: key_buffer[KEY_NUMPAD_0] = false; break;
-			case KeyEvent.VK_NUMPAD1: key_buffer[KEY_NUMPAD_1] = false; break;
-			case KeyEvent.VK_NUMPAD2: key_buffer[KEY_NUMPAD_2] = false; break;
-			case KeyEvent.VK_NUMPAD3: key_buffer[KEY_NUMPAD_3] = false; break;
-			case KeyEvent.VK_NUMPAD4: key_buffer[KEY_NUMPAD_4] = false; break;
-			case KeyEvent.VK_NUMPAD5: key_buffer[KEY_NUMPAD_5] = false; break;
-			case KeyEvent.VK_NUMPAD6: key_buffer[KEY_NUMPAD_6] = false; break;
-			case KeyEvent.VK_NUMPAD7: key_buffer[KEY_NUMPAD_7] = false; break;
-			case KeyEvent.VK_NUMPAD8: key_buffer[KEY_NUMPAD_8] = false; break;
-			case KeyEvent.VK_NUMPAD9: key_buffer[KEY_NUMPAD_9] = false; break;
+			/*ASCII:  91 -  96*/
+			case KeyEvent.VK_OPEN_BRACKET : key_buffer[KEY_L_BRACKET ] = false; break;
+			case KeyEvent.VK_BACK_SLASH   : key_buffer[KEY_BACK_SLASH] = false; break;
+			case KeyEvent.VK_CLOSE_BRACKET: key_buffer[KEY_R_BRACKET ] = false; break;
+			case KeyEvent.VK_BACK_QUOTE   : key_buffer[KEY_BACK_QUOTE] = false; break;
 			
-			case KeyEvent.VK_SHIFT: 
+			/*ASCII: 123 - 127*/
+			case KeyEvent.VK_DELETE: key_buffer[KEY_DELETE] = false; break;
+			
+			/*MISC*/
+			
+			case KeyEvent.VK_UP   : key_buffer[KEY_UP_ARROW] = false; break;
+			case KeyEvent.VK_DOWN : key_buffer[KEY_DN_ARROW] = false; break;
+			case KeyEvent.VK_RIGHT: key_buffer[KEY_R_ARROW ] = false; break;
+			case KeyEvent.VK_LEFT : key_buffer[KEY_L_ARROW ] = false; break;
+			
+			case KeyEvent.VK_F1 : key_buffer[KEY_F1 ] = false; break;
+			case KeyEvent.VK_F2 : key_buffer[KEY_F2 ] = false; break;
+			case KeyEvent.VK_F3 : key_buffer[KEY_F3 ] = false; break;
+			case KeyEvent.VK_F4 : key_buffer[KEY_F4 ] = false; break;
+			case KeyEvent.VK_F5 : key_buffer[KEY_F5 ] = false; break;
+			case KeyEvent.VK_F6 : key_buffer[KEY_F6 ] = false; break;
+			case KeyEvent.VK_F7 : key_buffer[KEY_F7 ] = false; break;
+			case KeyEvent.VK_F8 : key_buffer[KEY_F8 ] = false; break;
+			case KeyEvent.VK_F9 : key_buffer[KEY_F9 ] = false; break;
+			case KeyEvent.VK_F10: key_buffer[KEY_F10] = false; break;
+			case KeyEvent.VK_F11: key_buffer[KEY_F11] = false; break;
+			case KeyEvent.VK_F12: key_buffer[KEY_F12] = false; break;
+			
+			case KeyEvent.VK_SHIFT:
 				if(e.getKeyLocation() == KeyEvent.KEY_LOCATION_LEFT ) key_buffer[KEY_L_SHIFT] = false;
 				if(e.getKeyLocation() == KeyEvent.KEY_LOCATION_RIGHT) key_buffer[KEY_R_SHIFT] = false;
 				break;
@@ -581,131 +561,104 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 	}
 	
 	public static final int	
-		KEY_ESCAPE = 0,
+		/*ASCII:   0 -  31*/
+		KEY_BACK_SPACE       = '\b',     //  8
+		KEY_TAB              = '\t',     //  9
+		KEY_RETURN           = '\n',     // 10
+		KEY_ESCAPE           = '\u001b', // 27
 		
-		KEY_F1  = 1,
-		KEY_F2  = 2,
-		KEY_F3  = 3,
-		KEY_F4  = 4,
-		KEY_F5  = 5,
-		KEY_F6  = 6,
-		KEY_F7  = 7,
-		KEY_F8  = 8,
-		KEY_F9  = 9,
-		KEY_F10 = 10,
-		KEY_F11 = 11,
-		KEY_F12 = 12,				
-				
-		KEY_INSERT = 13,
-		KEY_DELETE = 14,
-		KEY_PAGE_UP = 15,
-		KEY_PAGE_DN = 16,		
-		
-		KEY_L_ARROW  = 25,
-		KEY_UP_ARROW = 26,
-		KEY_R_ARROW  = 27,
-		KEY_DN_ARROW = 28,
-		
-		KEY_TAB    = 29,
-		KEY_BSPACE = 30,				
-		KEY_ENTER = 31,
-		
-		KEY_SPACE  = ' ',     // #32
-		KEY_QUOTE  = '\'',    // #39
-		KEY_STAR   = '*',     // #42
-		KEY_PLUS   = '+',     // #43
-		KEY_COMMA  = ',',     // #44
-		KEY_MINUS  = '-',     // #45
-		KEY_PERIOD = '.',     // #46
-		KEY_SLASH  = '/',     // #47
+		/*ASCII:  32 -  47*/
+		KEY_SPACE            = ' ',  // 32
+		KEY_QUOTE            = '\'', // 39		
+		KEY_L_PARENTHESIS    = '(',  // 40
+		KEY_R_PARENTHESIS    = ')',  // 41		
+		KEY_COMMA            = ',',  // 44
+		KEY_PERIOD           = '.',  // 46
+		KEY_SLASH            = '/',  // 47
 	
-		KEY_0 = '0',          // #48
-		KEY_1 = '1',
-		KEY_2 = '2',
-		KEY_3 = '3',
-		KEY_4 = '4',
-		KEY_5 = '5',
-		KEY_6 = '6',
-		KEY_7 = '7',
-		KEY_8 = '8',
-		KEY_9 = '9',          // #57
+		/*ASCII:  48 -  57*/
+		KEY_0                = '0', // 48
+		KEY_1                = '1', // 49
+		KEY_2                = '2', // 50
+		KEY_3                = '3', // 51
+		KEY_4                = '4', // 52
+		KEY_5                = '5', // 53
+		KEY_6                = '6', // 54
+		KEY_7                = '7', // 55
+		KEY_8                = '8', // 56
+		KEY_9                = '9', // 57
 		
-		KEY_SEMICOLON = ';',  // #59
-		KEY_EQUALS = '=',     // #61
+		/*ASCII:  58 -  64*/
+		KEY_SEMICOLON        = ';', // 59
 		
-		KEY_A = 'A',          // #65
-		KEY_B = 'B',
-		KEY_C = 'C',
-		KEY_D = 'D',
-		KEY_E = 'E',
-		KEY_F = 'F',
-		KEY_G = 'G',
-		KEY_H = 'H',
-		KEY_I = 'I',
-		KEY_J = 'J',
-		KEY_K = 'K',
-		KEY_L = 'L',
-		KEY_M = 'M',
-		KEY_N = 'N',
-		KEY_O = 'O',
-		KEY_P = 'P',
-		KEY_Q = 'Q',
-		KEY_R = 'R',
-		KEY_S = 'S',
-		KEY_T = 'T',
-		KEY_U = 'U',
-		KEY_V = 'V',
-		KEY_W = 'W',
-		KEY_X = 'X',
-		KEY_Y = 'Y',
-		KEY_Z = 'Z',          // #90
+		/*ASCII:  65 -  90*/
+		KEY_A                = 'A', // 65
+		KEY_B                = 'B', // 66
+		KEY_C                = 'C', // 67
+		KEY_D                = 'D', // 68
+		KEY_E                = 'E', // 69
+		KEY_F                = 'F', // 70
+		KEY_G                = 'G', // 71
+		KEY_H                = 'H', // 72
+		KEY_I                = 'I', // 73
+		KEY_J                = 'J', // 74
+		KEY_K                = 'K', // 75
+		KEY_L                = 'L', // 76
+		KEY_M                = 'M', // 77
+		KEY_N                = 'N', // 78
+		KEY_O                = 'O', // 79
+		KEY_P                = 'P', // 80
+		KEY_Q                = 'Q', // 81
+		KEY_R                = 'R', // 82
+		KEY_S                = 'S', // 83
+		KEY_T                = 'T', // 84
+		KEY_U                = 'U', // 85
+		KEY_V                = 'V', // 86
+		KEY_W                = 'W', // 87
+		KEY_X                = 'X', // 88
+		KEY_Y                = 'Y', // 89
+		KEY_Z                = 'Z', // 90
 		
-		KEY_L_BRACKET = '[' , // #91
-		KEY_BSLASH    = '\\', // #92
-		KEY_R_BRACKET = ']' , // #93
-		KEY_BQUOTE    = '`' , // #96
+		/*ASCII:  91 -  96*/
+		KEY_L_BRACKET        = '[',  // 91
+		KEY_BACK_SLASH       = '\\', // 92
+		KEY_R_BRACKET        = ']',  // 93
+		KEY_BACK_QUOTE       = '`',  // 96
+		
+		/*ASCII: 123 - 127*/
+		KEY_DELETE           = '\u00ff', // 127
+		
+		/*MISC*/
+		
+		KEY_UP_ARROW         = 128,
+		KEY_DN_ARROW         = 129,
+		KEY_R_ARROW          = 130,
+		KEY_L_ARROW          = 131,
+		
+		KEY_F1               = 132,
+		KEY_F2               = 133,
+		KEY_F3               = 134,
+		KEY_F4               = 135,
+		KEY_F5               = 136,
+		KEY_F6               = 137,
+		KEY_F7               = 138,
+		KEY_F8               = 139,
+		KEY_F9               = 140,
+		KEY_F10              = 141,
+		KEY_F11              = 142,
+		KEY_F12              = 143,				
 				
-		KEY_NUMPAD_0 = 112,
-		KEY_NUMPAD_1 = 113,
-		KEY_NUMPAD_2 = 114,
-		KEY_NUMPAD_3 = 115,
-		KEY_NUMPAD_4 = 116,
-		KEY_NUMPAD_5 = 117,
-		KEY_NUMPAD_6 = 118,
-		KEY_NUMPAD_7 = 119,
-		KEY_NUMPAD_8 = 120,
-		KEY_NUMPAD_9 = 121,
-		
-		KEY_L_SHIFT = 122,
-		KEY_R_SHIFT = 123,
-		KEY_L_CTRL  = 124,
-		KEY_R_CTRL  = 125,
-		KEY_L_ALT   = 126,
-		KEY_R_ALT   = 127;	
+		KEY_L_SHIFT          = 144,
+		KEY_R_SHIFT          = 145,
+		KEY_L_CTRL           = 146,
+		KEY_R_CTRL           = 147,
+		KEY_L_ALT            = 148,
+		KEY_R_ALT            = 149;
 	
 	public static final int
 		BTN_1 = 1,
 		BTN_2 = 2,
 		BTN_3 = 3,
 		BTN_4 = 4,
-		BTN_5 = 5,
-		BTN_6 = 6,
-		BTN_7 = 7,
-		BTN_8 = 8,
-		BTN_9 = 9,
-		BTN_10 = 10,
-		BTN_11 = 11,
-		BTN_12 = 12,
-		BTN_13 = 13,
-		BTN_14 = 14,
-		BTN_15 = 15,
-		BTN_16 = 16,
-		BTN_17 = 17,
-		BTN_18 = 18,
-		BTN_19 = 19,
-		BTN_20 = 20,
-		BTN_21 = 21,
-		BTN_22 = 22,
-		BTN_23 = 23,
-		BTN_24 = 24;
+		BTN_5 = 5;
 }
