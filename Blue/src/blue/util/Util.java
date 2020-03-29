@@ -389,7 +389,7 @@ public final class Util {
 					file.getParentFile().mkdirs();
 				file.createNewFile();
 			} catch(Exception ex) {
-				Debug.log(Debug.ERROR, Util.class, "Unable to create file \"" + file + "\"");
+				Debug.log(Debug.FATAL, Util.class, "Unable to create file \"" + file + "\"");
 				ex.printStackTrace();
 			}
 		return file;
@@ -400,7 +400,7 @@ public final class Util {
 			try {
 				file.delete();
 			} catch(Exception ex) {
-				Debug.log(Debug.ERROR, Util.class, "Unable to delete file \"" + file + "\"");
+				Debug.log(Debug.FATAL, Util.class, "Unable to delete file \"" + file + "\"");
 				ex.printStackTrace();
 			}
 		}
@@ -415,7 +415,7 @@ public final class Util {
 		try {
 			return new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(createFile(file), append)));
 		} catch (IOException ioe) {
-			Debug.log(Debug.ERROR, Util.class, "Unable to open file \"" + file + "\"");
+			Debug.log(Debug.FATAL, Util.class, "Unable to open file \"" + file + "\"");
 		}
 		return null;
 	}
@@ -428,7 +428,7 @@ public final class Util {
 		try {
 			return new ObjectInputStream(new BufferedInputStream(new FileInputStream(createFile(file))));
 		} catch(IOException ioe) {
-			Debug.log(Debug.ERROR, Util.class, "Unable to open file \"" + file + "\"");
+			Debug.log(Debug.FATAL, Util.class, "Unable to open file \"" + file + "\"");
 		}
 		return null;
 	}
@@ -441,7 +441,7 @@ public final class Util {
 		try {
 			return new BufferedWriter(new FileWriter(createFile(file), append));
 		} catch(IOException ioe) {
-			Debug.log(Debug.ERROR, Util.class, "Unable to open file \"" + file + "\"");
+			Debug.log(Debug.FATAL, Util.class, "Unable to open file \"" + file + "\"");
 		}
 		return null;
 	}
@@ -454,7 +454,7 @@ public final class Util {
 		try {
 			return new PrintWriter(new BufferedWriter(new FileWriter(createFile(file), append)));
 		} catch(IOException ioe) {
-			Debug.log(Debug.ERROR, Util.class, "Unable to open file \"" + file + "\"");
+			Debug.log(Debug.FATAL, Util.class, "Unable to open file \"" + file + "\"");
 		}
 		return null;
 	}
@@ -467,7 +467,7 @@ public final class Util {
 		try {
 			return new BufferedReader(new FileReader(createFile(file)));
 		} catch(IOException ioe) {
-			Debug.log(Debug.ERROR, Util.class, "Unable to open file \"" + file + "\"");
+			Debug.log(Debug.FATAL, Util.class, "Unable to open file \"" + file + "\"");
 		}
 		return null;
 	}

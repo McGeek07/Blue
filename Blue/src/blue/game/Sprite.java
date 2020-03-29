@@ -374,7 +374,7 @@ public class Sprite implements Renderable, Updateable {
 				return atlas;
 				
 			} catch(IOException ioe) {
-				Debug.log(Debug.ERROR, Atlas.class, "Failed to load atlas (" + name + ", " + path + ", " + frame_w + ", " + frame_h + ").");
+				Debug.log(Debug.FATAL, Atlas.class, "Failed to load atlas (" + name + ", " + path + ", " + frame_w + ", " + frame_h + ").");
 				ioe.printStackTrace();				
 				return null;
 			}

@@ -9,9 +9,11 @@ import java.util.Set;
 
 public class Debug {
 	public static final int
-		INFO  = 2,
-		WARN  = 1,
-		ERROR = 0;
+		TRACE = 4,
+		INFO  = 3,
+		WARN  = 2,
+		ERROR = 1,
+		FATAL = 0;
 	
 	protected static final Map<Integer, Logger>
 		log = new HashMap<>();
@@ -19,9 +21,11 @@ public class Debug {
 		lvl = INFO;
 	
 	public static final Logger
+		trace = get(TRACE).id("TRACE").attach(System.out),
 		info  = get(INFO).id("INFO").attach(System.out),
-		warn  = get(WARN).id("WARNING").attach(System.err),
-		error = get(ERROR).id("ERROR").attach(System.err);
+		warn  = get(WARN).id("WARN").attach(System.err),
+		error = get(ERROR).id("ERROR").attach(System.err),
+		fatal = get(FATAL).id("FATAL").attach(System.err);
 	
 	public static final Logger get(int lvl) {
 		Logger logger = log.get(lvl);

@@ -30,9 +30,11 @@ public class Engine implements Runnable {
 		INSTANCE = new Engine();
 	
 	protected Vector4
-		window_background = new Vector4(  0,   0,   0, 255),
 		canvas_background = new Vector4(  0,   0,   0, 255),
-		canvas_foreground = new Vector4(255, 255, 255, 255);
+		canvas_foreground = new Vector4(255, 255, 255, 255),
+		debug_background  = new Vector4(  0,   0,   0, 127),
+		debug_foreground  = new Vector4(255, 255, 255, 127),
+		window_background = new Vector4(  0,   0,   0, 255);
 	protected Layout
 		canvas_layout = Layout.DEFAULT;
 	protected boolean
@@ -57,6 +59,8 @@ public class Engine implements Runnable {
 	protected final Map<String, String>
 		cfg = Util.configure( 
 				new TreeMap<String, String>(),
+				CANVAS_BACKGROUND, canvas_background,
+				CANVAS_FOREGROUND, canvas_foreground,
 				CANVAS_LAYOUT, canvas_layout,
 				WINDOW_BORDER, window_border,
 				WINDOW_DEVICE, window_device,
@@ -66,6 +70,8 @@ public class Engine implements Runnable {
 	protected Color
 		canvas_background_color,
 		canvas_foreground_color,
+		debug_background_color,
+		debug_foreground_color,
 		window_background_color;
 	protected Font
 		debug_font;
@@ -297,19 +303,23 @@ public class Engine implements Runnable {
 		canvas_foreground = getProperty(Vector4::parseVector4, CANVAS_FOREGROUND, canvas_foreground);
 		canvas_layout     = getProperty(Layout::parseLayout, CANVAS_LAYOUT, canvas_layout);
 		debug		      = getPropertyAsBoolean(DEBUG, debug);
+		debug_background  = getProperty(Vector4::parseVector4, DEBUG_BACKGROUND, debug_background);
 		debug_font_name   = getProperty     (DEBUG_FONT_NAME, debug_font_name);
 		debug_font_size   = getPropertyAsInt(DEBUG_FONT_SIZE, debug_font_size);
+		debug_foreground  = getProperty(Vector4::parseVector4, DEBUG_FOREGROUND, debug_foreground);
 		engine_fps	      = getPropertyAsFloat(ENGINE_FPS, engine_fps);
 		engine_tps	      = getPropertyAsFloat(ENGINE_TPS, engine_tps);
 		window_background = getProperty(Vector4::parseVector4, WINDOW_BACKGROUND, window_background);
 		window_border     = getPropertyAsBoolean(WINDOW_BORDER, window_border);
 		window_device     = getPropertyAsInt    (WINDOW_DEVICE, window_device);
 		window_layout     = getProperty(Layout::parseLayout, WINDOW_LAYOUT, window_layout);
-		window_title      = getProperty(WINDOW_TITLE, window_title);
+		window_title      = getProperty(WINDOW_TITLE, window_title);		
 		
-		window_background_color = Vector.toColor4i(window_background);
 		canvas_background_color = Vector.toColor4i(canvas_background);
 		canvas_foreground_color = Vector.toColor4i(canvas_foreground);
+		debug_background_color = Vector4.toColor4i(debug_background);
+		debug_foreground_color = Vector4.toColor4i(debug_foreground);
+		window_background_color = Vector.toColor4i(window_background);
 		debug_font = new Font(debug_font_name, Font.PLAIN, debug_font_size);
 		
 		if(window != null)
@@ -399,11 +409,8 @@ public class Engine implements Runnable {
 			scene.onDetach();
 		if(window != null)
 			window.dispose();
-	}	
+	}
 	
-	protected static final Color
-		debug_background = new Color(0f, 0f, 0f, .5f),
-		debug_foreground = new Color(1f, 1f, 1f, .5f);
 	protected BufferStrategy
 		b;	
 	public void onRender(float t, float dt, float fixed_dt) {		
@@ -489,14 +496,14 @@ public class Engine implements Runnable {
 				x = 0,
 				y = 0;
 			
-			render_context.color(debug_background);
+			render_context.color(debug_background_color);
 			render_context.rect(
 					0, 0,
 					debug_info_w,
 					debug_info_h,
 					true
 					);
-			render_context.color(debug_foreground);
+			render_context.color(debug_foreground_color);
 			for(int i = 0; i < debug_info.length; i ++)
 				render_context.text(debug_info[i], x, y += fm_h);				
 			render_context.pop();
@@ -673,8 +680,10 @@ public class Engine implements Runnable {
 		CANVAS_FOREGROUND = "canvas-foreground",
 		CANVAS_LAYOUT     = "canvas-layout",
 		DEBUG             = "debug",
+		DEBUG_BACKGROUND  = "debug-background",
 		DEBUG_FONT_NAME   = "debug-font-name",
 		DEBUG_FONT_SIZE   = "debug-font-size",
+		DEBUG_FOREGROUND  = "debug-foreground",
 		ENGINE_FPS        = "engine-fps",
 		ENGINE_TPS        = "engine-tps",
 		WINDOW_BACKGROUND = "window-background",
