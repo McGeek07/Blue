@@ -10,7 +10,6 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
-import blue.core.Debug;
 import blue.core.Renderable;
 import blue.core.Updateable;
 import blue.geom.Region2;
@@ -225,11 +224,11 @@ public class Sprite implements Renderable, Updateable {
 			frame += speed * context.dt;
 			switch(mode) {
 				case PLAY: 
-					if(frame <  0f            ) stop(0f                );
+					if(frame <  0f           ) stop(0f               );
 					if(frame >= frames.length) stop(frames.length - 1);
 					break;
 				case LOOP:
-					while(frame <  0f            ) frame += frames.length;
+					while(frame <  0f           ) frame += frames.length;
 					while(frame >= frames.length) frame -= frames.length;
 			}
 		}
@@ -343,22 +342,22 @@ public class Sprite implements Renderable, Updateable {
 		public static Atlas getByName(String name) {
 			Atlas atlas = NAME_INDEX.get(name);
 			if(atlas == null)
-				Debug.log(Debug.WARN, Atlas.class, "An Atlas with name '" + name + "' does not exist.");
+				System.err.println("[blue.game.Sprite.Atlas.getByName] An Atlas with name '" + name + "' does not exist.");
 			return atlas;
 		}
 		
 		public static Atlas getByPath(String path) {
 			Atlas atlas = PATH_INDEX.get(path);
 			if(atlas == null)
-				Debug.log(Debug.WARN, Atlas.class, "An Atlas with path '" + path + "' does not exist.");
+				System.err.println("[blue.game.Sprite.Atlas.getByPath] An Atlas with path '" + path + "' does not exist.");
 			return atlas;
 		}
 		
 		public static Atlas load(String name, String path, int frame_w, int frame_h) {
 			if(NAME_INDEX.containsKey(name))
-				Debug.log(Debug.WARN, Atlas.class, "An Atlas with name '" + name + "' already exists.");
+				System.err.println("[blue.game.Sprite.Atlas.load] An Atlas with name '" + name + "' already exists.");
 			if(PATH_INDEX.containsKey(path))
-				Debug.log(Debug.WARN, Atlas.class, "An Atlas with path '" + path + "' already exists.");
+				System.err.println("[blue.game.Sprite.Atlas.load] An Atlas with path '" + path + "' already exists.");
 			
 			try {
 				BufferedImage image = ImageIO.read(new File(path));
@@ -374,7 +373,7 @@ public class Sprite implements Renderable, Updateable {
 				return atlas;
 				
 			} catch(IOException ioe) {
-				Debug.log(Debug.FATAL, Atlas.class, "Failed to load atlas (" + name + ", " + path + ", " + frame_w + ", " + frame_h + ").");
+				System.err.println("[blue.game.Sprite.Atlas.load] Failed to load atlas (" + name + ", " + path + ", " + frame_w + ", " + frame_h + ").");
 				ioe.printStackTrace();				
 				return null;
 			}

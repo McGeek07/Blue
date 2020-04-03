@@ -10,7 +10,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferStrategy;
 import java.io.File;
-import java.util.Map;
 import java.util.TreeMap;
 
 import blue.Blue;
@@ -21,9 +20,8 @@ import blue.geom.Region2;
 import blue.geom.Vector;
 import blue.geom.Vector2;
 import blue.geom.Vector4;
+import blue.util.Configuration;
 import blue.util.Util;
-import blue.util.Util.ObjectToString;
-import blue.util.Util.StringToObject;
 
 public class Engine implements Runnable {
 	protected static final Engine
@@ -56,8 +54,8 @@ public class Engine implements Runnable {
 	protected String
 		window_title = Blue.VERSION.toString();
 	
-	protected final Map<String, String>
-		cfg = Util.configure( 
+	protected final Configuration
+		cfg = new Configuration( 
 				new TreeMap<String, String>(),
 				CANVAS_BACKGROUND, canvas_background,
 				CANVAS_FOREGROUND, canvas_foreground,
@@ -153,87 +151,27 @@ public class Engine implements Runnable {
 	}
 	
 	public static void configure(Object... args) {
-		Util.configure(INSTANCE.cfg, args);
+		getConfiguration().set(args);
 	}
 	
-	public static void setProperty(Object key, Object val) {
-		Util.setEntry(INSTANCE.cfg, key, val);
-	}
-	
-	public static <T> void setProperty(ObjectToString<T> o2s, Object key, T val) {
-		Util.setEntry(INSTANCE.cfg, o2s, key, val);
-	}
-	
-	public static String getProperty(Object key) {
-		return Util.getEntry(INSTANCE.cfg, key);
-	}
-	
-	public static String getProperty(Object key, Object alt) {
-		return Util.getEntry(INSTANCE.cfg, key, alt);
-	}
-	
-	public static <T> T getProperty(StringToObject<T> s2o, Object key) {
-		return Util.getEntry(INSTANCE.cfg, s2o, key);
-	}
-	
-	public static <T> T getProperty(StringToObject<T> s2o, Object key, T alt) {
-		return Util.getEntry(INSTANCE.cfg, s2o, key, alt);
-	}
-	
-	public static int getPropertyAsInt(Object key) {
-		return Util.getEntryAsInt(INSTANCE.cfg, key);
-	}
-	
-	public static int getPropertyAsInt(Object key, int alt) {
-		return Util.getEntryAsInt(INSTANCE.cfg, key, alt);
-	}
-	
-	public static long getPropertyAsLong(Object key) {
-		return Util.getEntryAsLong(INSTANCE.cfg, key);
-	}
-	
-	public static long getPropertyAsLong(Object key, long alt) {
-		return Util.getEntryAsLong(INSTANCE.cfg, key, alt);
-	}
-	
-	public static float getPropertyAsFloat(Object key) {
-		return Util.getEntryAsFloat(INSTANCE.cfg, key);
-	}
-	
-	public static float getPropertyAsFloat(Object key, float alt) {
-		return Util.getEntryAsFloat(INSTANCE.cfg, key, alt);
-	}
-	
-	public static double getPropertyAsDouble(Object key) {
-		return Util.getEntryAsDouble(INSTANCE.cfg, key);
-	}
-	
-	public static double getPropertyAsDouble(Object key, double alt) {
-		return Util.getEntryAsDouble(INSTANCE.cfg, key, alt);
-	}
-	
-	public static boolean getPropertyAsBoolean(Object key) {
-		return Util.getEntryAsBoolean(INSTANCE.cfg, key);
-	}
-	
-	public static boolean getPropertyAsBoolean(Object key, boolean alt) {
-		return Util.getEntryAsBoolean(INSTANCE.cfg, key, alt);
-	}
-	
-	public static void loadConfiguration(String path) {
-		loadConfiguration(new File(path));
-	}
-	
-	public static void loadConfiguration(File   file) {
-		Util.parseFromFile(file, INSTANCE.cfg);
+	public static Configuration getConfiguration() {
+		return INSTANCE.cfg;
 	}
 	
 	public static void saveConfiguration(String path) {
-		saveConfiguration(new File(path));
+		getConfiguration().save(path);
 	}
 	
 	public static void saveConfiguration(File   file) {
-		Util.printToFile(file, false, INSTANCE.cfg);
+		getConfiguration().save(file);
+	}
+	
+	public static void loadConfiguration(String path) {
+		getConfiguration().load(path);
+	}
+	
+	public static void loadConfiguration(File   file) {
+		getConfiguration().load(file);
 	}
 	
 	public static final Region2 window() {
@@ -299,21 +237,21 @@ public class Engine implements Runnable {
 	}
 	
 	public void onInit() {		
-		canvas_background = getProperty(Vector4::parseVector4, CANVAS_BACKGROUND, canvas_background);
-		canvas_foreground = getProperty(Vector4::parseVector4, CANVAS_FOREGROUND, canvas_foreground);
-		canvas_layout     = getProperty(Layout::parseLayout, CANVAS_LAYOUT, canvas_layout);
-		debug		      = getPropertyAsBoolean(DEBUG, debug);
-		debug_background  = getProperty(Vector4::parseVector4, DEBUG_BACKGROUND, debug_background);
-		debug_font_name   = getProperty     (DEBUG_FONT_NAME, debug_font_name);
-		debug_font_size   = getPropertyAsInt(DEBUG_FONT_SIZE, debug_font_size);
-		debug_foreground  = getProperty(Vector4::parseVector4, DEBUG_FOREGROUND, debug_foreground);
-		engine_fps	      = getPropertyAsFloat(ENGINE_FPS, engine_fps);
-		engine_tps	      = getPropertyAsFloat(ENGINE_TPS, engine_tps);
-		window_background = getProperty(Vector4::parseVector4, WINDOW_BACKGROUND, window_background);
-		window_border     = getPropertyAsBoolean(WINDOW_BORDER, window_border);
-		window_device     = getPropertyAsInt    (WINDOW_DEVICE, window_device);
-		window_layout     = getProperty(Layout::parseLayout, WINDOW_LAYOUT, window_layout);
-		window_title      = getProperty(WINDOW_TITLE, window_title);		
+		canvas_background = cfg.get(Vector4::parseVector4, CANVAS_BACKGROUND, canvas_background);
+		canvas_foreground = cfg.get(Vector4::parseVector4, CANVAS_FOREGROUND, canvas_foreground);
+		canvas_layout     = cfg.get(Layout::parseLayout, CANVAS_LAYOUT, canvas_layout);
+		debug		      = cfg.getBoolean(DEBUG, debug);
+		debug_background  = cfg.get(Vector4::parseVector4, DEBUG_BACKGROUND, debug_background);
+		debug_font_name   = cfg.get   (DEBUG_FONT_NAME, debug_font_name);
+		debug_font_size   = cfg.getInt(DEBUG_FONT_SIZE, debug_font_size);
+		debug_foreground  = cfg.get(Vector4::parseVector4, DEBUG_FOREGROUND, debug_foreground);
+		engine_fps	      = cfg.getFloat(ENGINE_FPS, engine_fps);
+		engine_tps	      = cfg.getFloat(ENGINE_TPS, engine_tps);
+		window_background = cfg.get(Vector4::parseVector4, WINDOW_BACKGROUND, window_background);
+		window_border     = cfg.getBoolean(WINDOW_BORDER, window_border);
+		window_device     = cfg.getInt    (WINDOW_DEVICE, window_device);
+		window_layout     = cfg.get(Layout::parseLayout, WINDOW_LAYOUT, window_layout);
+		window_title      = cfg.get(WINDOW_TITLE, window_title);
 		
 		canvas_background_color = Vector.toColor4i(canvas_background);
 		canvas_foreground_color = Vector.toColor4i(canvas_foreground);
