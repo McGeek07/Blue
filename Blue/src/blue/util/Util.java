@@ -169,7 +169,7 @@ public final class Util {
 	public static final ObjectToString<?>
 		OBJECT_TO_STRING = Object::toString;
 	
-	public static Map<String, String> set(Map<String, String> map, Object... args) {
+	public static Map<String, String> setEntries(Map<String, String> map, Object... args) {
 		int length = args.length - (args.length & 1);
 		for(int i = 0; i < length; i += 2) {
 			int 
