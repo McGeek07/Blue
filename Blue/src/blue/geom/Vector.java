@@ -46,7 +46,7 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 		throw new UnsupportedOperationException();
 	}	
 
-	/*IMMUTABLE ADD*/
+	/*IMMUTABLE ADDITION*/
 	public static Vector2 add(Vector2 a, Vector2 b) {
 		return new Vector2(
 				a.x + b.x,
@@ -90,7 +90,7 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				);
 	}
 	
-	/*IMMUTABLE SUB*/
+	/*IMMUTABLE SUBTRACTION*/
 	public static Vector2 sub(Vector2 a, Vector2 b) {
 		return new Vector2(
 				a.x - b.x,
@@ -134,7 +134,7 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				);
 	}
 	
-	/*IMMUTABLE MUL*/
+	/*IMMUTABLE MULTIPLICATION*/
 	public static Vector2 mul(Vector2 a, Vector2 b) {
 		return new Vector2(
 				a.x * b.x,
@@ -235,7 +235,7 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				);
 	}
 	
-	/*IMMUTABLE DIV*/
+	/*IMMUTABLE DIVISION*/
 	public static Vector2 div(Vector2 a, Vector2 b) {
 		return new Vector2(
 				a.x / b.x,
@@ -300,14 +300,14 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				);
 	}
 	
-	/*IMMUTABLE NORMALIZE*/
-	public static Vector2 nom(Vector2 a) {
+	/*IMMUTABLE NORMALIZATION*/
+	public static Vector2 normal(Vector2 a) {
 		return div(a, mag(a));
 	}
-	public static Vector3 nom(Vector3 a) {
+	public static Vector3 normal(Vector3 a) {
 		return div(a, mag(a));
 	}
-	public static Vector4 nom(Vector4 a) {
+	public static Vector4 normal(Vector4 a) {
 		return div(a, mag(a));
 	}
 	
@@ -365,50 +365,51 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 		return (float)Math.sqrt(dot(a));
 	}
 	
-	public static float dist(Vector2 a, Vector2 b) {
+	public static float distance(Vector2 a, Vector2 b) {
 		return mag(sub(a, b));
 	}
-	public static float dist(Vector3 a, Vector3 b) {
+	public static float distance(Vector3 a, Vector3 b) {
 		return mag(sub(a, b));
 	}
-	public static float dist(Vector4 a, Vector4 b) {
+	public static float distance(Vector4 a, Vector4 b) {
 		return mag(sub(a, b));
 	}
-	public static float dist(Vector2 a, float x, float y) {
+	public static float distance(Vector2 a, float x, float y) {
 		return mag(sub(a, x, y));
 	}
-	public static float dist(Vector3 a, float x, float y, float z) {
+	public static float distance(Vector3 a, float x, float y, float z) {
 		return mag(sub(a, x, y, z));
 	}
-	public static float dist(Vector4 a, float x, float y, float z, float w) {
+	public static float distance(Vector4 a, float x, float y, float z, float w) {
 		return mag(sub(a, x, y, z, w));
 	}
 	
 	/*IMMUTABLE PROJECTION*/
-	public static Vector2 v_pro(Vector2 a, Vector2 b) {
-		return Vector.mul(b, s_pro(a, b));
+	public static Vector2 v_project(Vector2 a, Vector2 b) {
+		return Vector.mul(b, s_project(a, b));
 	}
-	public static Vector3 v_pro(Vector3 a, Vector3 b) {
-		return Vector.mul(b, s_pro(a, b));
+	public static Vector3 v_project(Vector3 a, Vector3 b) {
+		return Vector.mul(b, s_project(a, b));
 	}
-	public static Vector4 v_pro(Vector4 a, Vector4 b) {
-		return Vector.mul(b, s_pro(a, b));
+	public static Vector4 v_project(Vector4 a, Vector4 b) {
+		return Vector.mul(b, s_project(a, b));
 	}
-	public static float s_pro(Vector2 a, Vector2 b) {
+	public static float s_project(Vector2 a, Vector2 b) {
 		return dot(a, b) / dot(b, b);
 	}
-	public static float s_pro(Vector3 a, Vector3 b) {
+	public static float s_project(Vector3 a, Vector3 b) {
 		return dot(a, b) / dot(b, b);
 	}
-	public static float s_pro(Vector4 a, Vector4 b) {
+	public static float s_project(Vector4 a, Vector4 b) {
 		return dot(a, b) / dot(b, b);
 	}
 	
+	/*IMMUTABLE TRANSFORM*/
 	public static Vector2 transform(Vector2 a, Transform2 t) {
-		return Vector.mul(a, t.xform);
+		return Vector.mul(a, t.m3);
 	}	
 	public static Vector3 transform(Vector3 a, Transform3 t) {
-		return null;
+		return Vector.mul(a, t.m4);
 	}	
 	
 	public static java.awt.Color toColor3i(Vector v) {
@@ -459,7 +460,7 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				);
 	}
 	
-	/*MUTABLE ADD*/
+	/*MUTABLE ADDITION*/
 	public static Vector2.Mutable m_add(Vector2.Mutable a, Vector2 b) {
 		return a.set(
 				a.x + b.x,
@@ -503,7 +504,7 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				);
 	}
 	
-	/*MUTABLE SUB*/
+	/*MUTABLE SUBTRACTION*/
 	public static Vector2.Mutable m_sub(Vector2.Mutable a, Vector2 b) {
 		return a.set(
 				a.x - b.x,
@@ -547,7 +548,7 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				);
 	}
 	
-	/*MUTABLE MUL*/
+	/*MUTABLE MULTIPLICATION*/
 	public static Vector2.Mutable m_mul(Vector2.Mutable a, Vector2 b) {
 		return a.set(
 				a.x * b.x,
@@ -649,7 +650,7 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				);
 	}
 	
-	/*MUTABLE DIV*/
+	/*MUTABLE DIVISION*/
 	public static Vector2.Mutable m_div(Vector2.Mutable a, Vector2 b) {
 		return a.set(
 				a.x / b.x,
@@ -714,25 +715,33 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				);
 	}
 	
-	/*MUTABLE NORMALIZE*/
-	public static Vector2.Mutable m_nom(Vector2.Mutable a) {
+	/*MUTABLE NORMALIZATION*/
+	public static Vector2.Mutable m_normal(Vector2.Mutable a) {
 		return m_div(a, mag(a));
 	}
-	public static Vector3.Mutable m_nom(Vector3.Mutable a) {
+	public static Vector3.Mutable m_normal(Vector3.Mutable a) {
 		return m_div(a, mag(a));
 	}
-	public static Vector4.Mutable m_nom(Vector4.Mutable a) {
+	public static Vector4.Mutable m_normal(Vector4.Mutable a) {
 		return m_div(a, mag(a));
 	}
 
 	/*MUTABLE PROJECTION*/
-	public static Vector2.Mutable m_pro(Vector2.Mutable a, Vector2 b) {
-		return a.set(v_pro(a, b));
+	public static Vector2.Mutable m_project(Vector2.Mutable a, Vector2 b) {
+		return a.set(v_project(a, b));
 	}
-	public static Vector3.Mutable m_pro(Vector3.Mutable a, Vector3 b) {
-		return a.set(v_pro(a, b));
+	public static Vector3.Mutable m_project(Vector3.Mutable a, Vector3 b) {
+		return a.set(v_project(a, b));
 	}
-	public static Vector4.Mutable m_pro(Vector4.Mutable a, Vector4 b) {
-		return a.set(v_pro(a, b));
+	public static Vector4.Mutable m_project(Vector4.Mutable a, Vector4 b) {
+		return a.set(v_project(a, b));
 	}
+	
+	/*MUTABLE TRANSFORM*/
+	public static Vector2.Mutable m_transform(Vector2.Mutable a, Transform2 t) {
+		return Vector.m_mul(a, t.m3);
+	}	
+	public static Vector3.Mutable m_transform(Vector3.Mutable a, Transform3 t) {
+		return Vector.m_mul(a, t.m4);
+	}	
 }

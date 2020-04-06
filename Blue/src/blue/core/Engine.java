@@ -375,11 +375,11 @@ public class Engine implements Runnable {
 					window_h,
 					true
 					);
-			render_context.mov(
+			render_context.translate(
 					(window_w - canvas_w * canvas_scale) / 2,
 					(window_h - canvas_h * canvas_scale) / 2
 					);
-			render_context.sca(
+			render_context.scale(
 					canvas_scale,
 					canvas_scale
 					);

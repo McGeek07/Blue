@@ -146,24 +146,24 @@ public interface Renderable {
 			line(v0.x(), v0.y(), v1.x(), v1.y());
 		}
 		
-		public void mov(float tx, float ty) {
+		public void translate(float tx, float ty) {
 			g.translate(tx, ty);
 		}
-		public void sca(float sx, float sy) {
+		public void scale    (float sx, float sy) {
 			g.scale(sx, sy);
 		}		
-		public void rot(float angle, boolean degrees) {
+		public void rotate(float angle, boolean degrees) {
 			if(degrees)
 				g.rotate(Math.toRadians(angle));
 			else
 				g.rotate(               angle );
 		}
 		
-		public void mov(Vector t) {
-			mov(t.x(), t.y());
+		public void translate(Vector t) {
+			translate(t.x(), t.y());
 		}
-		public void sca(Vector s) {
-			sca(s.x(), s.y());
+		public void scale    (Vector s) {
+			scale(s.x(), s.y());
 		}
 		
 		public void clip(float w, float h) {

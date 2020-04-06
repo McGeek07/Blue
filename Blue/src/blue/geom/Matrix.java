@@ -173,4 +173,52 @@ public abstract class Matrix implements Serializable, Copyable<Matrix> {
 				Vector.dot(a.wx, a.wy, a.wz, a.ww, b.xx, b.yx, b.zx, b.wx), Vector.dot(a.wx, a.wy, a.wz, a.ww, b.xy, b.yy, b.zy, b.wy), Vector.dot(a.wx, a.wy, a.wz, a.ww, b.xz, b.yz, b.zz, b.wz), Vector.dot(a.wx, a.wy, a.wz, a.ww, b.xw, b.yw, b.zw, b.ww)
 				);
 	}
+	
+	public static Matrix3 translate(Vector2 t) {
+		return translate(t.x, t.y);
+	}	
+	public static Matrix3 translate(float tx, float ty) {
+		return new Matrix3(
+				Matrix.ROW_MAJOR,
+				1 , 0 , 0,
+				0 , 1 , 0,
+				tx, ty, 1
+				);
+	}	
+	public static Matrix4 translate(Vector3 t) {
+		return translate(t.x, t.y, t.z);
+	}	
+	public static Matrix4 translate(float tx, float ty, float tz) {
+		return new Matrix4(
+				Matrix.ROW_MAJOR,
+				1 , 0 , 0 , 0,
+				0 , 1 , 0 , 0,
+				0 , 0 , 1 , 0,
+				tx, ty, tz, 0
+				);
+	}
+	
+	public static Matrix3 scale(Vector2 s) {
+		return scale(s.x, s.y);
+	}	
+	public static Matrix3 scale(float sx, float sy) {
+		return new Matrix3(
+				Matrix.ROW_MAJOR,
+				sx, 0 , 0,
+				0 , sy, 0,
+				0 , 0 , 1
+				);
+	}	
+	public static Matrix4 scale(Vector3 s) {
+		return scale(s.x, s.y, s.z);
+	}	
+	public static Matrix4 scale(float sx, float sy, float sz) {
+		return new Matrix4(
+				Matrix.ROW_MAJOR,
+				sx, 0 , 0 , 0,
+				0 , sy, 0 , 0,
+				0 , 0 , sz, 0,
+				0 , 0 , 0 , 1
+				);
+	}
 }
