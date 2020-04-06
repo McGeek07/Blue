@@ -259,11 +259,7 @@ public class Sprite implements Renderable, Updateable {
 		private static final HashMap<String, Atlas>
 			NAME_INDEX = new HashMap<String, Atlas>(),
 			PATH_INDEX = new HashMap<String, Atlas>();
-		private static int
-			HASH = 0;
 		
-		public final int
-			hash = HASH ++;
 		public final String
 			name,
 			path;

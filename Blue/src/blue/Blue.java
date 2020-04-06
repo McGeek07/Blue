@@ -1,16 +1,26 @@
 package blue;
 
 import blue.core.Engine;
+import blue.core.Input;
+import blue.core.Input.KeyAction;
 import blue.util.Version;
 
 public class Blue {
 	public static final Version
-		VERSION = new Version("Blue", 0, 0, 42);
+		VERSION = new Version("Blue", 0, 0, 43);
 	
 	public static void main(String[] args) {
 		System.out.println(VERSION);
 		
-		Engine.configure(Engine.DEBUG, true);
+		Engine.configure(
+				Engine.DEBUG        , true ,
+				Engine.WINDOW_BORDER, false
+				);
 		Engine.init();
+		
+		Input.attach(KeyAction.class, (event) -> {
+			if(event.isDn() && event.isKey(Input.KEY_ESCAPE))
+				Engine.exit();
+		});
 	}
 }

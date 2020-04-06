@@ -54,7 +54,7 @@ public class Event {
 		INSTANCE.broker.flush(event);
 	}
 	
-	public static void poll() {
+	protected static void poll() {
 		INSTANCE.broker.poll();
 	}	
 	
