@@ -84,20 +84,24 @@ public class Event {
 			}
 			
 			public void attach() {
-				for(Listener<T> listener: attach)
-					add(listener);
-				attach.clear();
+				if(attach.size() > 0) {
+					for(Listener<T> listener: attach)
+						add(listener);
+					attach.clear();
+				}
 			}
 			
 			public void detach() {
-				for(Listener<T> listener: detach)
-					del(listener);
-				detach.clear();
+				if(detach.size() > 0) {
+					for(Listener<T> listener: detach)
+						del(listener);
+					detach.clear();
+				}
 			}
 			
 			public void flush(T event) {
 				for(Listener<T> listener : listeners)
-					listener.handle(event);			
+					listener.handle(event);		
 			}
 
 			@Override
@@ -176,19 +180,27 @@ public class Event {
 			}
 			
 			public void attach() {
-				for(Handle handle: attach)
-					add(handle);
-				for(Handle handle: handles)
-					handle.attach();
-				attach.clear();
+				if(attach.size() > 0) {
+					for(Handle handle: attach)
+						add(handle);
+					attach.clear();
+				}
+				if(handles.size() > 0) {
+					for(Handle handle: handles)
+						handle.attach();
+				}
 			}
 			
 			public void detach() {
-				for(Handle handle: handles)
-					handle.detach();
-				for(Handle handle: detach)
-					del(handle);
-				detach.clear();
+				if(handles.size() > 0) {
+					for(Handle handle: handles)
+						handle.detach();
+				}
+				if(detach.size() > 0) {
+					for(Handle handle: detach)
+						del(handle);
+					detach.clear();
+				}
 			}
 			
 			public <T> void flush(T event) {
@@ -307,19 +319,27 @@ public class Event {
 			}
 			
 			public void attach() {
-				for(Broker broker: attach)
-					add(broker);
-				for(Broker broker: brokers)
-					broker.attach();
-				attach.clear();
+				if(attach.size() > 0) {
+					for(Broker broker: attach)
+						add(broker);
+					attach.clear();
+				}
+				if(brokers.size() > 0) {
+					for(Broker broker: brokers)
+						broker.attach();
+				}
 			}
 			
 			public void detach() {
-				for(Broker broker: brokers)
-					broker.detach();
-				for(Broker broker: detach)
-					del(broker);
-				detach.clear();
+				if(brokers.size() > 0) {
+					for(Broker broker: brokers)
+						broker.detach();
+				}
+				if(detach.size() > 0) {
+					for(Broker broker: detach)
+						del(broker);
+					detach.clear();
+				}
 			}
 			
 			public <T> void flush(T event) {
@@ -359,19 +379,27 @@ public class Event {
 			}
 			
 			public void attach() {
-				for(MonoHandle<T> handle: attach)
-					add(handle);
-				for(MonoHandle<T> handle: handles)
-					handle.attach();
-				attach.clear();
+				if(attach.size() > 0) {
+					for(MonoHandle<T> handle: attach)
+						add(handle);	
+					attach.clear();
+				}
+				if(handles.size() > 0) {
+					for(MonoHandle<T> handle: handles)
+						handle.attach();
+				}
 			}
 			
 			public void detach() {
-				for(MonoHandle<T> handle: handles)
-					handle.detach();
-				for(MonoHandle<T> handle: detach)
-					del(handle);
-				detach.clear();
+				if(handles.size() > 0) {
+					for(MonoHandle<T> handle: handles)
+						handle.detach();
+				}
+				if(detach.size() > 0) {
+					for(MonoHandle<T> handle: detach)
+						del(handle);
+					detach.clear();
+				}
 			}
 			
 			public void flush(T event) {
@@ -490,19 +518,27 @@ public class Event {
 			}
 			
 			public void attach() {
-				for(MonoBroker<T> broker: attach)
-					add(broker);
-				for(MonoBroker<T> broker: brokers)
-					broker.attach();
-				attach.clear();
+				if(attach.size() > 0) {
+					for(MonoBroker<T> broker: attach)
+						add(broker);
+					attach.clear();
+				}
+				if(brokers.size() > 0) {
+					for(MonoBroker<T> broker: brokers)
+						broker.attach();
+				}
 			}
 			
 			public void detach() {
-				for(MonoBroker<T> broker: brokers)
-					broker.detach();
-				for(MonoBroker<T> broker: detach)
-					del(broker);
-				detach.clear();
+				if(brokers.size() > 0) {
+					for(MonoBroker<T> broker: brokers)
+						broker.detach();
+				}
+				if(detach.size() > 0) {
+					for(MonoBroker<T> broker: detach)
+						del(broker);
+					detach.clear();
+				}
 			}
 			
 			public void flush(T event) {

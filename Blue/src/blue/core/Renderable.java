@@ -11,7 +11,7 @@ import blue.geom.Box;
 import blue.geom.Vector;
 
 public interface Renderable {
-	public void onRender(RenderContext context);
+	public void render(RenderContext context);
 	
 	public static class RenderContext {
 		public Graphics2D
@@ -26,10 +26,6 @@ public interface Renderable {
 		
 		protected RenderContext() {
 			//do nothing
-		}
-		
-		public void render(Renderable renderable) {
-			renderable.onRender(this);
 		}
 		
 		public void stroke(float w) {

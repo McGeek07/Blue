@@ -168,7 +168,7 @@ public class Sprite implements Renderable, Updateable {
 	}
 
 	@Override
-	public void onRender(RenderContext context) {
+	public void render(RenderContext context) {
 		if(alpha > 0f) {
 			int
 				x1, y1,
@@ -219,7 +219,7 @@ public class Sprite implements Renderable, Updateable {
 	}
 
 	@Override
-	public void onUpdate(UpdateContext context) {
+	public void update(UpdateContext context) {
 		if(mode > 0) {
 			frame += speed * context.dt;
 			switch(mode) {

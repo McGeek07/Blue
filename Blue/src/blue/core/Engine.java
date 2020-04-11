@@ -86,8 +86,12 @@ public class Engine implements Runnable {
 		render_hz,
 		update_hz;
 	protected float
-		render_dt,
-		update_dt;
+		render_avg_dt,
+		render_min_dt,
+		render_max_dt,
+		update_avg_dt,
+		update_min_dt,
+		update_max_dt;
 	
 	protected Thread
 		thread;
@@ -402,7 +406,7 @@ public class Engine implements Runnable {
 						);
 				render_context.color(canvas_foreground_color);
 				if(scene != null) 
-					render_context.render(scene);
+					scene.render(render_context);
 			render_context.pop();
 			
 		render_context.pop();
@@ -414,8 +418,8 @@ public class Engine implements Runnable {
 			FontMetrics fm = render_context.g.getFontMetrics();
 			
 			String[] debug_info = {
-						String.format("FPS: %1$d hz @ %2$.2f ms%n", render_hz, render_dt),
-						String.format("TPS: %1$d hz @ %2$.2f ms%n", update_hz, update_dt),
+						String.format("FPS: %1$d hz @ %2$.2f [%3$.2f - %4$.2f] ms%n", render_hz, render_avg_dt, render_min_dt, render_max_dt),
+						String.format("TPS: %1$d hz @ %2$.2f [%3$.2f - %4$.2f] ms%n", update_hz, update_avg_dt, update_min_dt, update_max_dt),
 						String.format("Canvas: %1$d x %2$d @ %3$.1f%%", canvas_w, canvas_h, canvas_scale * 100)
 					};
 			int
@@ -462,44 +466,49 @@ public class Engine implements Runnable {
 		update_context.canvas_h = canvas_h;
 		
 		update_context.push();
-		if(scene != null) 
-			update_context.update(scene);
+		if(scene != null)
+			scene.update(update_context);
 		update_context.pop();
 	}
 	
 	public void onSetScene(SceneEvent se) {
-		if(INSTANCE.scene != null)
-			INSTANCE.scene.onDetach();
-		INSTANCE.scene = se.scene;
-		if(INSTANCE.scene != null)
-			INSTANCE.scene.onAttach();
+		if(scene != null)
+			scene.detach();
+		scene = se.scene;
+		if(scene != null) {
+			scene.resize(
+					canvas_w,
+					canvas_h
+					);
+			scene.attach();
+		}
 	}
 	
 	public void onMouseMoved(Vector2 mouse) {
-		if(scene != null) scene.onMouseMoved(mouse);
+		if(scene != null) scene.mouseMoved(mouse);
 	}
 	
 	public void onWheelMoved(float   wheel) {
-		if(scene != null) scene.onWheelMoved(wheel);
+		if(scene != null) scene.wheelMoved(wheel);
 	}
 	
 	public void onKeyDn(int key) {
-		if(scene != null) scene.onKeyDn(key);
+		if(scene != null) scene.keyDn(key);
 	}
 	
 	public void onKeyUp(int key) {
-		if(scene != null) scene.onKeyUp(key);
+		if(scene != null) scene.keyUp(key);
 	}
 	
 	public void onBtnDn(int btn) {
-		if(scene != null) scene.onBtnDn(btn);
+		if(scene != null) scene.btnDn(btn);
 	}
 	
 	public void onBtnUp(int btn) {
-		if(scene != null) scene.onBtnUp(btn);
+		if(scene != null) scene.btnUp(btn);
 	}
 	
-	public void onResize(WindowEvent we) {
+	public void onResize(WindowEvent we) {		
 		window_w = we.window_w;
 		window_h = we.window_h;
 		
@@ -509,14 +518,24 @@ public class Engine implements Runnable {
 				window_h
 		);
 		b = canvas_layout.region(a);
-		canvas_w = (int)b.w();
-		canvas_h = (int)b.h();
-		canvas_scale = Math.min(
-				(float)window_w / canvas_w,
-				(float)window_h / canvas_h
-				);
-		if(scene != null)
-			scene.onResize();
+		int
+			_canvas_w = (int)b.w(),
+			_canvas_h = (int)b.h();
+		if(
+				canvas_w != _canvas_w ||
+				canvas_h != _canvas_h ) {
+			canvas_w = _canvas_w;
+			canvas_h = _canvas_h;
+			canvas_scale = Math.min(
+					(float)window_w / canvas_w,
+					(float)window_h / canvas_h
+					);
+			if(scene != null)
+				scene.resize(
+						canvas_w,
+						canvas_h
+						);
+		}		
 	}
 	
 	public void onGainFocus(FocusEvent fe) {
@@ -546,10 +565,12 @@ public class Engine implements Runnable {
 				render_fixed_dt = (float)render_fixed_nanos / ONE_SECOND,				   //fixed time-per-render in seconds
 				update_fixed_dt = (float)update_fixed_nanos / ONE_SECOND;				   //fixed time-per-update in seconds
 			long
-				render_lag_nanos = 0,													   //dynamic render lag in nanoseconds
-				update_lag_nanos = 0,													   //dynamic update lag in nanoseconds
-				render_avg_nanos = 0,													   //dynamic average time-per-render in nanoseconds
-				update_avg_nanos = 0,													   //dynamic average time-per-update in nanoseconds
+				render_avg_nanos = 0,													   //average time-per-render in nanoseconds
+				render_min_nanos = Long.MAX_VALUE,
+				render_max_nanos = 0,
+				update_avg_nanos = 0,													   //average time-per-update in nanoseconds
+				update_min_nanos = Long.MAX_VALUE,
+				update_max_nanos = 0,
 				render_nanos = 0,														   //elapsed render time in nanoseconds				
 				update_nanos = 0;														   //elapsed update time in nanoseconds
 			int
@@ -564,47 +585,59 @@ public class Engine implements Runnable {
 				update_nanos  += delta_nanos;
 				elapsed_nanos += delta_nanos;
 				
-				if(update_nanos + update_lag_nanos >= update_fixed_nanos) {
+				if(update_nanos >= update_fixed_nanos) {
 					float
 						update_t  = (float)current_nanos / ONE_SECOND,
 						update_dt = (float) update_nanos / ONE_SECOND;
 					onUpdate(update_t, update_dt, update_fixed_dt);
 					
-					update_lag_nanos = Util.clamp(update_lag_nanos + update_nanos - update_fixed_nanos, - update_fixed_nanos, update_fixed_nanos);
+					if(update_nanos < update_min_nanos) update_min_nanos = update_nanos;
+					if(update_nanos > update_max_nanos) update_max_nanos = update_nanos;					
+					
 					update_avg_nanos += update_nanos;
 					update_nanos = 0;
 					update_count ++;
 				}
 				
-				if(render_nanos + render_lag_nanos >= render_fixed_nanos) {
+				if(render_nanos >= render_fixed_nanos) {
 					float
 						render_t  = (float)current_nanos / ONE_SECOND,
 						render_dt = (float) render_nanos / ONE_SECOND;
 					onRender(render_t, render_dt, render_fixed_dt);
 					
-					render_lag_nanos = Util.clamp(render_lag_nanos + render_nanos - render_fixed_nanos, - render_fixed_nanos, render_fixed_nanos);
+					if(render_nanos < render_min_nanos) render_min_nanos = render_nanos;
+					if(render_nanos > render_max_nanos) render_max_nanos = render_nanos;
+					
 					render_avg_nanos += render_nanos;
 					render_nanos = 0;
 					render_count ++;
 				}
 				
 				if(elapsed_nanos >= ONE_SECOND) {
-					render_dt = (float)render_avg_nanos / render_count / ONE_MILLIS;
-					update_dt = (float)update_avg_nanos / update_count / ONE_MILLIS;
+					render_avg_dt = (float)render_avg_nanos / render_count / ONE_MILLIS;
+					render_min_dt = (float)render_min_nanos / ONE_MILLIS;
+					render_max_dt = (float)render_max_nanos / ONE_MILLIS;
+					update_avg_dt = (float)update_avg_nanos / update_count / ONE_MILLIS;
+					update_min_dt = (float)update_min_nanos / ONE_MILLIS;
+					update_max_dt = (float)update_max_nanos / ONE_MILLIS;
 					render_hz = render_count;
 					update_hz = update_count;
 					render_avg_nanos = 0;
+					render_min_nanos = Long.MAX_VALUE;
+					render_max_nanos = 0;
 					update_avg_nanos = 0;
+					update_min_nanos = Long.MAX_VALUE;
+					update_max_nanos = 0;
 					render_count  = 0;
 					update_count  = 0;
 					elapsed_nanos = 0;
 				}
 				
 				long sync = Math.min(
-					render_fixed_nanos - render_nanos - render_lag_nanos,
-					update_fixed_nanos - update_nanos - update_lag_nanos
+					render_fixed_nanos - render_nanos,
+					update_fixed_nanos - update_nanos
 					) / ONE_MILLIS;
-				if(sync > 0) Thread.sleep(1);
+				if(sync > 1) Thread.sleep(1);
 			}
 		} catch(Exception ex) {
 			ex.printStackTrace();

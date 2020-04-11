@@ -151,22 +151,22 @@ public class Vector4 extends Vector {
 			return this;
 		}
 		
-		public Vector4.Mutable setX(float x) {
+		public Vector4.Mutable x(float x) {
 			this.x = x;
 			return this;
 		}
 		
-		public Vector4.Mutable setY(float y) {
+		public Vector4.Mutable y(float y) {
 			this.y = y;
 			return this;
 		}
 		
-		public Vector4.Mutable setZ(float z) {
+		public Vector4.Mutable z(float z) {
 			this.z = z;
 			return this;
 		}
 		
-		public Vector4.Mutable setW(float w) {
+		public Vector4.Mutable w(float w) {
 			this.w = w;
 			return this;
 		}

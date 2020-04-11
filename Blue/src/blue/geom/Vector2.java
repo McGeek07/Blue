@@ -118,12 +118,12 @@ public class Vector2 extends Vector {
 			return this;
 		}
 		
-		public Vector2.Mutable setX(float x) {
+		public Vector2.Mutable x(float x) {
 			this.x = x;
 			return this;
 		}
 		
-		public Vector2.Mutable setY(float y) {
+		public Vector2.Mutable y(float y) {
 			this.y = y;
 			return this;
 		}

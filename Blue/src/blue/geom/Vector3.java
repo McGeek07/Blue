@@ -131,17 +131,17 @@ public class Vector3 extends Vector {
 			return this;
 		}
 		
-		public Vector3.Mutable setX(float x) {
+		public Vector3.Mutable x(float x) {
 			this.x = x;
 			return this;
 		}
 		
-		public Vector3.Mutable setY(float y) {
+		public Vector3.Mutable y(float y) {
 			this.y = y;
 			return this;
 		}
 		
-		public Vector3.Mutable setZ(float z) {
+		public Vector3.Mutable z(float z) {
 			this.z = z;
 			return this;
 		}

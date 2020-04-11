@@ -2,7 +2,7 @@ package blue.geom;
 
 import java.util.LinkedList;
 
-public class Transform3 extends Transform<Matrix3> {
+public class Transform3 {
 	protected final LinkedList<Matrix4>
 		stack = new LinkedList<Matrix4>();
 	public final Matrix4.Mutable

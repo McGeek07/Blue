@@ -4,7 +4,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 public interface Updateable {
-	public void onUpdate(UpdateContext context);
+	public void update(UpdateContext context);
 	
 	public static class UpdateContext {		
 		public float
@@ -17,10 +17,6 @@ public interface Updateable {
 		
 		protected UpdateContext() {
 			//do nothing
-		}
-		
-		public void update(Updateable updateable) {
-			updateable.onUpdate(this);
 		}
 		
 		private final Deque<UpdateContext>

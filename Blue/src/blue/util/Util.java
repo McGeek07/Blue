@@ -59,6 +59,30 @@ public final class Util {
 		return x;
 	}
 	
+	public static int wrap(int x, int a, int b) {
+		if(x < a) return b + (a - x) % (b - a);
+		if(x > b) return a + (x - b) % (b - a);
+		return x;
+	}
+	
+	public static float wrap(float x, float a, float b) {
+		if(x < a) return b + (a - x) % (b - a);
+		if(x > b) return a + (x - b) % (b - a);
+		return x;
+	}
+	
+	public static long wrap(long x, long a, long b) {
+		if(x < a) return b + (a - x) % (b - a);
+		if(x > b) return a + (x - b) % (b - a);
+		return x;
+	}
+	
+	public static double wrap(double x, double a, double b) {
+		if(x < a) return b + (a - x) % (b - a);
+		if(x > b) return a + (x - b) % (b - a);
+		return x;
+	}
+	
 	public static int sign(int x) {
 		return x != 0 ? x > 0 ? 1 : -1 : 0;
 	}
@@ -73,6 +97,22 @@ public final class Util {
 	
 	public static double sign(double x) {
 		return x != 0. ? x > 0. ? 1. : -1. : 0.;
+	}
+	
+	public static <T0> Tuple<T0> tuple(T0 t0) {
+		return new Tuple<>(t0);
+	}
+	
+	public static <T0, T1> Tuple2<T0, T1> tuple(T0 t0, T1 t1) {
+		return new Tuple2<>(t0, t1);
+	}
+	
+	public static <T0, T1, T2> Tuple3<T0, T1, T2> tuple(T0 t0, T1 t1, T2 t2) {
+		return new Tuple3<>(t0, t1, t2);
+	}
+	
+	public static <T0, T1, T2, T3> Tuple4<T0, T1, T2, T3> tuple(T0 t0, T1 t1, T2 t2, T3 t3) {
+		return new Tuple4<>(t0, t1, t2, t3);
 	}
 	
 	@SuppressWarnings("unchecked")

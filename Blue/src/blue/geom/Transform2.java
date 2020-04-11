@@ -2,7 +2,7 @@ package blue.geom;
 
 import java.util.LinkedList;
 
-public class Transform2 extends Transform<Matrix3> {
+public class Transform2 {
 	protected final LinkedList<Matrix3>
 		stack = new LinkedList<Matrix3>();
 	public final Matrix3.Mutable
@@ -10,7 +10,7 @@ public class Transform2 extends Transform<Matrix3> {
 	
 	public Transform2() {
 		//do nothing
-	}	
+	}
 	
 	public Transform2 translate(Vector2 t) {		
 		Matrix.m_mul(m3, Matrix.translate(t));
