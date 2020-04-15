@@ -12,13 +12,13 @@ import blue.util.Version;
 
 public class Blue {
 	public static final Version
-		VERSION = new Version("Blue", 0, 0, 45);
+		VERSION = new Version("Blue", 0, 0, 46);
 	
 	public static void main(String[] args) {
 		System.out.println(VERSION);
 		
 		Engine.configure(
-				Engine.DEBUG        , true ,
+				Engine.DEBUG        , true,
 				Engine.WINDOW_BORDER, true
 				);
 		Engine.init();

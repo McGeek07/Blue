@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
 
@@ -243,6 +245,14 @@ public class Sprite implements Renderable, Updateable {
 	
 	public static Sprite load(String name, String path, int frame_w, int frame_h) {
 		return new Sprite(Atlas.load(name, path, frame_w, frame_h), null);
+	}
+	
+	public static Sprite fromName(String name) {
+		return Sprite.fromName(name, null);
+	}
+	
+	public static Sprite fromPath(String path) {
+		return Sprite.fromPath(path, null);
 	}
 	
 	public static Sprite fromName(String name, Paint paint) {
