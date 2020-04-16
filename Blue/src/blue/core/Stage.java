@@ -2,7 +2,11 @@ package blue.core;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
 import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferStrategy;
@@ -10,6 +14,7 @@ import java.awt.image.BufferStrategy;
 import blue.Blue;
 import blue.core.Renderable.RenderContext;
 import blue.core.Updateable.UpdateContext;
+import blue.geom.Bounds2;
 import blue.geom.Box;
 import blue.geom.Layout;
 import blue.geom.Region2;
@@ -177,9 +182,9 @@ public class Stage extends Module {
 		Region2
 			a, b;
 		if(window_border)
-			a = Util.computeMaximumWindowRegion(window_device);
+			a = computeMaximumWindowRegion(window_device);
 		else
-			a = Util.computeMaximumScreenRegion(window_device);
+			a = computeMaximumScreenRegion(window_device);
 		b = window_layout.region(a);		
 		
 		window.setUndecorated(!window_border);
@@ -498,6 +503,64 @@ public class Stage extends Module {
 			this.window_w = window_w;
 			this.window_h = window_h;
 		}
+	}
+	
+	public static Region2 computeMaximumScreenRegion(int i) {
+		GraphicsDevice        gd = Util.getGraphicsDevice(i);
+		GraphicsConfiguration gc = gd.getDefaultConfiguration();
+		
+		Rectangle bounds = gc.getBounds();
+		
+		return new Region2(
+				bounds.x,
+				bounds.y,
+				bounds.width,
+				bounds.height
+				);
+	}
+	
+	public static Region2 computeMaximumWindowRegion(int i) {
+		GraphicsDevice        gd = Util.getGraphicsDevice(i);
+		GraphicsConfiguration gc = gd.getDefaultConfiguration();
+		
+		Rectangle bounds = gc.getBounds();
+		Insets    insets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
+		
+		return new Region2(
+				bounds.x + insets.left,
+				bounds.y + insets.top ,
+				bounds.width  - insets.left - insets.right ,
+				bounds.height - insets.top  - insets.bottom
+				);		
+	}
+	
+	public static Bounds2 computeMaximumScreenBounds(int i) {
+		GraphicsDevice        gd = Util.getGraphicsDevice(i);
+		GraphicsConfiguration gc = gd.getDefaultConfiguration();
+		
+		Rectangle bounds = gc.getBounds();
+		
+		return new Bounds2(
+				bounds.x,
+				bounds.y,
+				bounds.x + bounds.width,
+				bounds.y + bounds.height
+				);
+	}
+	
+	public static Bounds2 computeMaximumWindowBounds(int i) {
+		GraphicsDevice        gd = Util.getGraphicsDevice(i);
+		GraphicsConfiguration gc = gd.getDefaultConfiguration();
+		
+		Rectangle bounds = gc.getBounds();
+		Insets    insets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
+		
+		return new Bounds2(
+				bounds.x + insets.left,
+				bounds.y + insets.top ,
+				bounds.x + bounds.width  - insets.left - insets.right ,
+				bounds.y + bounds.height - insets.top  - insets.bottom
+				);		
 	}
 	
 	public static final String

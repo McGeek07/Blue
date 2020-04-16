@@ -3,9 +3,6 @@ package blue.util;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Insets;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
@@ -25,9 +22,6 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
-
-import blue.geom.Bounds2;
-import blue.geom.Region2;
 
 public final class Util {
 	
@@ -312,64 +306,6 @@ public final class Util {
 			return null;
 	}
 	
-	public static Region2 computeMaximumScreenRegion(int i) {
-		GraphicsDevice        gd = getGraphicsDevice(i);
-		GraphicsConfiguration gc = gd.getDefaultConfiguration();
-		
-		Rectangle bounds = gc.getBounds();
-		
-		return new Region2(
-				bounds.x,
-				bounds.y,
-				bounds.width,
-				bounds.height
-				);
-	}
-	
-	public static Region2 computeMaximumWindowRegion(int i) {
-		GraphicsDevice        gd = getGraphicsDevice(i);
-		GraphicsConfiguration gc = gd.getDefaultConfiguration();
-		
-		Rectangle bounds = gc.getBounds();
-		Insets    insets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
-		
-		return new Region2(
-				bounds.x + insets.left,
-				bounds.y + insets.top ,
-				bounds.width  - insets.left - insets.right ,
-				bounds.height - insets.top  - insets.bottom
-				);		
-	}
-	
-	public static Bounds2 computeMaximumScreenBounds(int i) {
-		GraphicsDevice        gd = getGraphicsDevice(i);
-		GraphicsConfiguration gc = gd.getDefaultConfiguration();
-		
-		Rectangle bounds = gc.getBounds();
-		
-		return new Bounds2(
-				bounds.x,
-				bounds.y,
-				bounds.x + bounds.width,
-				bounds.y + bounds.height
-				);
-	}
-	
-	public static Bounds2 computeMaximumWindowBounds(int i) {
-		GraphicsDevice        gd = getGraphicsDevice(i);
-		GraphicsConfiguration gc = gd.getDefaultConfiguration();
-		
-		Rectangle bounds = gc.getBounds();
-		Insets    insets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
-		
-		return new Bounds2(
-				bounds.x + insets.left,
-				bounds.y + insets.top ,
-				bounds.x + bounds.width  - insets.left - insets.right ,
-				bounds.y + bounds.height - insets.top  - insets.bottom
-				);		
-	}
-	
 	public static BufferedImage createBufferedImage(int i, int w, int h) {
 		return createBufferedImage(w, h, Transparency.TRANSLUCENT);
 	}
@@ -391,7 +327,6 @@ public final class Util {
 		
 		return gc.createCompatibleVolatileImage(w, h, transparency);
 	}
-	
 	
 	public static <T> void print(PrintStream out, T[] list) {
 		for(T t: list) out.println(t);
