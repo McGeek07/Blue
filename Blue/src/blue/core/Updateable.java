@@ -1,10 +1,7 @@
 package blue.core;
 
-import java.util.Deque;
-import java.util.LinkedList;
-
 public interface Updateable {
-	public void update(UpdateContext context);
+	public void onUpdate(UpdateContext context);
 	
 	public static class UpdateContext {		
 		public float
@@ -19,28 +16,30 @@ public interface Updateable {
 			//do nothing
 		}
 		
-		private final Deque<UpdateContext>
-			stack = new LinkedList<>();
+		private UpdateContext
+			root;
 	
-		public void push() {
+		public UpdateContext push() {
 			UpdateContext copy = new UpdateContext();
 			
-			stack.push(copy);
+			copy.root = this ;
 			copy.t  = this.t ;
 			copy.dt = this.dt;
 			copy.fixed_dt = this.fixed_dt;
 			copy.canvas_w = this.canvas_w;
 			copy.canvas_h = this.canvas_h;
+			
+			return copy;
 		}
 		
-		public void pop()  {
-			UpdateContext copy = stack.pop();
-			
-			this.t  = copy.t ;
-			this.dt = copy.dt;
-			this.fixed_dt = copy.fixed_dt;
-			this.canvas_w = copy.canvas_w;
-			this.canvas_h = copy.canvas_h;
+		public UpdateContext pop()  {
+			if(root != null)
+				try {
+					return root;
+				} finally {
+					root = null;
+				}
+			return this;
 		}
 	}
 }

@@ -4,14 +4,12 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.util.Deque;
-import java.util.LinkedList;
 
 import blue.geom.Box;
 import blue.geom.Vector;
 
 public interface Renderable {
-	public void render(RenderContext context);
+	public void onRender(RenderContext context);
 	
 	public static class RenderContext {
 		public Graphics2D
@@ -207,13 +205,13 @@ public interface Renderable {
 			font(new Font(font_name, font_type, font_size));
 		}
 		
-		private final Deque<RenderContext>
-			stack = new LinkedList<>();
+		private RenderContext 
+			root;
 		
-		public void push() {
-			RenderContext copy = new RenderContext();
-			
-			stack.push(copy);			
+		public RenderContext push() {
+			RenderContext copy = new RenderContext();			
+
+			copy.root = this ;
 			copy.g  = this.g ;
 			copy.t  = this.t ;
 			copy.dt = this.dt;
@@ -222,18 +220,19 @@ public interface Renderable {
 			copy.canvas_h = this.canvas_h;
 			
 			this.g = (Graphics2D)copy.g.create();
+			
+			return copy;
 		}
 		
-		public void pop()  {
-			RenderContext copy = stack.pop();
-			
-			this.g.dispose();
-			this.g  = copy.g ;
-			this.t  = copy.t ;
-			this.dt = copy.dt;
-			this.fixed_dt = copy.fixed_dt;
-			this.canvas_w = copy.canvas_w;
-			this.canvas_h = copy.canvas_h;
+		public RenderContext pop()  {
+			if(root != null)
+				try {
+					g.dispose();
+					return root;
+				} finally {
+					root = null;
+				}
+			return this;
 		}
 	}
 }	

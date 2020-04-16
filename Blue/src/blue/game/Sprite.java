@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
 
@@ -170,7 +168,7 @@ public class Sprite implements Renderable, Updateable {
 	}
 
 	@Override
-	public void render(RenderContext context) {
+	public void onRender(RenderContext context) {
 		if(alpha > 0f) {
 			int
 				x1, y1,
@@ -190,7 +188,7 @@ public class Sprite implements Renderable, Updateable {
 				y2 = (int)bounds.y2();
 			}
 			if(alpha < 1f) {				
-				context.push();
+				context = context.push();
 				
 				if(alpha_composite == null)
 					alpha_composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
@@ -206,7 +204,7 @@ public class Sprite implements Renderable, Updateable {
 						null
 						);	
 				
-				context.pop();
+				context = context.pop();
 			} else
 				context.g.drawImage(
 						frames[(int)frame],
@@ -221,7 +219,7 @@ public class Sprite implements Renderable, Updateable {
 	}
 
 	@Override
-	public void update(UpdateContext context) {
+	public void onUpdate(UpdateContext context) {
 		if(mode > 0) {
 			frame += speed * context.dt;
 			switch(mode) {

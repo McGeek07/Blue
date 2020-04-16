@@ -1,6 +1,21 @@
 package blue.core;
 
-public class Scene extends Node {	
+import blue.geom.Vector2;
+
+public abstract class Scene implements Renderable, Updateable {
+	public void onAttach() { }
+	public void onDetach() { }
+	public void onResize() { }
+	public void onRender(RenderContext context) { }
+	public void onUpdate(UpdateContext context) { }
+	
+	public void onMouseMoved(Vector2 mouse) { }
+	public void onWheelMoved(float   wheel) { }
+	public void onBtnDn(int btn) { }
+	public void onBtnUp(int btn) { }
+	public void onKeyDn(int key) { }
+	public void onKeyUp(int key) { }	
+
 	public void onGainFocus() { }
 	public void onLoseFocus() { }
 }
