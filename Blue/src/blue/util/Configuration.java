@@ -27,7 +27,7 @@ public class Configuration implements Serializable {
 		Util.setEntry(map, key, val);
 	}
 	
-	public <OBJECT> void set(ObjectToString<OBJECT> o2s, Object key, OBJECT val) {
+	public <T> void set(ObjectToString<T> o2s, Object key, T val) {
 		Util.setEntry(map, o2s, key, val);
 	}
 	

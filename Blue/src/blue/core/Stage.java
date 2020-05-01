@@ -21,7 +21,6 @@ import blue.geom.Region2;
 import blue.geom.Vector;
 import blue.geom.Vector2;
 import blue.geom.Vector4;
-import blue.util.Configuration;
 import blue.util.Util;
 
 public class Stage extends Module {
@@ -30,7 +29,7 @@ public class Stage extends Module {
 	protected float
 		thread_fps = 60f,
 		thread_tps = 60f;
-	protected Vector4 
+	protected Vector4
 		canvas_background = Vector4.fromColor4i(Color.BLACK),
 		window_background = Vector4.fromColor4i(Color.BLACK);
 	protected Layout  
@@ -89,71 +88,67 @@ public class Stage extends Module {
 			WINDOW_BORDER, window_border,
 			WINDOW_DEVICE, window_device,
 			WINDOW_LAYOUT, window_layout
-		);		
+		);
+	}	
+	
+	public void setScene(Scene scene) {
+		queue(new SceneEvent(scene));
 	}
 	
-	public static Configuration getConfiguration() {
-		return INSTANCE.config;
+	public void mouseMoved(Vector2 mouse) {
+		if(scene != null)
+			scene.onMouseMoved(mouse);
 	}
 	
-	public static void setScene(Scene scene) {
-		INSTANCE.queue(new SceneEvent(scene));
+	public void wheelMoved(float   wheel) {
+		if(scene != null)
+			scene.onWheelMoved(wheel);
 	}
 	
-	public static void mouseMoved(Vector2 mouse) {
-		if(INSTANCE.scene != null)
-			INSTANCE.scene.onMouseMoved(mouse);
+	public void btnDn(int btn) {
+		if(scene != null)
+			scene.onBtnDn(btn);
 	}
 	
-	public static void wheelMoved(float   wheel) {
-		if(INSTANCE.scene != null)
-			INSTANCE.scene.onWheelMoved(wheel);
+	public void btnUp(int btn) {
+		if(scene != null)
+			scene.onBtnUp(btn);
 	}
 	
-	public static void btnDn(int btn) {
-		if(INSTANCE.scene != null)
-			INSTANCE.scene.onBtnDn(btn);
+	public void keyDn(int key) {
+		if(scene != null)
+			scene.onKeyDn(key);
 	}
 	
-	public static void btnUp(int btn) {
-		if(INSTANCE.scene != null)
-			INSTANCE.scene.onBtnUp(btn);
+	public void keyUp(int key) {
+		if(scene != null)
+			scene.onKeyUp(key);
 	}
 	
-	public static void keyDn(int key) {
-		if(INSTANCE.scene != null)
-			INSTANCE.scene.onKeyDn(key);
-	}
-	
-	public static void keyUp(int key) {
-		if(INSTANCE.scene != null)
-			INSTANCE.scene.onKeyUp(key);
-	}
-	
-	public static Box<?> bounds() {
+	public Box<?> bounds() {
 		return new Region2(
-				INSTANCE.canvas_w,
-				INSTANCE.canvas_h
+				canvas_w,
+				canvas_h
 				);
 	}
 	
-	public static final Vector2 mouseToPixel(float x, float y) {
-		x = (x - INSTANCE.window_w / 2) / INSTANCE.canvas_scale + INSTANCE.canvas_w / 2;
-		y = (y - INSTANCE.window_h / 2) / INSTANCE.canvas_scale + INSTANCE.canvas_h / 2;
+	public final Vector2 mouseToPixel(float x, float y) {
+		x = (x - window_w / 2) / canvas_scale + canvas_w / 2;
+		y = (y - window_h / 2) / canvas_scale + canvas_h / 2;
 		return new Vector2(x, y);
 	}
 	
-	public static final Vector2 pixelToMouse(float x, float y) {
-		x = (x - INSTANCE.canvas_w / 2) * INSTANCE.canvas_scale + INSTANCE.window_w / 2;
-		y = (y - INSTANCE.canvas_h / 2) * INSTANCE.canvas_scale + INSTANCE.window_h / 2;
+	public final Vector2 pixelToMouse(float x, float y) {
+		x = (x - canvas_w / 2) * canvas_scale + window_w / 2;
+		y = (y - canvas_h / 2) * canvas_scale + window_h / 2;
 		return new Vector2(x, y);
 	}
 	
-	public static final Vector2 mouseToPixel(Vector2 v) {
+	public final Vector2 mouseToPixel(Vector2 v) {
 		return mouseToPixel(v.x(), v.y());
 	}
 	
-	public static final Vector2 pixelToMouse(Vector2 v) {
+	public final Vector2 pixelToMouse(Vector2 v) {
 		return pixelToMouse(v.x(), v.y());
 	}
 	
@@ -564,13 +559,14 @@ public class Stage extends Module {
 	}
 	
 	public static final String
-		THREAD_FPS    = "thread-fps",
-		THREAD_TPS    = "thread-tps",
 		CANVAS_BACKGROUND = "canvas-background",
+		CANVAS_LAYOUT     = "canvas-layout",
+		DEBUG             = "debug",
+		THREAD_FPS        = "thread-fps",
+		THREAD_TPS        = "thread-tps",
 		WINDOW_BACKGROUND = "window-background",
-		CANVAS_LAYOUT = "canvas-layout",
-		WINDOW_LAYOUT = "window-layout",
-		WINDOW_DEVICE = "window-device",
-		WINDOW_BORDER = "window-border",
-		WINDOW_TITLE  = "window-title";
+		WINDOW_LAYOUT     = "window-layout",
+		WINDOW_DEVICE     = "window-device",
+		WINDOW_BORDER     = "window-border",
+		WINDOW_TITLE      = "window-title";
 }

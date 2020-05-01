@@ -61,7 +61,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		if(!mouse_buffer.equals(mouse)) {
 			mouse.set(mouse_buffer);
 			//event
-			Stage.mouseMoved(getMouse());
+			Engine.getStage().mouseMoved(getMouse());
 		}
 	}
 	
@@ -70,7 +70,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		wheel_buffer = 0           ;
 		if(wheel != 0)
 			//event
-			Stage.wheelMoved(getWheel());
+			Engine.getStage().wheelMoved(getWheel());
 	}
 	
 	public void onPollKeys() {
@@ -81,7 +81,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 					keys[i] = Input.DN_ACTION;
 					//event
 					Engine.getStage().queue(new KeyAction(DN_ACTION, i));
-					Stage.keyDn(i);
+					Engine.getStage().keyDn(i);
 					break;
 				case Input.DN: case Input.DN_ACTION:
 					keys[i] = Input.DN;
@@ -96,7 +96,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 					keys[i] = Input.UP_ACTION;
 					//event
 					Engine.getStage().queue(new KeyAction(UP_ACTION, i));
-					Stage.keyUp(i);
+					Engine.getStage().keyUp(i);
 					break;
 			}
 		}
@@ -110,7 +110,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 					btns[i] = Input.DN_ACTION;
 					//event
 					Engine.getStage().queue(new BtnAction(DN_ACTION, i));
-					Stage.btnDn(i);
+					Engine.getStage().btnDn(i);
 					break;
 				case Input.DN: case Input.DN_ACTION:
 					btns[i] = Input.DN;
@@ -125,7 +125,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 					btns[i] = Input.UP_ACTION;
 					//event
 					Engine.getStage().queue(new BtnAction(UP_ACTION, i));
-					Stage.btnUp(i);
+					Engine.getStage().btnUp(i);
 					break;
 			}
 		}
@@ -391,7 +391,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		mouse_buffer.set(Stage.mouseToPixel(
+		mouse_buffer.set(Engine.getStage().mouseToPixel(
 				e.getX(),
 				e.getY()
 				));
@@ -399,7 +399,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		mouse_buffer.set(Stage.mouseToPixel(
+		mouse_buffer.set(Engine.getStage().mouseToPixel(
 				e.getX(),
 				e.getY()
 				));

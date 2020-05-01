@@ -23,6 +23,10 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 public final class Util {
 	
 	private Util() {
@@ -379,6 +383,19 @@ public final class Util {
 			}
 		}
 		return file;
+	}
+	
+	public static AudioInputStream createAudioInputStream(String path) {
+		return createAudioInputStream(new File(path));
+	}
+	
+	public static AudioInputStream createAudioInputStream(File   file) {
+		try {
+			return AudioSystem.getAudioInputStream(createFile(file));
+		} catch(IOException | UnsupportedAudioFileException uafe) {
+			System.err.println("[blue.util.Util.createAudioInputStream] Unable to open file \"" + file + "\"");
+		}
+		return null;
 	}
 	
 	public static ObjectOutputStream createObjectOutputStream(String path, boolean append) {

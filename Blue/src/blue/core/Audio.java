@@ -19,7 +19,7 @@ public class Audio extends Module {
 	}
 	
 	@Override
-	public void onStep() {
+	public void onStep() throws InterruptedException {
 		
 	}
 }

@@ -4,6 +4,8 @@ import java.util.HashSet;
 
 import blue.Blue;
 import blue.util.Configuration;
+import blue.util.Util.ObjectToString;
+import blue.util.Util.StringToObject;
 import blue.util.event.Broker;
 import blue.util.event.Handle;
 import blue.util.event.Listener;
@@ -33,9 +35,28 @@ public abstract class Module implements Runnable {
 		INDEX.add(this);
 	}
 	
-	public synchronized void init(Object... args) {
+	public void configure(Object... args) {
 		config.set(args);
-		init();
+	}
+	
+	public Configuration getConfiguration() {
+		return config;
+	}
+	
+	public void setProperty(Object key, Object val) {
+		config.set(key, val);
+	}
+	
+	public <T> void setProperty(ObjectToString<T> o2s, Object key, Object val) {
+		config.set(o2s, key, val);
+	}
+	
+	public String getProperty(Object key, Object alt) {
+		return config.get(key, alt);
+	}
+	
+	public <T> T getProperty(StringToObject<T> s2o, Object key, T alt) {
+		return config.get(s2o, key, alt);
 	}
 	
 	public synchronized void init() {
