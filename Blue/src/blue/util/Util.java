@@ -3,6 +3,9 @@ package blue.util;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
@@ -26,6 +29,9 @@ import java.util.Map;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
+import blue.geom.Bounds2;
+import blue.geom.Region2;
 
 public final class Util {
 	
@@ -308,6 +314,64 @@ public final class Util {
 			return gd[0];
 		else
 			return null;
+	}
+	
+	public static Region2 getMaximumScreenRegion(int i) {
+		GraphicsDevice        gd = Util.getGraphicsDevice(i);
+		GraphicsConfiguration gc = gd.getDefaultConfiguration();
+		
+		Rectangle bounds = gc.getBounds();
+		
+		return new Region2(
+				bounds.x,
+				bounds.y,
+				bounds.width,
+				bounds.height
+				);
+	}
+	
+	public static Region2 getMaximumWindowRegion(int i) {
+		GraphicsDevice        gd = Util.getGraphicsDevice(i);
+		GraphicsConfiguration gc = gd.getDefaultConfiguration();
+		
+		Rectangle bounds = gc.getBounds();
+		Insets    insets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
+		
+		return new Region2(
+				bounds.x + insets.left,
+				bounds.y + insets.top ,
+				bounds.width  - insets.left - insets.right ,
+				bounds.height - insets.top  - insets.bottom
+				);		
+	}
+	
+	public static Bounds2 getMaximumScreenBounds(int i) {
+		GraphicsDevice        gd = Util.getGraphicsDevice(i);
+		GraphicsConfiguration gc = gd.getDefaultConfiguration();
+		
+		Rectangle bounds = gc.getBounds();
+		
+		return new Bounds2(
+				bounds.x,
+				bounds.y,
+				bounds.x + bounds.width,
+				bounds.y + bounds.height
+				);
+	}
+	
+	public static Bounds2 getMaximumWindowBounds(int i) {
+		GraphicsDevice        gd = Util.getGraphicsDevice(i);
+		GraphicsConfiguration gc = gd.getDefaultConfiguration();
+		
+		Rectangle bounds = gc.getBounds();
+		Insets    insets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
+		
+		return new Bounds2(
+				bounds.x + insets.left,
+				bounds.y + insets.top ,
+				bounds.x + bounds.width  - insets.left - insets.right ,
+				bounds.y + bounds.height - insets.top  - insets.bottom
+				);		
 	}
 	
 	public static BufferedImage createBufferedImage(int i, int w, int h) {

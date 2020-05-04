@@ -63,9 +63,9 @@ public class Broker {
 	public <T> void flush(T event) {
 		handles.flush(event);
 		brokers.flush(event);
-	}	
+	}
 	
-	public void flush() {
+	public synchronized void flush() {
 		if(events1.size() > 0) {
 			LinkedList<Object> events3 = events1;
 			events1 = events2;
