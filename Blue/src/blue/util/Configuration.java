@@ -16,11 +16,11 @@ public class Configuration implements Serializable {
 		map  =  new TreeMap<String, String>();
 	
 	public Configuration(Object... args) {
-		Util.setEntries(map, args);
+		Util.map(map, args);
 	}
 	
 	public void set(Object... args) {
-		Util.setEntries(map, args);
+		Util.map(map, args);
 	}
 	
 	public void set(Object key, Object val) {

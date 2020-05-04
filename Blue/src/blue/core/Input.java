@@ -43,11 +43,11 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 	}
 	
 	public static <T extends Action> void attach(Class<T> type, Listener<T> listener) {
-		Engine.getStage().attach(type, listener);
+		Stage.attach(type, listener);
 	}
 	
 	public static <T extends Action> void detach(Class<T> type, Listener<T> listener) {
-		Engine.getStage().detach(type, listener);
+		Stage.detach(type, listener);
 	}
 	
 	protected static void poll() {
@@ -61,7 +61,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		if(!mouse_buffer.equals(mouse)) {
 			mouse.set(mouse_buffer);
 			//event
-			Engine.getStage().mouseMoved(getMouse());
+			Stage.mouseMoved(getMouse());
 		}
 	}
 	
@@ -70,7 +70,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		wheel_buffer = 0           ;
 		if(wheel != 0)
 			//event
-			Engine.getStage().wheelMoved(getWheel());
+			Stage.wheelMoved(getWheel());
 	}
 	
 	public void onPollKeys() {
@@ -80,8 +80,8 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 				case Input.UP: case Input.UP_ACTION:
 					keys[i] = Input.DN_ACTION;
 					//event
-					Engine.getStage().queue(new KeyAction(DN_ACTION, i));
-					Engine.getStage().keyDn(i);
+					Stage.queue(new KeyAction(DN_ACTION, i));
+					Stage.keyDn(i);
 					break;
 				case Input.DN: case Input.DN_ACTION:
 					keys[i] = Input.DN;
@@ -95,8 +95,8 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 				case Input.DN: case Input.DN_ACTION:
 					keys[i] = Input.UP_ACTION;
 					//event
-					Engine.getStage().queue(new KeyAction(UP_ACTION, i));
-					Engine.getStage().keyUp(i);
+					Stage.queue(new KeyAction(UP_ACTION, i));
+					Stage.keyUp(i);
 					break;
 			}
 		}
@@ -109,8 +109,8 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 				case Input.UP: case Input.UP_ACTION:
 					btns[i] = Input.DN_ACTION;
 					//event
-					Engine.getStage().queue(new BtnAction(DN_ACTION, i));
-					Engine.getStage().btnDn(i);
+					Stage.queue(new BtnAction(DN_ACTION, i));
+					Stage.btnDn(i);
 					break;
 				case Input.DN: case Input.DN_ACTION:
 					btns[i] = Input.DN;
@@ -124,8 +124,8 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 				case Input.DN: case Input.DN_ACTION:
 					btns[i] = Input.UP_ACTION;
 					//event
-					Engine.getStage().queue(new BtnAction(UP_ACTION, i));
-					Engine.getStage().btnUp(i);
+					Stage.queue(new BtnAction(UP_ACTION, i));
+					Stage.btnUp(i);
 					break;
 			}
 		}
@@ -391,7 +391,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		mouse_buffer.set(Engine.getStage().mouseToPixel(
+		mouse_buffer.set(Stage.mouseToPixel(
 				e.getX(),
 				e.getY()
 				));
@@ -399,7 +399,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		mouse_buffer.set(Engine.getStage().mouseToPixel(
+		mouse_buffer.set(Stage.mouseToPixel(
 				e.getX(),
 				e.getY()
 				));

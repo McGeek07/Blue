@@ -213,18 +213,17 @@ public final class Util {
 	public static final ObjectToString<?>
 		OBJECT_TO_STRING = Object::toString;
 	
-	public static Map<String, String> setEntries(Map<String, String> map, Object... args) {
+	public static void map(Map<String, String> map, Object... args) {
 		int length = args.length - (args.length & 1);
 		for(int i = 0; i < length; i += 2) {
 			int 
 				a = i + 0,
 				b = i + 1;
 			setEntry(map, args[a], args[b]);
-		}		
-		return map;
+		}
 	}
 	
-	public static Map<String, String> setEntry(Map<String, String> map, Object key, Object val) {
+	public static String setEntry(Map<String, String> map, Object key, Object val) {
 		String
 			_key = key != null ? key.toString() : null,
 			_val = val != null ? val.toString() : null;
@@ -232,10 +231,10 @@ public final class Util {
 				_key,
 				_val
 				);
-		return map;
+		return _val;
 	}
 	
-	public static <T> Map<String, String> setEntry(Map<String, String> map, ObjectToString<T> o2s, Object key, T val) {
+	public static <T> String setEntry(Map<String, String> map, ObjectToString<T> o2s, Object key, T val) {
 		String
 			_key = key != null ?                                   key.toString() : null,
 			_val = val != null ? o2s != null ? o2s.toString(val) : val.toString() : null;
@@ -243,7 +242,7 @@ public final class Util {
 				_key,
 				_val
 				);
-		return map;
+		return _val;
 	}
 
 	public static String getEntry(Map<String, String> map, Object key) {

@@ -17,10 +17,13 @@ import blue.geom.Vector;
 import blue.geom.Vector2;
 import blue.geom.Vector4;
 import blue.util.Util;
+import blue.util.event.Broker;
+import blue.util.event.Handle;
+import blue.util.event.Listener;
 
 public class Stage extends Module {
 	protected static final Stage
-		INSTANCE = new Stage();
+		MODULE = new Stage();
 	protected float
 		thread_fps = 60f,
 		thread_tps = 60f;
@@ -69,95 +72,228 @@ public class Stage extends Module {
 		update_hz;
 	
 	private Stage() {
-		attach(SceneEvent.class, (event) -> {
-			onSceneEvent(event);
-		});
-		attach(WindowEvent.class, (event) -> {
-			onWindowEvent(event);
-		});
-		attach(CanvasEvent.class, (event) -> {
-			onCanvasEvent(event);
-		});
-		config.set(
+		Util.map(cfg,
 			CANVAS_LAYOUT, canvas_layout,
 			WINDOW_BORDER, window_border,
 			WINDOW_DEVICE, window_device,
 			WINDOW_LAYOUT, window_layout
 		);
-	}	
+		handle.attach(SceneEvent.class, (event) -> {
+			onSceneEvent(event);
+		});
+		handle.attach(WindowEvent.class, (event) -> {
+			onWindowEvent(event);
+		});
+		handle.attach(CanvasEvent.class, (event) -> {
+			onCanvasEvent(event);
+		});
+	}
 	
-	public void setScene(Scene scene) {
+	public static void init() {
+		Engine.init(MODULE);
+	}
+	
+	public static void stop() {
+		Engine.stop(MODULE);
+	}
+	
+	public static String setProperty(Object key, Object val) {
+		return Util.setEntry(MODULE.cfg, key, val);
+	}
+	
+	public static String getProperty(Object key, Object alt) {
+		return Util.getEntry(MODULE.cfg, key, alt);
+	}
+	
+	public static <T> void attach(Class<T> type, Listener<T> listener) {
+		MODULE.handle.attach(type, listener);
+	}
+	
+	public static <T> void detach(Class<T> type, Listener<T> listener) {
+		MODULE.handle.detach(type, listener);
+	}
+	
+	public static void attach(Broker broker) {
+		MODULE.broker.attach(broker);
+	}
+	
+	public static void detach(Broker broker) {
+		MODULE.broker.detach(broker);
+	}
+	
+	public static void attach(Handle handle) {
+		MODULE.broker.attach(handle);
+	}
+	
+	public static void detach(Handle handle) {
+		MODULE.broker.detach(handle);
+	}
+	
+	public static <T> void queue(T event) {
+		MODULE.broker.queue(event);
+	}
+	
+	public static <T> void flush(T event) {
+		MODULE.broker.flush(event);
+	}
+	
+	public static void poll() {
+		MODULE.broker.poll();
+	}
+	
+	public static void setScene(Scene scene) {
 		queue(new SceneEvent(scene));
 	}
 	
-	public void mouseMoved(Vector2 mouse) {
-		if(scene != null)
-			scene.onMouseMoved(mouse);
+	public static void mouseMoved(Vector2 mouse) {
+		if(MODULE.scene != null)
+			MODULE.scene.onMouseMoved(mouse);
 	}
 	
-	public void wheelMoved(float   wheel) {
-		if(scene != null)
-			scene.onWheelMoved(wheel);
+	public static void wheelMoved(float   wheel) {
+		if(MODULE.scene != null)
+			MODULE.scene.onWheelMoved(wheel);
 	}
 	
-	public void btnDn(int btn) {
-		if(scene != null)
-			scene.onBtnDn(btn);
+	public static void btnDn(int btn) {
+		if(MODULE.scene != null)
+			MODULE.scene.onBtnDn(btn);
 	}
 	
-	public void btnUp(int btn) {
-		if(scene != null)
-			scene.onBtnUp(btn);
+	public static void btnUp(int btn) {
+		if(MODULE.scene != null)
+			MODULE.scene.onBtnUp(btn);
 	}
 	
-	public void keyDn(int key) {
-		if(scene != null)
-			scene.onKeyDn(key);
+	public static void keyDn(int key) {
+		if(MODULE.scene != null)
+			MODULE.scene.onKeyDn(key);
 	}
 	
-	public void keyUp(int key) {
-		if(scene != null)
-			scene.onKeyUp(key);
+	public static void keyUp(int key) {
+		if(MODULE.scene != null)
+			MODULE.scene.onKeyUp(key);
 	}
 	
-	public Box<?> bounds() {
+	public static Box<?> bounds() {
 		return new Region2(
-				canvas_w,
-				canvas_h
+				MODULE.canvas_w,
+				MODULE.canvas_h
 				);
 	}
 	
-	public final Vector2 mouseToPixel(float x, float y) {
-		x = (x - window_w / 2) / canvas_scale + canvas_w / 2;
-		y = (y - window_h / 2) / canvas_scale + canvas_h / 2;
+	public static final Vector2 mouseToPixel(float x, float y) {
+		x = (x - MODULE.window_w / 2) / MODULE.canvas_scale + MODULE.canvas_w / 2;
+		y = (y - MODULE.window_h / 2) / MODULE.canvas_scale + MODULE.canvas_h / 2;
 		return new Vector2(x, y);
 	}
 	
-	public final Vector2 pixelToMouse(float x, float y) {
-		x = (x - canvas_w / 2) * canvas_scale + window_w / 2;
-		y = (y - canvas_h / 2) * canvas_scale + window_h / 2;
+	public static final Vector2 pixelToMouse(float x, float y) {
+		x = (x - MODULE.canvas_w / 2) * MODULE.canvas_scale + MODULE.window_w / 2;
+		y = (y - MODULE.canvas_h / 2) * MODULE.canvas_scale + MODULE.window_h / 2;
 		return new Vector2(x, y);
 	}
 	
-	public final Vector2 mouseToPixel(Vector2 v) {
+	public static final Vector2 mouseToPixel(Vector2 v) {
 		return mouseToPixel(v.x(), v.y());
 	}
 	
-	public final Vector2 pixelToMouse(Vector2 v) {
+	public static final Vector2 pixelToMouse(Vector2 v) {
 		return pixelToMouse(v.x(), v.y());
+	}
+	
+	protected BufferStrategy
+		b;
+	public void render(float t, float dt, float fixed_dt) {
+		if(b == null || b.contentsLost()) {
+			canvas.createBufferStrategy(2);
+			b = canvas.getBufferStrategy();
+		}
+		
+		Graphics2D
+			g = (Graphics2D)b.getDrawGraphics();
+		
+		g.fillRect(
+				0, 0,
+				window_w,
+				window_h
+				);
+		
+		RenderContext context = new RenderContext();
+		
+		context.g  = g ;
+		context.t  = t ;
+		context.dt = dt;		
+		context.fixed_dt = fixed_dt;
+		context.canvas_w = canvas_w;
+		context.canvas_h = canvas_h;
+		
+		context = context.push();
+			context.color(window_background_color);
+			context.rect(
+					0, 0, 
+					window_w, 
+					window_h, 
+					true);
+			
+			context.translate(
+					(window_w - canvas_w * canvas_scale) / 2,
+					(window_h - canvas_h * canvas_scale) / 2
+					);
+			context.scale(
+					canvas_scale,
+					canvas_scale
+					);
+			context.clip(
+					0, 0,
+					canvas_w,
+					canvas_h
+					);
+			
+			context.color(canvas_background_color);
+			context.rect(
+					0, 0,
+					canvas_w,
+					canvas_h,
+					true);
+			
+			if(scene != null)
+				scene.onRender(context);
+		context = context.pop();
+		
+		g.dispose();
+		b.show();
+	}
+	
+	public void update(float t, float dt, float fixed_dt) {
+		Input.poll();
+		      poll();
+		
+		UpdateContext context = new UpdateContext();
+		
+		context.t  = t ;
+		context.dt = dt;
+		context.fixed_dt = fixed_dt;
+		context.canvas_w = canvas_w;
+		context.canvas_h = canvas_h;
+		
+		context = context.push();
+		if(scene != null)
+			scene.onUpdate(context);
+		context = context.pop();
 	}
 	
 	@Override
 	public void onInit() {
-		thread_fps = config.getFloat(THREAD_FPS, thread_fps);
-		thread_tps = config.getFloat(THREAD_TPS, thread_tps);
-		canvas_background = config.get(Vector4::parseVector4, CANVAS_BACKGROUND, canvas_background);
-		window_background = config.get(Vector4::parseVector4, WINDOW_BACKGROUND, window_background);
-		canvas_layout = config.get(Layout::parseLayout, CANVAS_LAYOUT, canvas_layout);
-		window_layout = config.get(Layout::parseLayout, WINDOW_LAYOUT, window_layout);
-		window_border = config.getBoolean(WINDOW_BORDER, window_border);
-		window_device = config.getInt    (WINDOW_DEVICE, window_device);
-		window_title  = config.get(WINDOW_TITLE, window_title);
+		thread_fps = Util.getEntryAsFloat(cfg, THREAD_FPS, thread_fps);
+		thread_tps = Util.getEntryAsFloat(cfg, THREAD_TPS, thread_tps);
+		canvas_background = Util.getEntry(cfg, Vector4::parseVector4, CANVAS_BACKGROUND, canvas_background);
+		window_background = Util.getEntry(cfg, Vector4::parseVector4, WINDOW_BACKGROUND, window_background);
+		canvas_layout = Util.getEntry(cfg, Layout::parseLayout, CANVAS_LAYOUT, canvas_layout);
+		window_layout = Util.getEntry(cfg, Layout::parseLayout, WINDOW_LAYOUT, window_layout);
+		window_border = Util.getEntryAsBoolean(cfg, WINDOW_BORDER, window_border);
+		window_device = Util.getEntryAsInt    (cfg, WINDOW_DEVICE, window_device);
+		window_title  = Util.getEntry(cfg, WINDOW_TITLE, window_title);
 		
 		canvas_background_color = Vector.toColor4i(canvas_background);
 		window_background_color = Vector.toColor4i(window_background);
@@ -261,88 +397,7 @@ public class Stage extends Module {
 	public void onStop() {
 		if(window != null)
 			window.dispose();
-	}
-	
-	protected BufferStrategy
-		b;
-	public void render(float t, float dt, float fixed_dt) {
-		if(b == null || b.contentsLost()) {
-			canvas.createBufferStrategy(2);
-			b = canvas.getBufferStrategy();
-		}
-		
-		Graphics2D
-			g = (Graphics2D)b.getDrawGraphics();
-		
-		g.fillRect(
-				0, 0,
-				window_w,
-				window_h
-				);
-		
-		RenderContext context = new RenderContext();
-		
-		context.g  = g ;
-		context.t  = t ;
-		context.dt = dt;		
-		context.fixed_dt = fixed_dt;
-		context.canvas_w = canvas_w;
-		context.canvas_h = canvas_h;
-		
-		context = context.push();
-			context.color(window_background_color);
-			context.rect(
-					0, 0, 
-					window_w, 
-					window_h, 
-					true);
-			
-			context.translate(
-					(window_w - canvas_w * canvas_scale) / 2,
-					(window_h - canvas_h * canvas_scale) / 2
-					);
-			context.scale(
-					canvas_scale,
-					canvas_scale
-					);
-			context.clip(
-					0, 0,
-					canvas_w,
-					canvas_h
-					);
-			
-			context.color(canvas_background_color);
-			context.rect(
-					0, 0,
-					canvas_w,
-					canvas_h,
-					true);
-			
-			if(scene != null)
-				scene.onRender(context);
-		context = context.pop();
-		
-		g.dispose();
-		b.show();
-	}
-	
-	public void update(float t, float dt, float fixed_dt) {
-		Input.poll();
-		      poll();
-		
-		UpdateContext context = new UpdateContext();
-		
-		context.t  = t ;
-		context.dt = dt;
-		context.fixed_dt = fixed_dt;
-		context.canvas_w = canvas_w;
-		context.canvas_h = canvas_h;
-		
-		context = context.push();
-		if(scene != null)
-			scene.onUpdate(context);
-		context = context.pop();
-	}
+	}	
 	
 	private static final long
 		ONE_SECOND = 1000000000,
@@ -493,7 +548,7 @@ public class Stage extends Module {
 			this.window_w = window_w;
 			this.window_h = window_h;
 		}
-	}	
+	}
 	
 	public static final String
 		CANVAS_BACKGROUND = "canvas-background",

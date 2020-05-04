@@ -10,9 +10,14 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import blue.util.Util;
+import blue.util.event.Broker;
+import blue.util.event.Handle;
+import blue.util.event.Listener;
+
 public class Audio extends Module {
 	protected static final Audio
-		INSTANCE = new Audio();	
+		MODULE = new Audio();
 	
 	protected int
 		channels = 2,
@@ -28,11 +33,11 @@ public class Audio extends Module {
 				);
 	
 	private Audio() {
-		config.set(
-				CHANNELS, channels,
-				SAMPLE_RATE, sample_rate,
-				SAMPLE_SIZE, sample_size
-				);
+		Util.map(cfg,
+			CHANNELS, channels,
+			SAMPLE_RATE, sample_rate,
+			SAMPLE_SIZE, sample_size
+			);
 	}
 	
 	SourceDataLine
@@ -40,32 +45,84 @@ public class Audio extends Module {
 	byte[]
 		audio;
 	
+	public static void init() {
+		Engine.init(MODULE);
+	}
+	
+	public static void stop() {
+		Engine.stop(MODULE);
+	}
+	
+	public static String setProperty(Object key, Object val) {
+		return Util.setEntry(MODULE.cfg, key, val);
+	}
+	
+	public static String getProperty(Object key, Object alt) {
+		return Util.getEntry(MODULE.cfg, key, alt);
+	}
+	
+	public static <T> void attach(Class<T> type, Listener<T> listener) {
+		MODULE.handle.attach(type, listener);
+	}
+	
+	public static <T> void detach(Class<T> type, Listener<T> listener) {
+		MODULE.handle.detach(type, listener);
+	}
+	
+	public static void attach(Broker broker) {
+		MODULE.broker.attach(broker);
+	}
+	
+	public static void detach(Broker broker) {
+		MODULE.broker.detach(broker);
+	}
+	
+	public static void attach(Handle handle) {
+		MODULE.broker.attach(handle);
+	}
+	
+	public static void detach(Handle handle) {
+		MODULE.broker.detach(handle);
+	}
+	
+	public static <T> void queue(T event) {
+		MODULE.broker.queue(event);
+	}
+	
+	public static <T> void flush(T event) {
+		MODULE.broker.flush(event);
+	}
+	
+	public static void poll() {
+		MODULE.broker.poll();
+	}
+	
 	@Override
 	public void onInit() {		
-//		channels = config.getInt(CHANNELS, channels);
-//		sample_rate = config.getInt(SAMPLE_RATE, sample_rate);
-//		sample_size = config.getInt(SAMPLE_SIZE, sample_size);
-//		format = new AudioFormat(
-//				sample_rate,
-//				sample_size,
-//				channels,
-//				true ,
-//				false
-//				);
-//		
-//		try {
-//			audio = read("itb.wav");
-//			System.out.printf("%1$.2f mB%n", audio.length/1000000f);
-//			sdl = AudioSystem.getSourceDataLine(format);
-//			sdl.open(format);
-//			sdl.start();
-//			
-//			sdl.write(audio, 0, audio.length);
-//			
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			stop();
-//		}
+		channels    = Util.getEntryAsInt(cfg, CHANNELS   , channels   );
+		sample_rate = Util.getEntryAsInt(cfg, SAMPLE_RATE, sample_rate);
+		sample_size = Util.getEntryAsInt(cfg, SAMPLE_SIZE, sample_size);
+		format = new AudioFormat(
+				sample_rate,
+				sample_size,
+				channels,
+				true ,
+				false
+				);
+		
+		try {
+			audio = read("itb.wav");
+			System.out.printf("%1$.2f mB%n", audio.length/1000000f);
+			sdl = AudioSystem.getSourceDataLine(format);
+			sdl.open(format);
+			sdl.start();
+			
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			Engine.stop(MODULE);
+		}
 	}
 	
 	@Override
@@ -73,9 +130,16 @@ public class Audio extends Module {
 		
 	}
 	
+	int 
+		offset = 0,
+		length = 0;
+	
 	@Override
-	public void onStep() throws Exception {
+	public void onStep() throws InterruptedException {
 		poll();
+		
+		length = Math.min(audio.length - offset, sdl.available());
+		offset += sdl.write(audio, offset, length);
 	}
 	
 	public static byte[] read(String path) throws IOException, UnsupportedAudioFileException {
@@ -84,8 +148,8 @@ public class Audio extends Module {
 	
 	public static byte[] read(File   file) throws IOException, UnsupportedAudioFileException {
 		AudioInputStream 
-			ais0 = AudioSystem.getAudioInputStream(                 file),
-			ais1 = AudioSystem.getAudioInputStream(INSTANCE.format, ais0);
+			ais0 = AudioSystem.getAudioInputStream(               file),
+			ais1 = AudioSystem.getAudioInputStream(MODULE.format, ais0);
 		ByteArrayOutputStream 
 			baos = new ByteArrayOutputStream();
 		
@@ -107,5 +171,5 @@ public class Audio extends Module {
 	public static final String
 		CHANNELS    = "channels",
 		SAMPLE_RATE = "sample-rate",
-		SAMPLE_SIZE = "sample-size";
+		SAMPLE_SIZE = "sample-size";	
 }
