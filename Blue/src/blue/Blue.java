@@ -1,12 +1,13 @@
 package blue;
 
-import blue.core.Audio;
+import blue.core.Engine;
 import blue.core.Sound;
+import blue.core.Stage;
 import blue.util.Version;
 
 public class Blue {
 	public static final Version
-		VERSION = new Version("Blue", 0, 1, 7);
+		VERSION = new Version("Blue", 0, 1, 8);
 	
 	public static void main(String[] args) {
 		System.out.println(VERSION);
@@ -16,6 +17,8 @@ public class Blue {
 		sound.setSpeed(-1f);
 		sound.play();
 		
-		Audio.init();
+		Stage.setProperty(Stage.WINDOW_DEVICE, 1);
+		
+		Engine.init();
 	}
 }

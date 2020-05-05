@@ -2,9 +2,10 @@ package blue.core;
 
 import blue.geom.Vector2;
 
-public abstract class Scene implements Renderable, Updateable {
-	
+public abstract class Scene implements Renderable, Updateable {	
+	@Override
 	public void render(RenderContext context) { onRender(context); }
+	@Override
 	public void update(UpdateContext context) { onUpdate(context); }
 	
 	public void onRender(RenderContext context) { }
