@@ -130,13 +130,13 @@ public class Sound {
 	
 	public void play(float level, float balance) {
 		this.setBalance(balance);
-		this.setSpeed(speed);
+		this.setLevel(level);
 		this.play();
 	}
 	
 	public void loop(float level, float balance) {
 		this.setBalance(balance);
-		this.setSpeed(speed);
+		this.setLevel(level);
 		this.loop();
 	}
 	
@@ -198,13 +198,13 @@ public class Sound {
 			NAME_INDEX = new HashMap<String, Source>(),
 			PATH_INDEX = new HashMap<String, Source>();
 		
-		protected final HashMap<Sound.Filter, short[]>
+		private final HashMap<Sound.Filter, short[]>
 			cache = new HashMap<Sound.Filter, short[]>();
 		
-		protected final String
+		public final String
 			name,
 			path;
-		protected final int
+		public final int
 			length;
 		
 		public Source(

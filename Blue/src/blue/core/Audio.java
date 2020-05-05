@@ -95,7 +95,7 @@ public class Audio extends Module {
 	public void onInit() {		
 		try {			
 			sdl = AudioSystem.getSourceDataLine(PLAYBACK_FORMAT);
-			sdl.open(PLAYBACK_FORMAT, 2048);
+			sdl.open(PLAYBACK_FORMAT, 4096);
 			sdl.start();			
 		} catch (Exception e) {
 			System.err.println("[blue.core.Audio.onInit] Failed to init module '" + getClass().getName() + "'.");

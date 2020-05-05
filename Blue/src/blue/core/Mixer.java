@@ -106,8 +106,7 @@ public class Mixer {
 		frame[1] *= stereo_r;
 		
 		return frame;
-	}
-	
+	}	
 	
 	public static class Group implements Iterable<Mixer> {
 		protected final HashSet<Mixer>

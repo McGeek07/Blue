@@ -253,13 +253,6 @@ public class Sprite implements Renderable, Updateable {
 	@Override
 	public void onUpdate(UpdateContext context) {
 		step(context.dt);
-	}	
-	
-	public Sprite filter(Filter filter) {
-		return new Sprite(
-				source,
-				filter
-				);
 	}
 	
 	public static Sprite load(String name, String path, int frame_w, int frame_h) {
@@ -279,42 +272,44 @@ public class Sprite implements Renderable, Updateable {
 			NAME_INDEX = new HashMap<String, Source>(),
 			PATH_INDEX = new HashMap<String, Source>();
 		
-		protected final HashMap<Sprite.Filter, BufferedImage[]>
+		private final HashMap<Sprite.Filter, BufferedImage[]>
 			cache = new HashMap<Sprite.Filter, BufferedImage[]>();
 		
-		protected final String
+		public final String
 			name,
 			path;
-		protected final BufferedImage
-			image;
-		protected final int
-			image_w,
-			image_h,
+		public final BufferedImage
+			atlas;
+		public final int
+			atlas_w,
+			atlas_h,
 			frame_w,
-			frame_h;
+			frame_h,
+			length;
 		
 		public Source(
 				String name,
 				String path,
-				BufferedImage image,
+				BufferedImage atlas,
 				int frame_w,
 				int frame_h
 				) {			
 			this.name = name;
 			this.path = path;
-			this.image = image;
+			this.atlas = atlas;
 			this.frame_w = frame_w;
 			this.frame_h = frame_h;
-			this.image_w = image.getWidth() ;
-			this.image_h = image.getHeight();
+			this.atlas_w = atlas.getWidth() ;
+			this.atlas_h = atlas.getHeight();
+			this.length = (atlas_w / frame_w) * (atlas_h / frame_h);
 			
 			int
-				w = image_w / frame_w,
-				h = image_h / frame_h;
-			BufferedImage[] frames = new BufferedImage[w * h];
+				w = atlas_w / frame_w,
+				h = atlas_h / frame_h;
+			BufferedImage[] frames = new BufferedImage[length];
 			for(int x = 0; x < w; x ++)
 				for(int y = 0; y < h; y ++)
-					frames[h * y + x] = image.getSubimage(
+					frames[h * y + x] = atlas.getSubimage(
 							x * frame_w,
 							y * frame_h,
 							frame_w,
