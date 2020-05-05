@@ -192,41 +192,41 @@ public class Layout implements Serializable, Copyable<Layout> {
 	
 	public static String toString(Layout l, String format) {
 		//DEFAULT
-        if(l.equals(DEFAULT)) return "DEFAULT";
+        if(l.equals(DEFAULT)) return "default";
         //VH_HALF
-        if(l.equals(LV_HALF)) return "LV_HALF";
-        if(l.equals(MV_HALF)) return "MV_HALF";
-        if(l.equals(RV_HALF)) return "RV_HALF";
-        if(l.equals(TH_HALF)) return "TH_HALF";
-        if(l.equals(MH_HALF)) return "MH_HALF";
-        if(l.equals(BH_HALF)) return "BH_HALF";
+        if(l.equals(LV_HALF)) return "lv_half";
+        if(l.equals(MV_HALF)) return "mv_half";
+        if(l.equals(RV_HALF)) return "rv_half";
+        if(l.equals(TH_HALF)) return "th_half";
+        if(l.equals(MH_HALF)) return "mh_half";
+        if(l.equals(BH_HALF)) return "bh_half";
         //VH THIRD
-        if(l.equals(LV_THIRD)) return "LV_THIRD";
-        if(l.equals(MV_THIRD)) return "MV_THIRD";
-        if(l.equals(RV_THIRD)) return "RV_THIRD";
-        if(l.equals(TH_THIRD)) return "TH_THIRD";
-        if(l.equals(MH_THIRD)) return "MH_THIRD";
-        if(l.equals(BH_THIRD)) return "BH_THIRD";
+        if(l.equals(LV_THIRD)) return "lv_third";
+        if(l.equals(MV_THIRD)) return "mv_third";
+        if(l.equals(RV_THIRD)) return "rv_third";
+        if(l.equals(TH_THIRD)) return "th_third";
+        if(l.equals(MH_THIRD)) return "mh_third";
+        if(l.equals(BH_THIRD)) return "bh_third";
         //FOURTH
-        if(l.equals(TL_FOURTH)) return "TL_FOURTH";
-        if(l.equals(TM_FOURTH)) return "TM_FOURTH";
-        if(l.equals(TR_FOURTH)) return "TR_FOURTH";
-        if(l.equals(ML_FOURTH)) return "ML_FOURTH";
-        if(l.equals(MM_FOURTH)) return "MM_FOURTH";
-        if(l.equals(MR_FOURTH)) return "MR_FOURTH";
-        if(l.equals(BL_FOURTH)) return "BL_FOURTH";
-        if(l.equals(BM_FOURTH)) return "BM_FOURTH";
-        if(l.equals(BR_FOURTH)) return "BR_FOURTH";
+        if(l.equals(TL_FOURTH)) return "tl_fourth";
+        if(l.equals(TM_FOURTH)) return "tm_fourth";
+        if(l.equals(TR_FOURTH)) return "tr_fourth";
+        if(l.equals(ML_FOURTH)) return "ml_fourth";
+        if(l.equals(MM_FOURTH)) return "mm_fourth";
+        if(l.equals(MR_FOURTH)) return "mr_fourth";
+        if(l.equals(BL_FOURTH)) return "bl_fourth";
+        if(l.equals(BM_FOURTH)) return "bm_fourth";
+        if(l.equals(BR_FOURTH)) return "br_fourth";
         //NINTH
-        if(l.equals(TL_NINTH)) return "TL_NINTH";
-        if(l.equals(TM_NINTH)) return "TM_NINTH";
-        if(l.equals(TR_NINTH)) return "TR_NINTH";
-        if(l.equals(ML_NINTH)) return "ML_NINTH";
-        if(l.equals(MM_NINTH)) return "MM_NINTH";
-        if(l.equals(MR_NINTH)) return "MR_NINTH";
-        if(l.equals(BL_NINTH)) return "BL_NINTH";
-        if(l.equals(BM_NINTH)) return "BM_NINTH";
-        if(l.equals(BR_NINTH)) return "BR_NINTH";
+        if(l.equals(TL_NINTH)) return "tl_ninth";
+        if(l.equals(TM_NINTH)) return "tm_ninth";
+        if(l.equals(TR_NINTH)) return "tr_ninth";
+        if(l.equals(ML_NINTH)) return "ml_ninth";
+        if(l.equals(MM_NINTH)) return "mm_ninth";
+        if(l.equals(MR_NINTH)) return "mr_ninth";
+        if(l.equals(BL_NINTH)) return "bl_ninth";
+        if(l.equals(BM_NINTH)) return "bm_ninth";
+        if(l.equals(BR_NINTH)) return "br_ninth";
 		
 		return "{"
 				+ Attribute.toString(l.anchor_x, format) + ", "

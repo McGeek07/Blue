@@ -19,31 +19,25 @@ public class Audio extends Module {
 	protected static final Audio
 		MODULE = new Audio();
 	
-	protected int
-		channels = 2,
-		sample_rate = 44100,
-		sample_size =    16;
-	protected AudioFormat
-		format = new AudioFormat(
-				sample_rate,
-				sample_size,
-				channels,
-				false,
+	public static final int
+		PLAYBACK_CHANNELS    =     2,
+		PLAYBACK_SAMPLE_RATE = 44100,
+		PLAYBACK_SAMPLE_SIZE =    16;
+	public static final AudioFormat
+		PLAYBACK_FORMAT = new AudioFormat(
+				PLAYBACK_SAMPLE_RATE,
+				PLAYBACK_SAMPLE_SIZE,
+				PLAYBACK_CHANNELS,
+				true ,
 				false
 				);
 	
 	private Audio() {
-		Util.map(cfg,
-			CHANNELS, channels,
-			SAMPLE_RATE, sample_rate,
-			SAMPLE_SIZE, sample_size
-			);
+		//do nothing
 	}
 	
-	SourceDataLine
+	private SourceDataLine
 		sdl;
-	byte[]
-		audio;
 	
 	public static void init() {
 		Engine.init(MODULE);
@@ -99,27 +93,12 @@ public class Audio extends Module {
 	
 	@Override
 	public void onInit() {		
-		channels    = Util.getEntryAsInt(cfg, CHANNELS   , channels   );
-		sample_rate = Util.getEntryAsInt(cfg, SAMPLE_RATE, sample_rate);
-		sample_size = Util.getEntryAsInt(cfg, SAMPLE_SIZE, sample_size);
-		format = new AudioFormat(
-				sample_rate,
-				sample_size,
-				channels,
-				true ,
-				false
-				);
-		
-		try {
-			audio = read("itb.wav");
-			System.out.printf("%1$.2f mB%n", audio.length/1000000f);
-			sdl = AudioSystem.getSourceDataLine(format);
-			sdl.open(format);
-			sdl.start();
-			
-			
-			
+		try {			
+			sdl = AudioSystem.getSourceDataLine(PLAYBACK_FORMAT);
+			sdl.open(PLAYBACK_FORMAT, 2048);
+			sdl.start();			
 		} catch (Exception e) {
+			System.err.println("[blue.core.Audio.onInit] Failed to init module '" + getClass().getName() + "'.");
 			e.printStackTrace();
 			Engine.stop(MODULE);
 		}
@@ -130,16 +109,20 @@ public class Audio extends Module {
 		
 	}
 	
-	int 
-		offset = 0,
-		length = 0;
-	
 	@Override
 	public void onStep() throws InterruptedException {
-		poll();
+		             poll();	
+		Mixer.MASTER.poll();
 		
-		length = Math.min(audio.length - offset, sdl.available());
-		offset += sdl.write(audio, offset, length);
+		short[] frame = Mixer.MASTER.step(1f);		
+		byte[] buffer = {
+			(byte)( frame[0]       & 0xff),
+			(byte)((frame[0] >> 8) & 0xff),
+			(byte)( frame[1]       & 0xff),
+			(byte)((frame[1] >> 8) & 0xff)
+		};
+		
+		sdl.write(buffer, 0, buffer.length);
 	}
 	
 	public static byte[] read(String path) throws IOException, UnsupportedAudioFileException {
@@ -148,8 +131,8 @@ public class Audio extends Module {
 	
 	public static byte[] read(File   file) throws IOException, UnsupportedAudioFileException {
 		AudioInputStream 
-			ais0 = AudioSystem.getAudioInputStream(               file),
-			ais1 = AudioSystem.getAudioInputStream(MODULE.format, ais0);
+			ais0 = AudioSystem.getAudioInputStream(                 file),
+			ais1 = AudioSystem.getAudioInputStream(PLAYBACK_FORMAT, ais0);
 		ByteArrayOutputStream 
 			baos = new ByteArrayOutputStream();
 		
@@ -167,9 +150,4 @@ public class Audio extends Module {
 		
 		return baos.toByteArray();
 	}
-	
-	public static final String
-		CHANNELS    = "channels",
-		SAMPLE_RATE = "sample-rate",
-		SAMPLE_SIZE = "sample-size";	
 }

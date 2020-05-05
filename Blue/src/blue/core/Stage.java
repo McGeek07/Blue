@@ -6,6 +6,7 @@ import java.awt.Insets;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferStrategy;
+import java.io.File;
 
 import blue.Blue;
 import blue.core.Renderable.RenderContext;
@@ -103,6 +104,22 @@ public class Stage extends Module {
 	
 	public static String getProperty(Object key, Object alt) {
 		return Util.getEntry(MODULE.cfg, key, alt);
+	}
+	
+	public static void saveConfig(String path) {
+		saveConfig(new File(path));
+	}
+	
+	public static void saveConfig(File   file) {
+		Util.printToFile(file, false, MODULE.cfg);
+	}
+	
+	public static void loadConfig(String path) {
+		loadConfig(new File(path));
+	}
+	
+	public static void loadConfig(File   file) {
+		Util.parseFromFile(file, MODULE.cfg);
 	}
 	
 	public static <T> void attach(Class<T> type, Listener<T> listener) {
@@ -284,7 +301,7 @@ public class Stage extends Module {
 	}
 	
 	@Override
-	public void onInit() {
+	public void onInit() {		
 		thread_fps = Util.getEntryAsFloat(cfg, THREAD_FPS, thread_fps);
 		thread_tps = Util.getEntryAsFloat(cfg, THREAD_TPS, thread_tps);
 		canvas_background = Util.getEntry(cfg, Vector4::parseVector4, CANVAS_BACKGROUND, canvas_background);

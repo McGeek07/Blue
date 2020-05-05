@@ -20,9 +20,7 @@ public final class Engine {
 	}
 	
 	public static synchronized void init(Module module) {
-		if( module.running)
-			module.onInit();
-		else {			
+		if(!module.running) {			
 			module.thread = new Thread(module, Blue.VERSION.toString());
 			module.running = true;
 			module.thread.start();
@@ -30,21 +28,17 @@ public final class Engine {
 	}
 	
 	public static synchronized void stop(Module module) {
-		if(!module.running)
-			module.onStop();
-		else
+		if( module.running)
 			module.running = false;
 	}
 	
 	public static synchronized void init() {
 		for(Module module: Module.INDEX)
-			if(!module.running)
-				init(module);
+			init(module);
 	}
 	
 	public static synchronized void exit() {
 		for(Module module: Module.INDEX)
-			if( module.running)
-				stop(module);
+			stop(module);
 	}	
 }

@@ -374,11 +374,11 @@ public final class Util {
 	}
 	
 	public static BufferedImage createBufferedImage(int i, int w, int h) {
-		return createBufferedImage(w, h, Transparency.TRANSLUCENT);
+		return createBufferedImage(i, w, h, Transparency.TRANSLUCENT);
 	}
 	
 	public static VolatileImage createVolatileImage(int i, int w, int h) {
-		return createVolatileImage(w, h, Transparency.TRANSLUCENT);
+		return createVolatileImage(i, w, h, Transparency.TRANSLUCENT);
 	}
 	
 	public static BufferedImage createBufferedImage(int i, int w, int h, int transparency) {
@@ -388,7 +388,7 @@ public final class Util {
 		return gc.createCompatibleImage(w, h, transparency);
 	}
 	
-	public static VolatileImage createVolatileImage(int i, int w, int h, int transparency) {
+	public static VolatileImage createVolatileImage(int i, int w, int h, int transparency) {		
 		GraphicsDevice        gd = getGraphicsDevice(i);
 		GraphicsConfiguration gc = gd.getDefaultConfiguration();
 		

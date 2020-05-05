@@ -9,18 +9,17 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import blue.geom.Vector2;
-import blue.util.event.Listener;
 
 public final class Input implements KeyListener, MouseListener, MouseWheelListener, MouseMotionListener {
 	protected static final Input
 		INSTANCE = new Input();
-	public static final Class<KeyAction>
-		KEY_ACTION = KeyAction.class;
-	public static final Class<BtnAction>
-		BTN_ACTION = BtnAction.class;
+	public static final Class<KeyInput>
+		KEY_ACTION = KeyInput.class;
+	public static final Class<BtnInput>
+		BTN_ACTION = BtnInput.class;
 	public static final byte
-		UP = 0, UP_ACTION = 1,
-		DN = 2, DN_ACTION = 3;
+		UP = 0, UP_EVENT = 1,
+		DN = 2, DN_EVENT = 3;
 	public static final int
 		NUM_KEYS = 150,
 		NUM_BTNS = 6;
@@ -42,14 +41,6 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		//do nothing
 	}
 	
-	public static <T extends Action> void attach(Class<T> type, Listener<T> listener) {
-		Stage.attach(type, listener);
-	}
-	
-	public static <T extends Action> void detach(Class<T> type, Listener<T> listener) {
-		Stage.detach(type, listener);
-	}
-	
 	protected static void poll() {
 		INSTANCE.onPollMouse();
 		INSTANCE.onPollWheel();
@@ -61,6 +52,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		if(!mouse_buffer.equals(mouse)) {
 			mouse.set(mouse_buffer);
 			//event
+			Stage.queue(new MouseInput(getMouse()));
 			Stage.mouseMoved(getMouse());
 		}
 	}
@@ -68,34 +60,36 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 	public void onPollWheel() {
 		wheel        = wheel_buffer;
 		wheel_buffer = 0           ;
-		if(wheel != 0)
+		if(wheel != 0) {
 			//event
+			Stage.queue(new WheelInput(getWheel()));
 			Stage.wheelMoved(getWheel());
+		}
 	}
 	
 	public void onPollKeys() {
 		for(int i = 0; i < NUM_KEYS; i ++) {
 			if(key_buffer[i])
 				switch(keys[i]) {
-				case Input.UP: case Input.UP_ACTION:
-					keys[i] = Input.DN_ACTION;
+				case Input.UP: case Input.UP_EVENT:
+					keys[i] = Input.DN_EVENT;
 					//event
-					Stage.queue(new KeyAction(DN_ACTION, i));
+					Stage.queue(new KeyInput(DN_EVENT, i));
 					Stage.keyDn(i);
 					break;
-				case Input.DN: case Input.DN_ACTION:
+				case Input.DN: case Input.DN_EVENT:
 					keys[i] = Input.DN;
 					break;
 				}
 			else
 				switch(keys[i]) {
-				case Input.UP: case Input.UP_ACTION:
+				case Input.UP: case Input.UP_EVENT:
 					keys[i] = Input.UP;			
 					break;
-				case Input.DN: case Input.DN_ACTION:
-					keys[i] = Input.UP_ACTION;
+				case Input.DN: case Input.DN_EVENT:
+					keys[i] = Input.UP_EVENT;
 					//event
-					Stage.queue(new KeyAction(UP_ACTION, i));
+					Stage.queue(new KeyInput(UP_EVENT, i));
 					Stage.keyUp(i);
 					break;
 			}
@@ -106,25 +100,25 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		for(int i = 0; i < NUM_BTNS; i ++) {
 			if(btn_buffer[i])
 				switch(btns[i]) {
-				case Input.UP: case Input.UP_ACTION:
-					btns[i] = Input.DN_ACTION;
+				case Input.UP: case Input.UP_EVENT:
+					btns[i] = Input.DN_EVENT;
 					//event
-					Stage.queue(new BtnAction(DN_ACTION, i));
+					Stage.queue(new BtnInput(DN_EVENT, i));
 					Stage.btnDn(i);
 					break;
-				case Input.DN: case Input.DN_ACTION:
+				case Input.DN: case Input.DN_EVENT:
 					btns[i] = Input.DN;
 					break;
 				}
 			else
 				switch(btns[i]) {
-				case Input.UP: case Input.UP_ACTION:
+				case Input.UP: case Input.UP_EVENT:
 					btns[i] = Input.UP;
 					break;
-				case Input.DN: case Input.DN_ACTION:
-					btns[i] = Input.UP_ACTION;
+				case Input.DN: case Input.DN_EVENT:
+					btns[i] = Input.UP_EVENT;
 					//event
-					Stage.queue(new BtnAction(UP_ACTION, i));
+					Stage.queue(new BtnInput(UP_EVENT, i));
 					Stage.btnUp(i);
 					break;
 			}
@@ -429,26 +423,26 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		byte k = getKey(key);
 		return
 				k == Input.DN ||
-				k == Input.DN_ACTION;
+				k == Input.DN_EVENT;
 	}
 	
-	public static boolean isKeyDnAction(int key) {
+	public static boolean isKeyDnEvent(int key) {
 		byte k = getKey(key);
 		return 
-				k == Input.DN_ACTION;
+				k == Input.DN_EVENT;
 	}
 	
 	public static boolean isKeyUp(int key) {
 		byte b = getKey(key);
 		return
 				b == Input.UP ||
-				b == Input.UP_ACTION;
+				b == Input.UP_EVENT;
 	}
 	
-	public static boolean isKeyUpAction(int key) {
+	public static boolean isKeyUpEvent(int key) {
 		byte b = getKey(key);
 		return 
-				b == Input.UP_ACTION;
+				b == Input.UP_EVENT;
 	}
 	
 	public static byte getBtn(int btn) {
@@ -459,52 +453,63 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		byte b = getBtn(btn);
 		return
 				b == Input.DN ||
-				b == Input.DN_ACTION;
+				b == Input.DN_EVENT;
 	}
 	
-	public static boolean isBtnDnAction(int btn) {
+	public static boolean isBtnDnEvent(int btn) {
 		byte b = getBtn(btn);
 		return 
-				b == Input.DN_ACTION;
+				b == Input.DN_EVENT;
 	}
 	
 	public static boolean isBtnUp(int btn) {
 		byte b = getBtn(btn);
 		return
 				b == Input.UP ||
-				b == Input.UP_ACTION;
+				b == Input.UP_EVENT;
 	}
 	
-	public static boolean isBtnUpAction(int btn) {
+	public static boolean isBtnUpEvent(int btn) {
 		byte b = getBtn(btn);
 		return 
-				b == Input.UP_ACTION;
+				b == Input.UP_EVENT;
 	}
 	
-	public static class Action {
+	public static class MouseInput {
+		public final Vector2
+			mouse;
+	
+		public MouseInput(Vector2 mouse) {
+			this.mouse = mouse;
+		}
+	}
+	
+	public static class WheelInput {
+		public final float
+			wheel;
+	
+		public WheelInput(float   wheel) {
+			this.wheel = wheel;
+		}
+	}
+	
+	public static class KeyInput {	
 		public final byte
 			type;
-		
-		public Action(byte type) {
-			this.type = type;
-		}
-		
-		public boolean isDn() {
-			return type == DN_ACTION;
-		}
-		
-		public boolean isUp() {
-			return type == UP_ACTION;
-		}
-	}
-	
-	public static class KeyAction extends Action {		
 		public final int
 			key;
 
-		public KeyAction(byte type, int key) {
-			super(type);
-			this.key = key;
+		public KeyInput(byte type, int key) {
+			this.type = type;
+			this.key  = key ;
+		}
+		
+		public boolean isUp() {
+			return this.type == UP_EVENT;
+		}
+		
+		public boolean isDn() {
+			return this.type == DN_EVENT;
 		}
 		
 		public boolean isKey(int key) {
@@ -512,13 +517,23 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		}
 	}
 	
-	public static class BtnAction extends Action {
+	public static class BtnInput {
+		public final byte
+			type;
 		public final int
 			btn;
 	
-		public BtnAction(byte type, int btn) {
-			super(type);
-			this.btn = btn;
+		public BtnInput(byte type, int btn) {
+			this.type = type;
+			this.btn  = btn ;
+		}
+		
+		public boolean isUp() {
+			return this.type == UP_EVENT;
+		}
+		
+		public boolean isDn() {
+			return this.type == DN_EVENT;
 		}
 		
 		public boolean isBtn(int btn) {
