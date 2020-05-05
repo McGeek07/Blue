@@ -3,11 +3,15 @@ package blue.core;
 import blue.geom.Vector2;
 
 public abstract class Scene implements Renderable, Updateable {
+	
+	public void render(RenderContext context) { onRender(context); }
+	public void update(UpdateContext context) { onUpdate(context); }
+	
+	public void onRender(RenderContext context) { }
+	public void onUpdate(UpdateContext context) { }
 	public void onAttach() { }
 	public void onDetach() { }
 	public void onResize() { }
-	public void onRender(RenderContext context) { }
-	public void onUpdate(UpdateContext context) { }
 	
 	public void onMouseMoved(Vector2 mouse) { }
 	public void onWheelMoved(float   wheel) { }

@@ -9,7 +9,7 @@ import blue.geom.Box;
 import blue.geom.Vector;
 
 public interface Renderable {
-	public void onRender(RenderContext context);
+	public void render(RenderContext context);
 	
 	public static class RenderContext {
 		public Graphics2D

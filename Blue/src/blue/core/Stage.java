@@ -275,7 +275,7 @@ public class Stage extends Module {
 					true);
 			
 			if(scene != null)
-				scene.onRender(context);
+				scene.render(context);
 		context = context.pop();
 		
 		g.dispose();
@@ -296,7 +296,7 @@ public class Stage extends Module {
 		
 		context = context.push();
 		if(scene != null)
-			scene.onUpdate(context);
+			scene.update(context);
 		context = context.pop();
 	}
 	
