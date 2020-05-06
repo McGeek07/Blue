@@ -7,17 +7,15 @@ import blue.util.Version;
 
 public class Blue {
 	public static final Version
-		VERSION = new Version("Blue", 0, 1, 8);
+		VERSION = new Version("Blue", 0, 1, 9);
 	
 	public static void main(String[] args) {
 		System.out.println(VERSION);
 		
-		Sound sound = Sound.load("itb", "itb.wav");
-		sound.setFrame(sound.getSource().length);
-		sound.setSpeed(-1f);
-		sound.play();
+		Stage.setProperty(Stage.DEBUG, "blue.core.Stage");
 		
-		Stage.setProperty(Stage.WINDOW_DEVICE, 1);
+		Sound sound = Sound.load("itb", "itb.wav");
+		sound.play();
 		
 		Engine.init();
 	}

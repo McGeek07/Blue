@@ -1,14 +1,18 @@
 package blue.core;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferStrategy;
 import java.io.File;
+import java.util.Map;
 
 import blue.Blue;
+import blue.core.Module.Metrics;
 import blue.core.Renderable.RenderContext;
 import blue.core.Updateable.UpdateContext;
 import blue.geom.Box;
@@ -25,9 +29,21 @@ import blue.util.event.Listener;
 public class Stage extends Module {
 	protected static final Stage
 		MODULE = new Stage();
+
+	protected String
+		debug;
+	protected Vector4
+		debug_background = new Vector4(  0,   0,   0, 192),
+		debug_foreground = new Vector4(255, 255, 255, 192);
+	protected String
+		debug_font_name = "Monospaced";
+	protected int
+		debug_font_size = 16;
+
 	protected float
 		thread_fps = 60f,
 		thread_tps = 60f;
+	
 	protected Vector4
 		canvas_background = Vector4.fromColor4i(Color.BLACK),
 		window_background = Vector4.fromColor4i(Color.BLACK);
@@ -48,6 +64,14 @@ public class Stage extends Module {
 	
 	protected Scene
 		scene;
+	
+	protected Metrics
+		debug_metrics;
+	protected Color
+		debug_background_color,
+		debug_foreground_color;
+	protected Font
+		debug_font;
 	
 	protected Color
 		canvas_background_color,
@@ -219,6 +243,22 @@ public class Stage extends Module {
 		return pixelToMouse(v.x(), v.y());
 	}
 	
+	public static Metrics getMetrics() {
+		return MODULE.metrics;
+	}
+	
+	public static <T extends Module> void debug(Class<T> type) {
+		MODULE.debug_metrics = Metrics.getByType(type);
+	}
+	
+	public static <T extends Module> void debug(String   name) {
+		MODULE.debug_metrics = Metrics.getByName(name);
+	}
+	
+	public static void debug(Metrics metrics) {
+		MODULE.debug_metrics = metrics;
+	}
+	
 	protected BufferStrategy
 		b;
 	public void render(float t, float dt, float fixed_dt) {
@@ -278,6 +318,36 @@ public class Stage extends Module {
 				scene.render(context);
 		context = context.pop();
 		
+		if(debug_metrics != null) {
+			
+			g.setFont(debug_font);			
+			FontMetrics fm = g.getFontMetrics();			
+			String[] lines = new String[debug_metrics.map.size()];
+			
+			int
+				i = 0,
+				w = 0,
+				h = 0;
+			for(Map.Entry<String, String> metric: debug_metrics.map.entrySet()) {
+				
+				String line = metric.getKey() + ": " + metric.getValue();
+				lines[i ++] = line;
+				
+				w = Math.max(w, fm.stringWidth(line));
+				h += fm.getHeight();
+			}
+			
+			w += w > 0 ? 4 : 0;
+			h += h > 0 ? 4 : 0;
+			
+			g.setColor(debug_background_color);
+			g.fillRect(0, 0, w, h);
+			g.setColor(debug_foreground_color);
+			
+			for(i = 0; i < lines.length; i ++)
+				g.drawString(lines[i], 2, 2 + fm.getLeading() + fm.getAscent() + i * fm.getHeight());
+		}		
+		
 		g.dispose();
 		b.show();
 	}
@@ -301,16 +371,27 @@ public class Stage extends Module {
 	}
 	
 	@Override
-	public void onInit() {		
+	public void onInit() {
+		debug = Util.getEntry(cfg, DEBUG, debug);
+		debug_background = Util.getEntry(cfg, Vector4::parseVector4, DEBUG_BACKGROUND, debug_background);
+		debug_foreground = Util.getEntry(cfg, Vector4::parseVector4, DEBUG_FOREGROUND, debug_foreground);
+		debug_font_name  = Util.getEntry     (cfg, DEBUG_FONT_NAME, debug_font_name);
+		debug_font_size  = Util.getEntryAsInt(cfg, DEBUG_FONT_SIZE, debug_font_size);
+		
 		thread_fps = Util.getEntryAsFloat(cfg, THREAD_FPS, thread_fps);
 		thread_tps = Util.getEntryAsFloat(cfg, THREAD_TPS, thread_tps);
 		canvas_background = Util.getEntry(cfg, Vector4::parseVector4, CANVAS_BACKGROUND, canvas_background);
-		window_background = Util.getEntry(cfg, Vector4::parseVector4, WINDOW_BACKGROUND, window_background);
+		window_background = Util.getEntry(cfg, Vector4::parseVector4, WINDOW_BACKGROUND, window_background);		
 		canvas_layout = Util.getEntry(cfg, Layout::parseLayout, CANVAS_LAYOUT, canvas_layout);
 		window_layout = Util.getEntry(cfg, Layout::parseLayout, WINDOW_LAYOUT, window_layout);
 		window_border = Util.getEntryAsBoolean(cfg, WINDOW_BORDER, window_border);
 		window_device = Util.getEntryAsInt    (cfg, WINDOW_DEVICE, window_device);
 		window_title  = Util.getEntry(cfg, WINDOW_TITLE, window_title);
+		
+		debug_metrics = Metrics.getByName(debug);
+		debug_background_color  = Vector.toColor4i(debug_background);
+		debug_foreground_color  = Vector.toColor4i(debug_foreground);
+		debug_font = new Font(debug_font_name, Font.PLAIN, debug_font_size);
 		
 		canvas_background_color = Vector.toColor4i(canvas_background);
 		window_background_color = Vector.toColor4i(window_background);
@@ -498,8 +579,8 @@ public class Stage extends Module {
 			
 			elapsed_nanos = 0;
 			
-			System.out.printf("FPS: %1$d hz @ %2$.2f [%3$.2f - %4$.2f] ms%n", render_hz, avg_render_dt, min_render_dt, max_render_dt);
-			System.out.printf("TPS: %1$d hz @ %2$.2f [%3$.2f - %4$.2f] ms%n", update_hz, avg_update_dt, min_update_dt, max_update_dt);
+			metrics.setMetric(FPS_METRIC, String.format("%1$d hz @ %2$.2f [%3$.2f - %4$.2f] ms", render_hz, avg_render_dt, min_render_dt, max_render_dt));
+			metrics.setMetric(TPS_METRIC, String.format("%1$d hz @ %2$.2f [%3$.2f - %4$.2f] ms", update_hz, avg_update_dt, min_update_dt, max_update_dt));
 		}
 		
 		long sync = Math.min(
@@ -539,7 +620,9 @@ public class Stage extends Module {
 				(float)this.window_h / this.canvas_h
 				);
 		if(scene != null)
-			scene.onResize();	
+			scene.onResize();
+		
+		metrics.setMetric(CANVAS_METRIC, String.format("%1$d x %2$d @ %3$.2f%%", canvas_w, canvas_h, canvas_scale * 100));
 	}
 	
 	public static class SceneEvent {
@@ -571,6 +654,10 @@ public class Stage extends Module {
 		CANVAS_BACKGROUND = "canvas-background",
 		CANVAS_LAYOUT     = "canvas-layout",
 		DEBUG             = "debug",
+		DEBUG_BACKGROUND  = "metrics-background",
+		DEBUG_FOREGROUND  = "metrics-foreground",
+		DEBUG_FONT_NAME   = "metrics-font-name",
+		DEBUG_FONT_SIZE   = "metrics-font-size",
 		THREAD_FPS        = "thread-fps",
 		THREAD_TPS        = "thread-tps",
 		WINDOW_BACKGROUND = "window-background",
@@ -578,4 +665,9 @@ public class Stage extends Module {
 		WINDOW_DEVICE     = "window-device",
 		WINDOW_BORDER     = "window-border",
 		WINDOW_TITLE      = "window-title";
+	
+	public static final String
+		CANVAS_METRIC = "Canvas",
+		FPS_METRIC = "FPS",
+		TPS_METRIC = "TPS";
 }

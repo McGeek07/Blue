@@ -219,7 +219,7 @@ public interface Renderable {
 			copy.canvas_w = this.canvas_w;
 			copy.canvas_h = this.canvas_h;
 			
-			this.g = (Graphics2D)copy.g.create();
+			copy.g = (Graphics2D)this.g.create();
 			
 			return copy;
 		}

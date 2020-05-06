@@ -91,6 +91,10 @@ public class Audio extends Module {
 		MODULE.broker.poll();
 	}
 	
+	public static Metrics getMetrics() {
+		return MODULE.metrics;
+	}
+	
 	@Override
 	public void onInit() {		
 		try {			
