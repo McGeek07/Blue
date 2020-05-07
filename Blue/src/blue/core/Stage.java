@@ -12,7 +12,6 @@ import java.io.File;
 import java.util.Map;
 
 import blue.Blue;
-import blue.core.Module.Metrics;
 import blue.core.Renderable.RenderContext;
 import blue.core.Updateable.UpdateContext;
 import blue.geom.Box;
@@ -601,8 +600,14 @@ public class Stage extends Module {
 	public void onWindowEvent(WindowEvent event) {
 		if(scene != null)
 			switch(event) {
-				case GAIN_FOCUS: scene.onGainFocus(); break;
-				case LOSE_FOCUS: scene.onLoseFocus(); break;
+				case GAIN_FOCUS: 
+					Input.INSTANCE.onGainFocus();
+					scene         .onGainFocus();
+					break;
+				case LOSE_FOCUS:
+					Input.INSTANCE.onLoseFocus();
+					scene         .onLoseFocus();
+					break;
 			}
 	}
 
