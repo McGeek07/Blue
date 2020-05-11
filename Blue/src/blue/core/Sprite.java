@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+import blue.geom.Box;
 import blue.geom.Region2;
 import blue.geom.Vector;
 import blue.util.Util;
@@ -169,18 +170,16 @@ public class Sprite implements Renderable, Updateable {
 		return this.flop;
 	}
 	
-	public void center(float x, float y) {
-		float
-			w2 = bounds.w() / 2,
-			h2 = bounds.h() / 2;
-		bounds.loc().set(
-				x - w2,
-				y - h2
-				);		
+	public void align(Box<?> b) {
+		Box.m_align(bounds, b);
 	}
 	
-	public void center(Vector v) {
-		this.center(v.x(), v.y());
+	public void align(Vector v) {
+		Box.m_align(bounds, v);
+	}
+	
+	public void align(float x, float y) {
+		Box.m_align(bounds, x, y);
 	}
 	
 	public Sprite step(float dt) {
@@ -252,7 +251,7 @@ public class Sprite implements Renderable, Updateable {
 
 	@Override
 	public void update(UpdateContext context) {
-		step(context.dt);
+		step(context.fixed_dt);
 	}
 	
 	public static Sprite load(String name, String path, int frame_w, int frame_h) {
