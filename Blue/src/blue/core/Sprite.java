@@ -398,16 +398,40 @@ public class Sprite implements Renderable, Updateable {
 	}
 	
 	public static interface Filter {
-		public void filter(int[] source, int source_w, int source_h);
-		
-		public static final Filter
-			BLACKOUT = (source, source_w, source_h) -> {
-				for(int i = 0; i < source.length; i ++)
-					source[i] &= 0xFF000000;
-			},
-			WHITEOUT = (source, source_w, source_h) -> {
-				for(int i = 0; i < source.length; i ++)
-					source[i] |= 0x00FFFFFF;
-			};
+		public void filter(int[] source, int source_w, int source_h);		
 	}
+	
+	public static final Filter
+		BLACK = (source, source_w, source_h) -> {
+			for(int i = 0; i < source.length; i ++)
+				source[i] &= 0xFF000000;
+		},
+		WHITE = (source, source_w, source_h) -> {
+			for(int i = 0; i < source.length; i ++)
+				source[i] |= 0x00FFFFFF;
+		},
+		RED   = (source, source_w, source_h) -> {
+			for(int i = 0; i < source.length; i ++)
+				source[i] |= 0x00FF0000;
+		},
+		GREEN = (source, source_w, source_h) -> {
+			for(int i = 0; i < source.length; i ++)
+				source[i] |= 0x0000FF00;
+		},
+		BLUE  = (source, source_w, source_h) -> {
+			for(int i = 0; i < source.length; i ++)
+				source[i] |= 0x000000FF;
+		},
+		MAGENTA = (source, source_w, source_h) -> {
+			for(int i = 0; i < source.length; i ++)
+				source[i] |= 0x00FF00FF;
+		},
+		CYAN    = (source, source_w, source_h) -> {
+			for(int i = 0; i < source.length; i ++)
+				source[i] |= 0x0000FFFF;
+		},
+		YELLOW  = (source, source_w, source_h) -> {
+			for(int i = 0; i < source.length; i ++)
+				source[i] |= 0x00FFFF00;
+		};
 }

@@ -293,8 +293,8 @@ public class Stage extends Module {
 					true);
 			
 			context.translate(
-					(window_w - canvas_w * canvas_scale) / 2,
-					(window_h - canvas_h * canvas_scale) / 2
+					(int)(window_w - canvas_w * canvas_scale) / 2,
+					(int)(window_h - canvas_h * canvas_scale) / 2
 					);
 			context.scale(
 					canvas_scale,
