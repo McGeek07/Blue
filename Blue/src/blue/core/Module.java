@@ -39,7 +39,7 @@ public abstract class Module implements Runnable {
 	
 	protected void onInit() { }
 	protected void onStop() { }
-	protected void onStep() throws Exception { }		
+	protected void onStep() throws Exception { }
 	
 	@Override
 	public final void run() {

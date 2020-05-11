@@ -1,10 +1,13 @@
 package blue.core;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferStrategy;
@@ -28,6 +31,12 @@ import blue.util.event.Listener;
 public class Stage extends Module {
 	protected static final Stage
 		MODULE = new Stage();
+	public static final Cursor
+		NULL_CURSOR = Toolkit.getDefaultToolkit().createCustomCursor(
+			Util.createBufferedImage(0, 16, 16),
+			new Point(0, 0),
+			null
+			);
 
 	protected String
 		debug;
@@ -185,6 +194,10 @@ public class Stage extends Module {
 		queue(new SceneEvent(scene));
 	}
 	
+	public static void setCursor(Cursor cursor) {
+		MODULE.window.setCursor(cursor);
+	}
+	
 	public static void mouseMoved(Vector2 mouse) {
 		if(MODULE.scene != null)
 			MODULE.scene.onMouseMoved(mouse);
@@ -246,15 +259,15 @@ public class Stage extends Module {
 		return MODULE.metrics;
 	}
 	
-	public static <T extends Module> void debug(Class<T> type) {
+	public static <T extends Module> void showMetrics(Class<T> type) {
 		MODULE.debug_metrics = Metrics.getByType(type);
 	}
 	
-	public static <T extends Module> void debug(String   name) {
+	public static <T extends Module> void showMetrics(String   name) {
 		MODULE.debug_metrics = Metrics.getByName(name);
 	}
 	
-	public static void debug(Metrics metrics) {
+	public static void showMetrics(Metrics metrics) {
 		MODULE.debug_metrics = metrics;
 	}
 	
@@ -578,8 +591,8 @@ public class Stage extends Module {
 			
 			elapsed_nanos = 0;
 			
-			metrics.setMetric(FPS_METRIC, String.format("%1$d hz @ %2$.2f [%3$.2f - %4$.2f] ms", render_hz, avg_render_dt, min_render_dt, max_render_dt));
-			metrics.setMetric(TPS_METRIC, String.format("%1$d hz @ %2$.2f [%3$.2f - %4$.2f] ms", update_hz, avg_update_dt, min_update_dt, max_update_dt));
+			metrics.setMetric(Metric.FPS, String.format("%1$d hz @ %2$.2f [%3$.2f - %4$.2f] ms", render_hz, avg_render_dt, min_render_dt, max_render_dt));
+			metrics.setMetric(Metric.TPS, String.format("%1$d hz @ %2$.2f [%3$.2f - %4$.2f] ms", update_hz, avg_update_dt, min_update_dt, max_update_dt));
 		}
 		
 		long sync = Math.min(
@@ -627,7 +640,7 @@ public class Stage extends Module {
 		if(scene != null)
 			scene.onResize();
 		
-		metrics.setMetric(CANVAS_METRIC, String.format("%1$d x %2$d @ %3$.2f%%", canvas_w, canvas_h, canvas_scale * 100));
+		metrics.setMetric(Metric.CANVAS, String.format("%1$d x %2$d @ %3$.2f%%", canvas_w, canvas_h, canvas_scale * 100));
 	}
 	
 	public static class SceneEvent {
@@ -659,10 +672,10 @@ public class Stage extends Module {
 		CANVAS_BACKGROUND = "canvas-background",
 		CANVAS_LAYOUT     = "canvas-layout",
 		DEBUG             = "debug",
-		DEBUG_BACKGROUND  = "metrics-background",
-		DEBUG_FOREGROUND  = "metrics-foreground",
-		DEBUG_FONT_NAME   = "metrics-font-name",
-		DEBUG_FONT_SIZE   = "metrics-font-size",
+		DEBUG_BACKGROUND  = "debug-background",
+		DEBUG_FOREGROUND  = "debug-foreground",
+		DEBUG_FONT_NAME   = "debug-font-name",
+		DEBUG_FONT_SIZE   = "debug-font-size",
 		THREAD_FPS        = "thread-fps",
 		THREAD_TPS        = "thread-tps",
 		WINDOW_BACKGROUND = "window-background",
@@ -671,8 +684,10 @@ public class Stage extends Module {
 		WINDOW_BORDER     = "window-border",
 		WINDOW_TITLE      = "window-title";
 	
-	public static final String
-		CANVAS_METRIC = "Canvas",
-		FPS_METRIC = "FPS",
-		TPS_METRIC = "TPS";
+	public static class Metric {
+		public static final String
+			CANVAS = "Canvas",
+			FPS = "FPS",
+			TPS = "TPS";
+	}
 }
