@@ -20,14 +20,6 @@ public class Handle {
 		return listeners;
 	}
 	
-	public <T> boolean add(Class<T> type, Listener<T> listener) {
-		return getListeners(type).add(listener);
-	}
-	
-	public <T> boolean del(Class<T> type, Listener<T> listener) {
-		return getListeners(type).del(listener);
-	}
-	
 	public <T> void attach(Class<T> type, Listener<T> listener) {
 		getListeners(type).attach(listener);
 	}
@@ -36,15 +28,23 @@ public class Handle {
 		getListeners(type).detach(listener);
 	}
 	
-	public void attach() {
+	public <T> boolean onAttach(Class<T> type, Listener<T> listener) {
+		return getListeners(type).onAttach(listener);
+	}
+	
+	public <T> boolean onDetach(Class<T> type, Listener<T> listener) {
+		return getListeners(type).onDetach(listener);
+	}
+	
+	public void attachPending() {
 		this.listeners.forEach((type, listeners) -> {
-			listeners.attach();
+			listeners.attachPending();
 		});
 	}
 	
-	public void detach() {
+	public void detachPending() {
 		this.listeners.forEach((type, listeners) -> {
-			listeners.detach();
+			listeners.detachPending();
 		});
 	}
 	
@@ -58,14 +58,6 @@ public class Handle {
 			attach = new HashSet<>(),
 			detach = new HashSet<>();
 		
-		public boolean add(Handle handle) {
-			return handles.add(handle);
-		}
-		
-		public boolean del(Handle handle) {
-			return handles.remove(handle);
-		}
-		
 		public void attach(Handle handle) {
 			attach.add(handle);
 		}
@@ -74,26 +66,34 @@ public class Handle {
 			detach.add(handle);
 		}
 		
-		public void attach() {
+		public boolean onAttach(Handle handle) {
+			return handles.add(handle);
+		}
+		
+		public boolean onDetach(Handle handle) {
+			return handles.remove(handle);
+		}
+		
+		public void attachPending() {
 			if(attach.size() > 0) {
 				for(Handle handle: attach)
-					add(handle);
+					onAttach(handle);
 				attach.clear();
 			}
 			if(handles.size() > 0) {
 				for(Handle handle: handles)
-					handle.attach();
+					handle.attachPending();
 			}
 		}
 		
-		public void detach() {
+		public void detachPending() {
 			if(handles.size() > 0) {
 				for(Handle handle: handles)
-					handle.detach();
+					handle.detachPending();
 			}
 			if(detach.size() > 0) {
 				for(Handle handle: detach)
-					del(handle);
+					onDetach(handle);
 				detach.clear();
 			}
 		}

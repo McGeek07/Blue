@@ -12,37 +12,37 @@ public interface Listener<T> {
 			attach = new HashSet<>(),
 			detach = new HashSet<>();
 		
-		public boolean add(Listener<T> listener) {
-			return listeners.add(listener);
-		}
-		
-		public boolean del(Listener<T> listener) {
-			return listeners.remove(listener);
-		}
-		
 		public void attach(Listener<T> listener) {
 			attach.add(listener);
 		}
 		
 		public void detach(Listener<T> listener) {
 			detach.add(listener);
+		}		
+		
+		public boolean onAttach(Listener<T> listener) {
+			return listeners.add(listener);
 		}
 		
-		public void attach() {
+		public boolean onDetach(Listener<T> listener) {
+			return listeners.remove(listener);
+		}
+		
+		public void attachPending() {
 			if(attach.size() > 0) {
 				for(Listener<T> listener: attach)
-					add(listener);
+					onAttach(listener);
 				attach.clear();
 			}
 		}
 		
-		public void detach() {
+		public void detachPending() {
 			if(detach.size() > 0) {
 				for(Listener<T> listener: detach)
-					del(listener);
+					onDetach(listener);
 				detach.clear();
 			}
-		}
+		}		
 		
 		public void flush(T event) {
 			for(Listener<T> listener : listeners)

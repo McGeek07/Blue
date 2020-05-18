@@ -11,14 +11,6 @@ public class MonoHandle<T> extends Listener.Group<T> {
 			attach = new HashSet<>(),
 			detach = new HashSet<>();
 		
-		public boolean add(MonoHandle<T> handle) {
-			return handles.add(handle);
-		}
-		
-		public boolean del(MonoHandle<T> handle) {
-			return handles.remove(handle);
-		}
-		
 		public void attach(MonoHandle<T> handle) {
 			attach.add(handle);
 		}
@@ -27,26 +19,34 @@ public class MonoHandle<T> extends Listener.Group<T> {
 			detach.add(handle);
 		}
 		
-		public void attach() {
+		public boolean onAttach(MonoHandle<T> handle) {
+			return handles.add(handle);
+		}
+		
+		public boolean onDetach(MonoHandle<T> handle) {
+			return handles.remove(handle);
+		}
+		
+		public void attachPending() {
 			if(attach.size() > 0) {
 				for(MonoHandle<T> handle: attach)
-					add(handle);	
+					onAttach(handle);	
 				attach.clear();
 			}
 			if(handles.size() > 0) {
 				for(MonoHandle<T> handle: handles)
-					handle.attach();
+					handle.attachPending();
 			}
 		}
 		
-		public void detach() {
+		public void detachPending() {
 			if(handles.size() > 0) {
 				for(MonoHandle<T> handle: handles)
-					handle.detach();
+					handle.detachPending();
 			}
 			if(detach.size() > 0) {
 				for(MonoHandle<T> handle: detach)
-					del(handle);
+					onDetach(handle);
 				detach.clear();
 			}
 		}

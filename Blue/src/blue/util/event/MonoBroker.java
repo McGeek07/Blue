@@ -14,14 +14,6 @@ public class MonoBroker<T> {
 		events1 = new LinkedList<>(),
 		events2 = new LinkedList<>();
 	
-	public boolean add(MonoHandle<T> handle) {
-		return handles.add(handle);
-	}
-	
-	public boolean del(MonoHandle<T> handle) {
-		return handles.del(handle);
-	}
-	
 	public void attach(MonoHandle<T> handle) {
 		handles.attach(handle);
 	}
@@ -30,13 +22,13 @@ public class MonoBroker<T> {
 		handles.detach(handle);
 	}
 	
-	public boolean add(MonoBroker<T> queue) {
-		return brokers.add(queue);
+	public boolean onAttach(MonoHandle<T> handle) {
+		return handles.onAttach(handle);
 	}
 	
-	public boolean del(MonoBroker<T> queue) {
-		return brokers.del(queue);
-	}
+	public boolean onDetach(MonoHandle<T> handle) {
+		return handles.onDetach(handle);
+	}	
 	
 	public void attach(MonoBroker<T> queue) {
 		brokers.attach(queue);
@@ -46,13 +38,21 @@ public class MonoBroker<T> {
 		brokers.detach(queue);
 	}
 	
-	public void attach() {
-		handles.attach();
+	public boolean onAttach(MonoBroker<T> queue) {
+		return brokers.add(queue);
+	}
+	
+	public boolean onDetach(MonoBroker<T> queue) {
+		return brokers.del(queue);
+	}
+	
+	public void attachPending() {
+		handles.attachPending();
 		brokers.attach();
 	}
 	
-	public void detach() {
-		handles.detach();
+	public void detachPending() {
+		handles.detachPending();
 		brokers.detach();
 	}	
 	
@@ -65,7 +65,7 @@ public class MonoBroker<T> {
 		brokers.flush(event);
 	}
 	
-	public void flush() {
+	public void flushPending() {
 		if(events1.size() > 0) {
 			LinkedList<T> events3 = events1;
 			events1 = events2;
@@ -76,13 +76,13 @@ public class MonoBroker<T> {
 			events2.clear();
 		}
 		for(MonoBroker<T> broker: brokers)
-			broker.flush();
+			broker.flushPending();
 	}
 	
 	public void poll() {
-		attach();
-		detach();
-		flush();
+		attachPending();
+		detachPending();
+		flushPending();
 	}
 	
 	public static class Group<T> implements Iterable<MonoBroker<T>> {
@@ -115,14 +115,14 @@ public class MonoBroker<T> {
 			}
 			if(brokers.size() > 0) {
 				for(MonoBroker<T> broker: brokers)
-					broker.attach();
+					broker.attachPending();
 			}
 		}
 		
 		public void detach() {
 			if(brokers.size() > 0) {
 				for(MonoBroker<T> broker: brokers)
-					broker.detach();
+					broker.detachPending();
 			}
 			if(detach.size() > 0) {
 				for(MonoBroker<T> broker: detach)

@@ -14,14 +14,6 @@ public class Broker {
 		events1 = new LinkedList<>(),
 		events2 = new LinkedList<>();
 	
-	public boolean add(Handle handle) {
-		return handles.add(handle);
-	}
-	
-	public boolean del(Handle handle) {
-		return handles.del(handle);
-	}
-	
 	public void attach(Handle handle) {
 		handles.attach(handle);
 	}
@@ -30,12 +22,12 @@ public class Broker {
 		handles.detach(handle);
 	}
 	
-	public boolean add(Broker broker) {
-		return brokers.add(broker);
+	public boolean onAttach(Handle handle) {
+		return handles.onAttach(handle);
 	}
 	
-	public boolean del(Broker broker) {
-		return brokers.del(broker);
+	public boolean onDetach(Handle handle) {
+		return handles.onDetach(handle);
 	}
 	
 	public void attach(Broker broker) {
@@ -46,14 +38,22 @@ public class Broker {
 		brokers.detach(broker);
 	}
 	
-	public void attach() {
-		handles.attach();
-		brokers.attach();
+	public boolean onAttach(Broker broker) {
+		return brokers.onAttach(broker);
 	}
 	
-	public void detach() {
-		handles.detach();
-		brokers.detach();
+	public boolean onDetach(Broker broker) {
+		return brokers.onDetach(broker);
+	}
+	
+	public void attachPending() {
+		handles.attachPending();
+		brokers.attachPending();
+	}
+	
+	public void detachPending() {
+		handles.detachPending();
+		brokers.detachPending();
 	}				
 	
 	public <T> void queue(T event) {
@@ -65,7 +65,7 @@ public class Broker {
 		brokers.flush(event);
 	}
 	
-	public synchronized void flush() {
+	public synchronized void flushPending() {
 		if(events1.size() > 0) {
 			LinkedList<Object> events3 = events1;
 			events1 = events2;
@@ -76,13 +76,13 @@ public class Broker {
 			events2.clear();
 		}
 		for(Broker broker: brokers)
-			broker.flush();
+			broker.flushPending();
 	}
 	
 	public void poll() {
-		attach();
-		detach();
-		flush();
+		attachPending();
+		detachPending();
+		flushPending();
 	}
 	
 	public static class Group implements Iterable<Broker> {
@@ -91,11 +91,11 @@ public class Broker {
 			attach = new HashSet<>(),
 			detach = new HashSet<>();
 		
-		public boolean add(Broker broker) {
+		public boolean onAttach(Broker broker) {
 			return brokers.add(broker);
 		}
 		
-		public boolean del(Broker broker) {
+		public boolean onDetach(Broker broker) {
 			return brokers.remove(broker);
 		}
 		
@@ -107,26 +107,26 @@ public class Broker {
 			detach.add(broker);
 		}
 		
-		public void attach() {
+		public void attachPending() {
 			if(attach.size() > 0) {
 				for(Broker broker: attach)
-					add(broker);
+					onAttach(broker);
 				attach.clear();
 			}
 			if(brokers.size() > 0) {
 				for(Broker broker: brokers)
-					broker.attach();
+					broker.attachPending();
 			}
 		}
 		
-		public void detach() {
+		public void detachPending() {
 			if(brokers.size() > 0) {
 				for(Broker broker: brokers)
-					broker.detach();
+					broker.detachPending();
 			}
 			if(detach.size() > 0) {
 				for(Broker broker: detach)
-					del(broker);
+					onDetach(broker);
 				detach.clear();
 			}
 		}
