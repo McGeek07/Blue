@@ -40,15 +40,7 @@ public class Mixer {
 		this.balance = Util.clamp(balance, -1f, 1f);
 		this.stereo_l = Math.min(1f - this.balance, 1f) * this.level;
 		this.stereo_r = Math.min(1f + this.balance, 1f) * this.level;
-	}
-	
-	public boolean add(Mixer mixer) {
-		return mixers.add(mixer);
-	}
-	
-	public boolean del(Mixer mixer) {
-		return mixers.del(mixer);
-	}
+	}	
 	
 	public void attach(Mixer mixer) {
 		mixers.attach(mixer);
@@ -58,12 +50,12 @@ public class Mixer {
 		mixers.detach(mixer);
 	}
 	
-	public boolean add(Sound sound) {
-		return sounds.add(sound);
+	public boolean onAttach(Mixer mixer) {
+		return mixers.onAttach(mixer);
 	}
 	
-	public boolean del(Sound sound) {
-		return sounds.del(sound);
+	public boolean onDetach(Mixer mixer) {
+		return mixers.onDetach(mixer);
 	}
 	
 	public void attach(Sound sound) {
@@ -74,19 +66,27 @@ public class Mixer {
 		sounds.detach(sound);
 	}
 	
-	public void attach() {
-		sounds.attach();
-		mixers.attach();
+	public boolean onAttach(Sound sound) {
+		return sounds.onAttach(sound);
 	}
 	
-	public void detach() {
-		sounds.detach();
-		mixers.detach();
+	public boolean onDetach(Sound sound) {
+		return sounds.onDetach(sound);
+	}
+	
+	public void attachPending() {
+		sounds.attachPending();
+		mixers.attachPending();
+	}
+	
+	public void detachPending() {
+		sounds.detachPending();
+		mixers.detachPending();
 	}
 	
 	public void poll() {
-		attach();
-		detach();	
+		attachPending();
+		detachPending();	
 	}
 	
 	public short[] step(float dt) {
@@ -114,14 +114,6 @@ public class Mixer {
 			attach = new HashSet<>(),
 			detach = new HashSet<>();
 		
-		public boolean add(Mixer mixer) {
-			return mixers.add   (mixer);
-		}
-		
-		public boolean del(Mixer mixer) {
-			return mixers.remove(mixer);
-		}
-		
 		public void attach(Mixer mixer) {
 			attach.add(mixer);
 		}
@@ -130,18 +122,26 @@ public class Mixer {
 			detach.add(mixer);
 		}
 		
-		public void attach() {
+		public boolean onAttach(Mixer mixer) {
+			return mixers.add(mixer);
+		}
+		
+		public boolean onDetach(Mixer mixer) {
+			return mixers.remove(mixer);
+		}
+		
+		public void attachPending() {
 			if(attach.size() > 0) {
 				for(Mixer mixer: attach)
-					add(mixer);
+					onAttach(mixer);
 				attach.clear();
 			}
 		}
 		
-		public void detach() {
+		public void detachPending() {
 			if(detach.size() > 0) {
 				for(Mixer mixer: detach)
-					del(mixer);
+					onDetach(mixer);
 				detach.clear();
 			}
 		}

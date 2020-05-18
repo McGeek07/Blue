@@ -291,14 +291,6 @@ public class Sound {
 			attach = new HashSet<>(),
 			detach = new HashSet<>();
 		
-		public boolean add(Sound sound) {
-			return sounds.add   (sound);
-		}
-		
-		public boolean del(Sound sound) {
-			return sounds.remove(sound);
-		}
-		
 		public void attach(Sound sound) {
 			attach.add(sound);
 		}
@@ -307,18 +299,26 @@ public class Sound {
 			detach.add(sound);
 		}
 		
-		public void attach() {
+		public boolean onAttach(Sound sound) {
+			return sounds.add(sound);
+		}
+		
+		public boolean onDetach(Sound sound) {
+			return sounds.remove(sound);
+		}
+		
+		public void attachPending() {
 			if(attach.size() > 0) {
 				for(Sound sound: attach)
-					add(sound);
+					onAttach(sound);
 				attach.clear();
 			}
 		}
 		
-		public void detach() {
+		public void detachPending() {
 			if(detach.size() > 0) {
 				for(Sound sound: detach)
-					del(sound);
+					onDetach(sound);
 				detach.clear();
 			}
 		}
