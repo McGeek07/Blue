@@ -28,7 +28,7 @@ public interface Renderable {
 		
 		public void stroke(float w) {
 			g.setStroke(new BasicStroke(w));
-		}		
+		}	
 		
 		public void color(Color color) {
 			g.setColor(color);
@@ -111,7 +111,7 @@ public interface Renderable {
 					1, 
 					1
 					);
-		}
+		}		
 		public void line(float x1, float y1, float x2, float y2) {
 			g.drawLine(
 					(int)x1,
@@ -119,7 +119,7 @@ public interface Renderable {
 					(int)x2,
 					(int)y2
 					);
-		}
+		}		
 		
 		public void rect(Box<?> box, boolean fill) {
 			rect(box.x(), box.y(), box.w(), box.h(), fill);

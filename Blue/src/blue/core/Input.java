@@ -13,10 +13,14 @@ import blue.geom.Vector2;
 public final class Input implements KeyListener, MouseListener, MouseWheelListener, MouseMotionListener {
 	protected static final Input
 		INSTANCE = new Input();
+	public static final Class<MouseInput>
+		MOUSE_INPUT = MouseInput.class;
+	public static final Class<WheelInput>
+		WHEEL_INPUT = WheelInput.class;
 	public static final Class<KeyInput>
-		KEY_ACTION = KeyInput.class;
+		KEY_INPUT = KeyInput.class;
 	public static final Class<BtnInput>
-		BTN_ACTION = BtnInput.class;
+		BTN_INPUT = BtnInput.class;
 	public static final byte
 		UP = 0, UP_EVENT = 1,
 		DN = 2, DN_EVENT = 3;
