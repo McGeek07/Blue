@@ -1,5 +1,7 @@
 package blue.util;
 
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -64,26 +66,26 @@ public final class Util {
 	}
 	
 	public static int wrap(int x, int a, int b) {
-		if(x < a) return b + (a - x) % (b - a);
-		if(x > b) return a + (x - b) % (b - a);
+		if(x < a) return b + (a - x) % (b - a + 1);
+		if(x > b) return a + (x - b) % (b - a + 1);
 		return x;
 	}
 	
 	public static float wrap(float x, float a, float b) {
-		if(x < a) return b + (a - x) % (b - a);
-		if(x > b) return a + (x - b) % (b - a);
+		if(x < a) return b + (a - x) % (b - a + 1);
+		if(x > b) return a + (x - b) % (b - a + 1);
 		return x;
 	}
 	
 	public static long wrap(long x, long a, long b) {
-		if(x < a) return b + (a - x) % (b - a);
-		if(x > b) return a + (x - b) % (b - a);
+		if(x < a) return b + (a - x) % (b - a + 1);
+		if(x > b) return a + (x - b) % (b - a + 1);
 		return x;
 	}
 	
 	public static double wrap(double x, double a, double b) {
-		if(x < a) return b + (a - x) % (b - a);
-		if(x > b) return a + (x - b) % (b - a);
+		if(x < a) return b + (a - x) % (b - a + 1);
+		if(x > b) return a + (x - b) % (b - a + 1);
 		return x;
 	}
 	
@@ -421,6 +423,23 @@ public final class Util {
 		map.forEach((key, val) -> {
 			out.println(key + "=" + val);
 		});
+	}
+	
+	public static Font createFont(String path) {
+		return createFont(new File(path));
+	}
+	
+	public static Font createFont(File   file) {
+		try {
+			Font font = Font.createFont(Font.TRUETYPE_FONT, file);
+			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
+			
+			return font;
+		} catch (Exception ex) {
+			System.err.println("[blue.util.Util.createFont] Unable to create font \"" + file + "\"");
+			ex.printStackTrace();
+		}
+		return null;
 	}
 	
 	public static File createFile(File file) {
