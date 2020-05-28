@@ -73,10 +73,10 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 		}
 		
 		protected static final <B extends Box2> B parseBox2(B b2, String str) {
-			if(b2 == null)
-	            throw new IllegalArgumentException("Null Box2");
-	        if (str == null)
-	            throw new IllegalArgumentException("Null String");
+			if(b2  == null)
+				throw new IllegalArgumentException("Null Box2");
+			if(str == null)
+				throw new IllegalArgumentException("Null String");
 	        int
 	            a = str.indexOf("<"),
 	            b = str.indexOf(">");
@@ -150,9 +150,9 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 		}
 		
 		protected static final <B extends Box3> B parseBox3(B b3, String str) {
-			if(b3 == null)
-	            throw new IllegalArgumentException("Null Box3");
-	        if (str == null)
+			if(b3  == null)
+				throw new IllegalArgumentException("Null Box3");
+			if(str == null)
 	            throw new IllegalArgumentException("Null String");
 	        int
 	            a = str.indexOf("<"),

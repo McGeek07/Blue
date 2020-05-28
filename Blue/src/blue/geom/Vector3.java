@@ -65,9 +65,9 @@ public class Vector3 extends Vector {
 	}
 	
 	protected static final <V extends Vector3> V parseVector3(V v3, String str) {
-		if(v3 == null)
-            throw new IllegalArgumentException("Null Vector");
-        if (str == null)
+		if(v3  == null)
+			throw new IllegalArgumentException("Null Vector");
+        if(str == null)
             throw new IllegalArgumentException("Null String");
         int
             a = str.indexOf("<"),
