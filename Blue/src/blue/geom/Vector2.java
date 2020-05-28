@@ -58,8 +58,8 @@ public class Vector2 extends Vector {
 	protected static final <V extends Vector2> V parseVector2(V v2, String str) {
 		if(v2  == null)
 			throw new IllegalArgumentException("Null Vector");
-        if(str == null)
-            throw new IllegalArgumentException("Null String");
+		if(str == null)
+			throw new IllegalArgumentException("Null String");
         int
             a = str.indexOf("<"),
             b = str.indexOf(">");
