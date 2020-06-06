@@ -7,7 +7,7 @@ import blue.util.Util;
 
 public class Mixer {
 	public static final Mixer
-		MASTER = new Mixer(null);	
+		MASTER = new Mixer(null);
 	
 	protected final Mixer.Group
 		mixers = new Mixer.Group();

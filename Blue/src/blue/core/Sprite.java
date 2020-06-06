@@ -330,7 +330,7 @@ public class Sprite implements Renderable, Updateable {
 					BufferedImage
 						source_frame = source_frames[i],
 						buffer_frame = Util.createBufferedImage(0, frame_w, frame_h),
-						filter_frame = Util.createBufferedImage(0, frame_w, frame_h);					
+						filter_frame = Util.createBufferedImage(0, frame_w, frame_h);			
 					
 					Graphics2D g0 = buffer_frame.createGraphics();
 					g0.drawImage(source_frame, 0, 0, null);
@@ -397,7 +397,7 @@ public class Sprite implements Renderable, Updateable {
 	}
 	
 	public static interface Filter {
-		public void filter(int[] source, int source_w, int source_h);		
+		public void filter(int[] source, int source_w, int source_h);	
 	}
 	
 	public static final Filter
