@@ -10,9 +10,9 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
-import blue.geom.Box;
-import blue.geom.Region2;
-import blue.geom.Vector;
+import blue.math.Box;
+import blue.math.Region2;
+import blue.math.Vector;
 import blue.util.Util;
 
 public class Sprite implements Renderable, Updateable {

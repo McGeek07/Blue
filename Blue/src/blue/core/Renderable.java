@@ -5,8 +5,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 
-import blue.geom.Box;
-import blue.geom.Vector;
+import blue.math.Box;
+import blue.math.Vector;
 
 public interface Renderable {
 	public void render(RenderContext context);

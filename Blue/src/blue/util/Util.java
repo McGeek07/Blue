@@ -1,7 +1,6 @@
 package blue.util;
 
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -32,8 +31,8 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import blue.geom.Bounds2;
-import blue.geom.Region2;
+import blue.math.Bounds2;
+import blue.math.Region2;
 
 public final class Util {
 	
@@ -126,62 +125,62 @@ public final class Util {
 		return (Class<T>)t.getClass();
 	}
 	
-	public static int stringToInt(String str) {
-		return stringToInt(str, 0);
+	public static int stringToInt(String s) {
+		return stringToInt(s, 0);
 	}	
 	
-	public static int stringToInt(String str, int alt) {
+	public static int stringToInt(String s, int i) {
 		try {
-			return Integer.parseInt(str);
+			return Integer.parseInt(s);
 		} catch(Exception e) {
-			return alt;
+			return i;
 		}
 	}
 	
-	public static float stringToFloat(String str) {
-		return stringToFloat(str, 0f);
+	public static float stringToFloat(String s) {
+		return stringToFloat(s, 0f);
 	}
 	
-	public static float stringToFloat(String str, float alt) {
+	public static float stringToFloat(String str, float f) {
 		try {
 			return Float.parseFloat(str);
 		} catch(Exception e) {
-			return alt;
+			return f;
 		}
 	}
 	
-	public static long stringToLong(String str) {
-		return stringToLong(str, 0l);
+	public static long stringToLong(String s) {
+		return stringToLong(s, 0l);
 	}
 	
-	public static long stringToLong(String str, long alt) {
+	public static long stringToLong(String s, long l) {
 		try {
-			return Long.parseLong(str);
+			return Long.parseLong(s);
 		} catch(Exception e) {
-			return alt;
+			return l;
 		}
 	}
 	
-	public static double stringToDouble(String str) {
-		return stringToDouble(str, 0.);
+	public static double stringToDouble(String s) {
+		return stringToDouble(s, 0.);
 	}
 	
-	public static double stringToDouble(String str, double alt) {
+	public static double stringToDouble(String s, double d) {
 		try {
-			return Double.parseDouble(str);
+			return Double.parseDouble(s);
 		} catch(Exception e) {
-			return alt;
+			return d;
 		}
 	}
 	
-	public static boolean stringToBoolean(String str) {
-		return stringToBoolean(str, false);
+	public static boolean stringToBoolean(String s) {
+		return stringToBoolean(s, false);
 	}
 	
-	public static boolean stringToBoolean(String str, boolean alt) {
-		if(str != null) {
-    		str = str.trim().toLowerCase();
-        	switch(str) {
+	public static boolean stringToBoolean(String s, boolean b) {
+		if(s != null) {
+    		s = s.trim().toLowerCase();
+        	switch(s) {
             	case "0":
             	case "f":
             	case "false":
@@ -192,17 +191,17 @@ public final class Util {
             		return true;            		
         	}
     	}
-    	return alt;
+    	return b;
 	}
 	
-	public static <T> String objectToString(ObjectToString<T> o2s, T obj) {
-		return obj != null ? o2s != null ? o2s.toString(obj) : obj.toString() : null;
+	public static <T> String objectToString(ObjectToString<T> o2s, T t) {
+		return t != null ? o2s != null ? o2s.toString(t) : t.toString() : null;
 	}	
-	public static <T> T stringToObject(StringToObject<T> s2o, String str) {
-		return stringToObject(s2o, str, null);
+	public static <T> T stringToObject(StringToObject<T> s2o, String s) {
+		return stringToObject(s2o, s, null);
 	}	
-	public static <T> T stringToObject(StringToObject<T> s2o, String str, T alt) {
-		return s2o != null && str != null ? s2o.toObject(str) : alt;
+	public static <T> T stringToObject(StringToObject<T> s2o, String s, T t) {
+		return s2o != null && s != null ? s2o.toObject(s) : t;
 	}	
 
 	public static interface ObjectToString<T> {
@@ -590,8 +589,8 @@ public final class Util {
 		T obj = null;
 		try(ObjectInputStream in = createObjectInputStream(file)) {
 			obj = (T)in.readObject();
-		} catch(Exception ex) {
-			ex.printStackTrace();
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 		return obj;
 	}
@@ -610,8 +609,8 @@ public final class Util {
 			else
 				for(T t: (T[])o)
 					list.add(t);
-		} catch(Exception ex) {
-			ex.printStackTrace();
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 		return list;
 	}

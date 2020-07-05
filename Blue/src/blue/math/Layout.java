@@ -1,4 +1,4 @@
-package blue.geom;
+package blue.math;
 
 import java.io.Serializable;
 
@@ -29,84 +29,76 @@ public class Layout implements Serializable, Copyable<Layout> {
 	}
 	
 	public Layout(
-			Object preferred_w, Object preferred_h
-			) {
-		this.mSet(
-				preferred_w, preferred_h
-				);
+		Object preferred_w, 
+		Object preferred_h
+	) {
+		mSet(
+			preferred_w, 
+			preferred_h
+		);
 	}
 	
 	public Layout(
-			Object anchor_x, Object anchor_y,
-			Object offset_x, Object offset_y,
-			Object preferred_w, Object preferred_h
-			) {
-		this.mSet(
-				anchor_x, anchor_y,
-				offset_x, offset_y,
-				preferred_w, preferred_h
-				);
+		Object anchor_x, Object anchor_y,
+		Object offset_x, Object offset_y,
+		Object preferred_w, Object preferred_h
+	) {
+		mSet(
+			anchor_x, anchor_y,
+			offset_x, offset_y,
+			preferred_w, preferred_h
+		);
 	}
 	
 	public Layout(
-			Object anchor_x, Object anchor_y,
-			Object offset_x, Object offset_y,
-			Object preferred_w, Object preferred_h,
-			Object minimum_w, Object minimum_h,
-			Object maximum_w, Object maximum_h
-			) {
-		this.mSet(
-				anchor_x, anchor_y,
-				offset_x, offset_y,
-				preferred_w, preferred_h,
-				minimum_w, minimum_h,
-				maximum_w, maximum_h
-				);
+		Object anchor_x, Object anchor_y,
+		Object offset_x, Object offset_y,
+		Object preferred_w, Object preferred_h,
+		Object minimum_w, Object minimum_h,
+		Object maximum_w, Object maximum_h
+	) {
+		mSet(
+			anchor_x, anchor_y,
+			offset_x, offset_y,
+			preferred_w, preferred_h,
+			minimum_w, minimum_h,
+			maximum_w, maximum_h
+		);
 	}
 	
-	protected Layout mSet(Layout layout) {
-		this.anchor_x.set(layout.anchor_x);
-		this.anchor_y.set(layout.anchor_y);
-		this.offset_x.set(layout.offset_x);
-		this.offset_y.set(layout.offset_y);
-		this.preferred_w.set(layout.preferred_w);
-		this.preferred_h.set(layout.preferred_h);
-		this.minimum_w.set(layout.minimum_w);
-		this.minimum_h.set(layout.minimum_h);
-		this.maximum_w.set(layout.maximum_w);
-		this.maximum_h.set(layout.maximum_h);
-		return this;
+	protected void mSet(Layout layout) {
+		anchor_x.set(layout.anchor_x); anchor_y.set(layout.anchor_y);
+		offset_x.set(layout.offset_x); offset_y.set(layout.offset_y);
+		preferred_w.set(layout.preferred_w); preferred_h.set(layout.preferred_h);
+		minimum_w.set(layout.minimum_w); minimum_h.set(layout.minimum_h);
+		maximum_w.set(layout.maximum_w); maximum_h.set(layout.maximum_h);
 	}
 	
-	protected Layout mSet(
-			Object preferred_w, Object preferred_h
-			) {
+	protected void mSet(
+		Object preferred_w, 
+		Object preferred_h
+	) {
 		this.preferred_w.set(preferred_w);
 		this.preferred_h.set(preferred_h);
-		return this;
 	}
 	
-	protected Layout mSet(
-			Object anchor_x, Object anchor_y,
-			Object offset_x, Object offset_y,
-			Object preferred_w, Object preferred_h
-			) {
-		this.anchor_x.set(anchor_x);
-		this.anchor_y.set(anchor_y);
-		this.offset_x.set(offset_x);
-		this.offset_y.set(offset_y);
-		this.preferred_w.set(preferred_w);
-		this.preferred_h.set(preferred_h);
-		return this;
+	protected void mSet(
+		Object anchor_x, Object anchor_y,
+		Object offset_x, Object offset_y,
+		Object preferred_w, Object preferred_h
+	) {
+		this.anchor_x.set(anchor_x); this.anchor_y.set(anchor_y);
+		this.offset_x.set(offset_x); this.offset_y.set(offset_y);
+		this.preferred_w.set(preferred_w); this.preferred_h.set(preferred_h);
 	}
 	
-	protected Layout mSet(
-			Object anchor_x, Object anchor_y,
-			Object offset_x, Object offset_y,
-			Object preferred_w, Object preferred_h,
-			Object minimum_w, Object minimum_h,
-			Object maximum_w, Object maximum_h
-			) {
+	protected void mSet(
+		Object anchor_x, Object anchor_y,
+		Object offset_x, Object offset_y,
+		Object preferred_w, Object preferred_h,
+		Object minimum_w, Object minimum_h,
+		Object maximum_w, Object maximum_h
+	) {
 		this.anchor_x.set(anchor_x);
 		this.anchor_y.set(anchor_y);
 		this.offset_x.set(offset_x);
@@ -117,7 +109,6 @@ public class Layout implements Serializable, Copyable<Layout> {
 		this.minimum_h.set(minimum_h);
 		this.maximum_w.set(maximum_w);
 		this.maximum_h.set(maximum_h);
-		return this;
 	}
 	
 	public Attribute getAnchorX() { 
@@ -178,16 +169,16 @@ public class Layout implements Serializable, Copyable<Layout> {
 	
 	public boolean equals(Layout l) {
 		return
-					this.anchor_x.equals(l.anchor_x) &&
-					this.anchor_y.equals(l.anchor_y) &&
-					this.offset_x.equals(l.offset_x) &&
-					this.offset_y.equals(l.offset_y) &&
-					this.preferred_w.equals(l.preferred_w) &&
-					this.preferred_h.equals(l.preferred_h) &&
-					this.minimum_w.equals(l.minimum_w) &&
-					this.minimum_h.equals(l.minimum_h) &&
-					this.maximum_w.equals(l.maximum_w) &&
-					this.maximum_h.equals(l.maximum_h);
+			anchor_x.equals(l.anchor_x) &&
+			anchor_y.equals(l.anchor_y) &&
+			offset_x.equals(l.offset_x) &&
+			offset_y.equals(l.offset_y) &&
+			preferred_w.equals(l.preferred_w) &&
+			preferred_h.equals(l.preferred_h) &&
+			minimum_w.equals(l.minimum_w) &&
+			minimum_h.equals(l.minimum_h) &&
+			maximum_w.equals(l.maximum_w) &&
+			maximum_h.equals(l.maximum_h);
 	}
 	
 	public static String toString(Layout l, String format) {
@@ -241,7 +232,6 @@ public class Layout implements Serializable, Copyable<Layout> {
 				+ Attribute.toString(l.maximum_h, format) + "}";
 	}
 	
-	@SuppressWarnings("unchecked")
 	protected static final <LAYOUT extends Layout> LAYOUT parseLayout(LAYOUT layout, String string) {
 		if(layout == null)
 			throw new IllegalArgumentException("Null Layout");
@@ -251,41 +241,41 @@ public class Layout implements Serializable, Copyable<Layout> {
 		string = string.trim().toLowerCase();
 		switch(string) {
 			//DEFAULT
-	        case "default": return (LAYOUT)layout.mSet(DEFAULT);
+	        case "default": layout.mSet(DEFAULT); return layout;
 	        //VH_HALF
-	        case "lv_half": return (LAYOUT)layout.mSet(LV_HALF);
-	        case "mv_half": return (LAYOUT)layout.mSet(MV_HALF);
-	        case "rv_half": return (LAYOUT)layout.mSet(RV_HALF);
-	        case "th_half": return (LAYOUT)layout.mSet(TH_HALF);
-	        case "mh_half": return (LAYOUT)layout.mSet(MH_HALF);
-	        case "bh_half": return (LAYOUT)layout.mSet(BH_HALF);
+	        case "lv_half": layout.mSet(LV_HALF); return layout;
+	        case "mv_half": layout.mSet(MV_HALF); return layout;
+	        case "rv_half": layout.mSet(RV_HALF); return layout;
+	        case "th_half": layout.mSet(TH_HALF); return layout;
+	        case "mh_half": layout.mSet(MH_HALF); return layout;
+	        case "bh_half": layout.mSet(BH_HALF); return layout;
 	        //VH THIRD
-	        case "lv_third": return (LAYOUT)layout.mSet(LV_THIRD);
-	        case "mv_third": return (LAYOUT)layout.mSet(MV_THIRD);
-	        case "rv_third": return (LAYOUT)layout.mSet(RV_THIRD);
-	        case "th_third": return (LAYOUT)layout.mSet(TH_THIRD);
-	        case "mh_third": return (LAYOUT)layout.mSet(MH_THIRD);
-	        case "bh_third": return (LAYOUT)layout.mSet(BH_THIRD);
+	        case "lv_third": layout.mSet(LV_THIRD); return layout;
+	        case "mv_third": layout.mSet(MV_THIRD); return layout;
+	        case "rv_third": layout.mSet(RV_THIRD); return layout;
+	        case "th_third": layout.mSet(TH_THIRD); return layout;
+	        case "mh_third": layout.mSet(MH_THIRD); return layout;
+	        case "bh_third": layout.mSet(BH_THIRD); return layout;
 	        //FOURTH
-	        case "tl_fourth": return (LAYOUT)layout.mSet(TL_FOURTH);
-	        case "tm_fourth": return (LAYOUT)layout.mSet(TM_FOURTH);
-	        case "tr_fourth": return (LAYOUT)layout.mSet(TR_FOURTH);
-	        case "ml_fourth": return (LAYOUT)layout.mSet(ML_FOURTH);
-	        case "mm_fourth": return (LAYOUT)layout.mSet(MM_FOURTH);
-	        case "mr_fourth": return (LAYOUT)layout.mSet(MR_FOURTH);
-	        case "bl_fourth": return (LAYOUT)layout.mSet(BL_FOURTH);
-	        case "bm_fourth": return (LAYOUT)layout.mSet(BM_FOURTH);
-	        case "br_fourth": return (LAYOUT)layout.mSet(BR_FOURTH);
+	        case "tl_fourth": layout.mSet(TL_FOURTH); return layout;
+	        case "tm_fourth": layout.mSet(TM_FOURTH); return layout;
+	        case "tr_fourth": layout.mSet(TR_FOURTH); return layout;
+	        case "ml_fourth": layout.mSet(ML_FOURTH); return layout;
+	        case "mm_fourth": layout.mSet(MM_FOURTH); return layout;
+	        case "mr_fourth": layout.mSet(MR_FOURTH); return layout;
+	        case "bl_fourth": layout.mSet(BL_FOURTH); return layout;
+	        case "bm_fourth": layout.mSet(BM_FOURTH); return layout;
+	        case "br_fourth": layout.mSet(BR_FOURTH); return layout;
 	        //NINTH
-	        case "tl_ninth": return (LAYOUT)layout.mSet(TL_NINTH);
-	        case "tm_ninth": return (LAYOUT)layout.mSet(TM_NINTH);
-	        case "tr_ninth": return (LAYOUT)layout.mSet(TR_NINTH);
-	        case "ml_ninth": return (LAYOUT)layout.mSet(ML_NINTH);
-	        case "mm_ninth": return (LAYOUT)layout.mSet(MM_NINTH);
-	        case "mr_ninth": return (LAYOUT)layout.mSet(MR_NINTH);
-	        case "bl_ninth": return (LAYOUT)layout.mSet(BL_NINTH);
-	        case "bm_ninth": return (LAYOUT)layout.mSet(BM_NINTH);
-	        case "br_ninth": return (LAYOUT)layout.mSet(BR_NINTH);
+	        case "tl_ninth": layout.mSet(TL_NINTH); return layout;
+	        case "tm_ninth": layout.mSet(TM_NINTH); return layout;
+	        case "tr_ninth": layout.mSet(TR_NINTH); return layout;
+	        case "ml_ninth": layout.mSet(ML_NINTH); return layout;
+	        case "mm_ninth": layout.mSet(MM_NINTH); return layout;
+	        case "mr_ninth": layout.mSet(MR_NINTH); return layout;
+	        case "bl_ninth": layout.mSet(BL_NINTH); return layout;
+	        case "bm_ninth": layout.mSet(BM_NINTH); return layout;
+	        case "br_ninth": layout.mSet(BR_NINTH); return layout;
 		}      
         
         int
@@ -332,37 +322,38 @@ public class Layout implements Serializable, Copyable<Layout> {
 		}
 		
 		public Mutable(
-				Object preferred_w, Object preferred_h
-				) {
+			Object preferred_w,
+			Object preferred_h
+		) {
 			super(preferred_w, preferred_h);
 		}
 		
 		public Mutable(
-				Object anchor_x, Object anchor_y,
-				Object offset_x, Object offset_y,
-				Object preferred_w, Object preferred_h
-				) {
+			Object anchor_x, Object anchor_y,
+			Object offset_x, Object offset_y,
+			Object preferred_w, Object preferred_h
+		) {
 			super(
-					anchor_x, anchor_y,
-					offset_x, offset_y,
-					preferred_w, preferred_h
-					);
+				anchor_x, anchor_y,
+				offset_x, offset_y,
+				preferred_w, preferred_h
+			);
 		}
 		
 		public Mutable(
-				Object anchor_x, Object anchor_y,
-				Object offset_x, Object offset_y,
-				Object preferred_w, Object preferred_h,
-				Object minimum_w, Object minimum_h,
-				Object maximum_w, Object maximum_h
-				) {
+			Object anchor_x, Object anchor_y,
+			Object offset_x, Object offset_y,
+			Object preferred_w, Object preferred_h,
+			Object minimum_w, Object minimum_h,
+			Object maximum_w, Object maximum_h
+		) {
 			super(
-					anchor_x, anchor_y,
-					offset_x, offset_y,
-					preferred_w, preferred_h,
-					minimum_w, minimum_h,
-					maximum_w, maximum_h
-					);
+				anchor_x, anchor_y,
+				offset_x, offset_y,
+				preferred_w, preferred_h,
+				minimum_w, minimum_h,
+				maximum_w, maximum_h
+			);
 		}
 		
 		public Layout.Mutable set(Layout layout) {
@@ -371,39 +362,40 @@ public class Layout implements Serializable, Copyable<Layout> {
 		}
 		
 		public Layout.Mutable set(
-				Object preferred_w, Object preferred_h
-				) {
+			Object preferred_w, 
+			Object preferred_h
+		) {
 			this.mSet(preferred_w, preferred_h);
 			return this;
 		}
 		
 		public Layout.Mutable set(
-				Object anchor_x, Object anchor_y,
-				Object offset_x, Object offset_y,
-				Object preferred_w, Object preferred_h
-				) {
+			Object anchor_x, Object anchor_y,
+			Object offset_x, Object offset_y,
+			Object preferred_w, Object preferred_h
+		) {
 			this.mSet(
-					anchor_x, anchor_y,
-					offset_x, offset_y,
-					preferred_w, preferred_h
-					);
+				anchor_x, anchor_y,
+				offset_x, offset_y,
+				preferred_w, preferred_h
+			);
 			return this;
 		}
 		
 		public Layout.Mutable set(
-				Object anchor_x, Object anchor_y,
-				Object offset_x, Object offset_y,
-				Object preferred_w, Object preferred_h,
-				Object minimum_w, Object minimum_h,
-				Object maximum_w, Object maximum_h
-				) {
+			Object anchor_x, Object anchor_y,
+			Object offset_x, Object offset_y,
+			Object preferred_w, Object preferred_h,
+			Object minimum_w, Object minimum_h,
+			Object maximum_w, Object maximum_h
+		) {
 			this.mSet(
-					anchor_x, anchor_y,
-					offset_x, offset_y,
-					preferred_w, preferred_h,
-					minimum_w, minimum_h,
-					maximum_w, maximum_h
-					);
+				anchor_x, anchor_y,
+				offset_x, offset_y,
+				preferred_w, preferred_h,
+				minimum_w, minimum_h,
+				maximum_w, maximum_h
+			);
 			return this;
 		}
 		

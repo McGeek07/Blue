@@ -1,4 +1,4 @@
-package blue.geom;
+package blue.math;
 
 import blue.util.Util;
 
@@ -15,9 +15,9 @@ public class Vector3 extends Vector {
 	}
 	
 	public Vector3(Vector v) {
-		this.x = v.x();
-		this.y = v.y();
-		this.z = v.z();
+		x = v.x();
+		y = v.y();
+		z = v.z();
 	}
 	
 	public Vector3(float x, float y, float z) {
@@ -28,17 +28,17 @@ public class Vector3 extends Vector {
 	
 	@Override
 	public float x() {
-		return this.x;
+		return x;
 	}
 	
 	@Override
 	public float y() {
-		return this.y;
+		return y;
 	}
 	
 	@Override
 	public float z() {
-		return this.z;
+		return z;
 	}
 	
 	@Override
@@ -56,45 +56,39 @@ public class Vector3 extends Vector {
 		return Vector3.toString(this, "%s");
 	}
 	
-	public static String toString(Vector3 v3, String format) {
+	public static String toString(Vector3 v, String f) {
 		return 
-				"<" 
-				+ String.format(format, v3.x) + ", "
-				+ String.format(format, v3.y) + ", "
-				+ String.format(format, v3.z) + ">";
+			"<" 
+			+ String.format(f, v.x) + ", "
+			+ String.format(f, v.y) + ", "
+			+ String.format(f, v.z) + ">";
 	}
 	
-	protected static final <V extends Vector3> V parseVector3(V v3, String str) {
-		if(v3  == null)
-			throw new IllegalArgumentException("Null Vector");
-		if(str == null)
-			throw new IllegalArgumentException("Null String");
-        int
-            a = str.indexOf("<"),
-            b = str.indexOf(">");
-        if (a >= 0 || b >= 0) {
-            if (b > a) {
-                str = str.substring(++a, b);
-            } else {
-                str = str.substring(++a);
-            }
-        }
-        String[] tmp = str.split("\\,");
-        float[] arr = new float[tmp.length];
-        for (int i = 0; i < tmp.length; i++) {
-            arr[i] = Util.stringToFloat(tmp[i]);
-        }
-        switch (arr.length) {
-            default:
-            case 3:
-            	v3.z = arr[Z];
-            case 2:
-                v3.y = arr[Y];
-            case 1:
-                v3.x = arr[X];
-            case 0:
-        }
-        return v3;
+	protected static final <V extends Vector3> V parseVector3(V v, String s) {
+		if(v != null && s != null) {
+			int
+	            i = s.indexOf("<"),
+	            j = s.indexOf(">");
+	        if (i >= 0 || j >= 0) {
+	            if (j > i)
+	                s = s.substring(++i, j);
+	            else
+	                s = s.substring(++i);
+	        }
+	        
+	        String[] t = s.split("\\,");
+	        switch (t.length) {
+	            default:
+	            case 3:
+	            	v.z = Util.stringToFloat(t[2]);
+	            case 2:
+	                v.y = Util.stringToFloat(t[1]);
+	            case 1:
+	                v.x = Util.stringToFloat(t[0]);
+	            case 0:
+	        }
+		}        
+        return v;
 	}
 	
 	public static Vector3 parseVector3(String str) {
@@ -118,9 +112,9 @@ public class Vector3 extends Vector {
 		}
 		
 		public Vector3.Mutable set(Vector v) {
-			this.x = v.x();
-			this.y = v.y();
-			this.z = v.z();
+			x = v.x();
+			y = v.y();
+			z = v.z();
 			return this;
 		}
 		

@@ -1,6 +1,6 @@
 package blue.core;
 
-import blue.geom.Vector2;
+import blue.math.Vector2;
 
 public abstract class Scene implements Renderable, Updateable {	
 	@Override

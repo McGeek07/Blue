@@ -23,23 +23,23 @@ public class Random {
 	
 	public final static class LFSR08{
 		private final static byte
-	            DEFAULT_MODE = (byte)1,
-	            DEFAULT_MASK = (byte)-123;
+            DEFAULT_MODE = (byte)1,
+            DEFAULT_MASK = (byte)-123;
 	    private byte
-	            mode,
-	            mask;
+            mode,
+            mask;
 	    
 	    public LFSR08(){
 	        this(
-	                DEFAULT_MODE,
-	                DEFAULT_MASK
+                DEFAULT_MODE,
+                DEFAULT_MASK
 	        );
 	    }
 	    
 	    public LFSR08(byte mode){
 	        this(
-	                mode,
-	                DEFAULT_MASK
+                mode,
+                DEFAULT_MASK
 	        );
 	    }
 	    
@@ -68,23 +68,23 @@ public class Random {
 	
 	public final static class LFSR16{
         private final static short
-                DEFAULT_MODE = (short)1,
-                DEFAULT_MASK = (short)-32758;
+            DEFAULT_MODE = (short)1,
+            DEFAULT_MASK = (short)-32758;
         private short
-                mode,
-                mask;
+            mode,
+            mask;
         
         public LFSR16(){
             this(
-                    DEFAULT_MODE,
-                    DEFAULT_MASK
+                DEFAULT_MODE,
+                DEFAULT_MASK
             );
         }
         
         public LFSR16(short mode){
             this(
-                    mode,
-                    DEFAULT_MASK
+                mode,
+                DEFAULT_MASK
             );
         }
         
@@ -113,23 +113,23 @@ public class Random {
 	
 	public final static class LFSR32{        
         private final static int
-                DEFAULT_MODE = 1,
-                DEFAULT_MASK = -2147483607;
+            DEFAULT_MODE = 1,
+            DEFAULT_MASK = -2147483607;
         private int
-                mode,
-                mask;
+            mode,
+            mask;
         
         public LFSR32(){
             this(
-                    DEFAULT_MODE,
-                    DEFAULT_MASK
+                DEFAULT_MODE,
+                DEFAULT_MASK
             );
         }
         
         public LFSR32(int mode){
             this(
-                    mode,
-                    DEFAULT_MASK
+                mode,
+                DEFAULT_MASK
             );
         }
         
@@ -158,25 +158,23 @@ public class Random {
 	
 	public final static class LFSR64{         
         private final static long
-                DEFAULT_MODE = 1L,
-                DEFAULT_MASK = -2147483607;//-9223372036854775775L;
-        
+            DEFAULT_MODE = 1L,
+            DEFAULT_MASK = -2147483607;//-9223372036854775775L;        
         private long
-                mode,
-                mask;
-        
+            mode,
+            mask;        
         
         public LFSR64(){
             this(
-                    DEFAULT_MODE,
-                    DEFAULT_MASK
+                DEFAULT_MODE,
+                DEFAULT_MASK
             );
         }
         
         public LFSR64(long mode){
             this(
-                    mode,
-                    DEFAULT_MASK
+                mode,
+                DEFAULT_MASK
             );
         }            
         

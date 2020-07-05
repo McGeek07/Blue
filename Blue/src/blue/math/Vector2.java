@@ -1,4 +1,4 @@
-package blue.geom;
+package blue.math;
 
 import blue.util.Util;
 
@@ -14,8 +14,8 @@ public class Vector2 extends Vector {
 	}
 	
 	public Vector2(Vector v) {
-		this.x = v.x();
-		this.y = v.y();
+		x = v.x();
+		y = v.y();
 	}
 	
 	public Vector2(float x, float y) {
@@ -25,12 +25,12 @@ public class Vector2 extends Vector {
 	
 	@Override
 	public float x() {
-		return this.x;
+		return x;
 	}
 	
 	@Override
 	public float y() {
-		return this.y;
+		return y;
 	}
 	
 	@Override
@@ -48,42 +48,36 @@ public class Vector2 extends Vector {
 		return Vector2.toString(this, "%s");
 	}
 	
-	public static String toString(Vector2 v2, String format) {
+	public static String toString(Vector2 v, String f) {
 		return 
-				"<" 
-				+ String.format(format, v2.x) + ", "
-				+ String.format(format, v2.y) + ">";
+			"<" 
+			+ String.format(f, v.x) + ", "
+			+ String.format(f, v.y) + ">";
 	}
 	
-	protected static final <V extends Vector2> V parseVector2(V v2, String str) {
-		if(v2  == null)
-			throw new IllegalArgumentException("Null Vector");
-		if(str == null)
-			throw new IllegalArgumentException("Null String");
-        int
-            a = str.indexOf("<"),
-            b = str.indexOf(">");
-        if (a >= 0 || b >= 0) {
-            if (b > a) {
-                str = str.substring(++a, b);
-            } else {
-                str = str.substring(++a);
-            }
-        }
-        String[] tmp = str.split("\\,");
-        float[] arr = new float[tmp.length];
-        for (int i = 0; i < tmp.length; i++) {
-            arr[i] = Util.stringToFloat(tmp[i]);
-        }
-        switch (arr.length) {
-            default:
-            case 2:
-                v2.y = arr[Y];
-            case 1:
-                v2.x = arr[X];
-            case 0:
-        }
-        return v2;
+	protected static final <V extends Vector2> V parseVector2(V v, String s) {
+		if(v != null && s != null) {
+			int
+	            i = s.indexOf("<"),
+	            j = s.indexOf(">");
+	        if (i >= 0 || j >= 0) {
+	            if (j > i)
+	                s = s.substring(++i, j);
+	            else
+	                s = s.substring(++i);
+	        }
+	        
+	        String[] t = s.split("\\,");
+	        switch (t.length) {
+	            default:
+	            case 2:
+	                v.y = Util.stringToFloat(t[1]);
+	            case 1:
+	                v.x = Util.stringToFloat(t[0]);
+	            case 0:
+	        }
+		}        
+        return v;
 	}
 	
 	public static Vector2 parseVector2(String str) {
@@ -107,8 +101,8 @@ public class Vector2 extends Vector {
 		}
 		
 		public Vector2.Mutable set(Vector v) {
-			this.x = v.x();
-			this.y = v.y();
+			x = v.x();
+			y = v.y();
 			return this;
 		}
 		

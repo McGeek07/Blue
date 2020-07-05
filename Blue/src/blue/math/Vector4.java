@@ -1,8 +1,6 @@
-package blue.geom;
+package blue.math;
 
 import blue.util.Util;
-import blue.util.Util.ObjectToString;
-import blue.util.Util.StringToObject;
 
 public class Vector4 extends Vector {
 	private static final long 
@@ -18,10 +16,10 @@ public class Vector4 extends Vector {
 	}
 	
 	public Vector4(Vector v) {
-		this.x = v.x();
-		this.y = v.y();
-		this.z = v.z();
-		this.w = v.w();
+		x = v.x();
+		y = v.y();
+		z = v.z();
+		w = v.w();
 	}
 	
 	public Vector4(float x, float y, float z, float w) {
@@ -33,22 +31,22 @@ public class Vector4 extends Vector {
 	
 	@Override
 	public float x() {
-		return this.x;
+		return x;
 	}
 	
 	@Override
 	public float y() {
-		return this.y;
+		return y;
 	}
 	
 	@Override
 	public float z() {
-		return this.z;
+		return z;
 	}
 	
 	@Override
 	public float w() {
-		return this.w;
+		return w;
 	}
 	
 	@Override
@@ -66,58 +64,47 @@ public class Vector4 extends Vector {
 		return Vector4.toString(this, "%s");
 	}
 	
-	public static String toString(Vector4 v4, String format) {
+	public static String toString(Vector4 v, String f) {
 		return 
-				"<" 
-				+ String.format(format, v4.x) + ", "
-				+ String.format(format, v4.y) + ", "
-				+ String.format(format, v4.z) + ", "
-				+ String.format(format, v4.w) + ">";
+			"<" 
+			+ String.format(f, v.x) + ", "
+			+ String.format(f, v.y) + ", "
+			+ String.format(f, v.z) + ", "
+			+ String.format(f, v.w) + ">";
 	}
 	
-	protected static final <V extends Vector4> V parseVector4(V v4, String str) {
-		if(v4  == null)
-			throw new IllegalArgumentException("Null Vector");
-		if(str == null)
-			throw new IllegalArgumentException("Null String");
-	    int
-	        a = str.indexOf("<"),
-	        b = str.indexOf(">");
-	    if (a >= 0 || b >= 0) {
-	        if (b > a) {
-	            str = str.substring(++a, b);
-	        } else {
-	            str = str.substring(++a);
-	        }
-	    }
-	    String[] tmp = str.split("\\,");
-	    float[] arr = new float[tmp.length];
-	    for (int i = 0; i < tmp.length; i++) {
-	        arr[i] = Util.stringToFloat(tmp[i]);
-	    }
-	    switch (arr.length) {
-	        default:
-	        case 4:
-	        	v4.w = arr[W];
-	        case 3:
-	        	v4.z = arr[Z];
-	        case 2:
-	            v4.y = arr[Y];
-	        case 1:
-	            v4.x = arr[X];
-	        case 0:
-	    }
-	    return v4;
+	protected static final <V extends Vector4> V parseVector4(V v, String s) {
+		if(v != null && s != null) {
+			int
+		        i = s.indexOf("<"),
+		        j = s.indexOf(">");
+		    if (i >= 0 || j >= 0) {
+		        if (j > i)
+		            s = s.substring(++i, j);
+		        else
+		            s = s.substring(++i);
+		    }
+		    
+		    String[] t = s.split("\\,");
+		    switch (t.length) {
+		        default:
+		        case 4:
+		        	v.w = Util.stringToFloat(t[3]);
+		        case 3:
+		        	v.z = Util.stringToFloat(t[2]);
+		        case 2:
+		            v.y = Util.stringToFloat(t[1]);
+		        case 1:
+		            v.x = Util.stringToFloat(t[0]);
+		        case 0:
+		    }
+		}	    
+	    return v;
 	}
 	
 	public static Vector4 parseVector4(String str) {
 		return Vector4.parseVector4(new Vector4(), str);
 	}
-	
-	public static final ObjectToString<Vector4>
-		VECTOR4_TO_STRING = Vector4::toString;
-	public static final StringToObject<Vector4>
-		STRING_TO_VECTOR4 = Vector4::parseVector4;
 	
 	public static class Mutable extends Vector4 {
 		private static final long 
@@ -136,10 +123,10 @@ public class Vector4 extends Vector {
 		}
 		
 		public Vector4.Mutable set(Vector v) {
-			this.x = v.x();
-			this.y = v.y();
-			this.z = v.z();
-			this.w = v.w();
+			x = v.x();
+			y = v.y();
+			z = v.z();
+			w = v.w();
 			return this;
 		}
 		

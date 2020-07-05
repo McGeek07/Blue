@@ -17,12 +17,12 @@ import java.util.Map;
 import blue.Blue;
 import blue.core.Renderable.RenderContext;
 import blue.core.Updateable.UpdateContext;
-import blue.geom.Box;
-import blue.geom.Layout;
-import blue.geom.Region2;
-import blue.geom.Vector;
-import blue.geom.Vector2;
-import blue.geom.Vector4;
+import blue.math.Box;
+import blue.math.Layout;
+import blue.math.Region2;
+import blue.math.Vector;
+import blue.math.Vector2;
+import blue.math.Vector4;
 import blue.util.Util;
 import blue.util.event.Broker;
 import blue.util.event.Handle;
@@ -36,7 +36,7 @@ public class Stage extends Module {
 			Util.createBufferedImage(0, 16, 16),
 			new Point(0, 0),
 			null
-			);
+		);
 
 	protected String
 		debug;
@@ -230,9 +230,9 @@ public class Stage extends Module {
 	
 	public static Box<?> bounds() {
 		return new Region2(
-				MODULE.canvas_w,
-				MODULE.canvas_h
-				);
+			MODULE.canvas_w,
+			MODULE.canvas_h
+		);
 	}
 	
 	public static final Vector2 mouseToPixel(float x, float y) {

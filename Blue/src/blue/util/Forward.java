@@ -1,47 +1,45 @@
 package blue.util;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 public interface Forward<T> {
 	
-	public ForwardIterable<T> forward();
+	public Forward.Iterable<T> forward();
 	
-	public static class ForwardIterable<T> implements Iterable<T> {
+	public static class Iterable<T> implements java.lang.Iterable<T> {
 		private final Object[]
 			list;
 		
-		public ForwardIterable(Collection<T> list) {
+		public Iterable(Collection<T> list) {
 			this.list = list.toArray();
 		}
 		
-		public ForwardIterable(T[] list) {
+		public Iterable(T[] list) {
 			this.list = list;
 		}
 
 		@Override
-		public ForwardIterator<T> iterator() {
-			return new ForwardIterator<T>(this);
+		public Forward.Iterator<T> iterator() {
+			return new Forward.Iterator<T>(this);
 		}
-	}
+	}	
 	
-	
-	public static class ForwardIterator<T> implements Iterator<T> {		
+	public static class Iterator<T> implements java.util.Iterator<T> {
 		private Object[]
 			list;
 		private int
 			a,
 			b;
 		
-		public ForwardIterator(ForwardIterable<T> forward) {
+		public Iterator(Forward.Iterable<T> forward) {
 			init(forward.list);
 		}		
 		
-		public ForwardIterator(Collection<T> list) {
+		public Iterator(Collection<T> list) {
 			init(list.toArray());
 		}
 		
-		public ForwardIterator(T[] list) {
+		public Iterator(T[] list) {
 			init(list);
 		}
 		
