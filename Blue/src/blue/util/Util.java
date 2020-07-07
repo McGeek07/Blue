@@ -1,6 +1,5 @@
 package blue.util;
 
-import java.awt.Font;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -26,6 +25,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -424,21 +424,32 @@ public final class Util {
 		});
 	}
 	
-	public static Font createFont(String path) {
-		return createFont(new File(path));
-	}
-	
-	public static Font createFont(File   file) {
-		try {
-			Font font = Font.createFont(Font.TRUETYPE_FONT, file);
-			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
-			
-			return font;
-		} catch (Exception ex) {
-			System.err.println("[blue.util.Util.createFont] Unable to create font \"" + file + "\"");
-			ex.printStackTrace();
-		}
-		return null;
+	public static Map<String, String> parse(String s, String... tags) {
+		Map<String, String> map = new TreeMap<>();		
+		String[] t = s.split("\\,");
+		
+		int i = 0;
+		for(; i < t.length; i ++)
+			if(t[i] != null) {
+				String
+					u[] = t[i].split("\\="),
+					u0 = u.length > 1 ? u[0].strip() : null,
+					u1 = u.length > 1 ? u[1].strip() : u[0].strip();
+				if(u0 != null) {
+					map.put(u0 , u1);
+					t[i] = null;
+				}			
+			}
+		int j = 0;
+		for(String tag: tags)
+			if(!map.containsKey(tag))
+				for(; j < t.length; j ++)
+					if(t[j] != null) {
+						map.put(tag, t[j]);
+						t[j] = null;
+						break;
+					}
+		return map;
 	}
 	
 	public static File createFile(File file) {

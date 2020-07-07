@@ -85,19 +85,11 @@ public class Vector4 extends Vector {
 		            s = s.substring(++i);
 		    }
 		    
-		    String[] t = s.split("\\,");
-		    switch (t.length) {
-		        default:
-		        case 4:
-		        	v.w = Util.stringToFloat(t[3]);
-		        case 3:
-		        	v.z = Util.stringToFloat(t[2]);
-		        case 2:
-		            v.y = Util.stringToFloat(t[1]);
-		        case 1:
-		            v.x = Util.stringToFloat(t[0]);
-		        case 0:
-		    }
+		    java.util.Map<String, String> t = Util.parse(s, "x", "y", "z", "w");
+	        v.x = Util.getEntryAsFloat(t, "x");
+	        v.y = Util.getEntryAsFloat(t, "y");
+	        v.z = Util.getEntryAsFloat(t, "z");
+	        v.w = Util.getEntryAsFloat(t, "w");
 		}	    
 	    return v;
 	}

@@ -56,8 +56,8 @@ public class Stage extends Module {
 		canvas_background = Vector4.fromColor4i(Color.BLACK),
 		window_background = Vector4.fromColor4i(Color.BLACK);
 	protected Layout  
-		canvas_layout = Layout.DEFAULT,
-		window_layout = Layout.DEFAULT;
+		canvas_layout = new Layout(),
+		window_layout = new Layout();
 	protected int 
 		window_device = 0;	
 	protected boolean 
