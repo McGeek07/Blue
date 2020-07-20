@@ -1,6 +1,7 @@
 package blue.math;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import blue.util.Copyable;
 import blue.util.Util;
@@ -104,7 +105,7 @@ public class Layout implements Serializable, Copyable<Layout> {
 	                s = s.substring(++i);
 	        }
 	        java.util.Map<String, String> t = Util.parse(
-        		s, 
+	        	new HashMap<>(), s, 
         		"x0", "y0", 
         		"x1", "y1",
         		"w0", "h0",

@@ -426,27 +426,27 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 	public static boolean isKeyDn(int key) {
 		byte k = getKey(key);
 		return
-				k == Input.DN ||
-				k == Input.DN_EVENT;
+			k == Input.DN ||
+			k == Input.DN_EVENT;
 	}
 	
 	public static boolean isKeyDnEvent(int key) {
 		byte k = getKey(key);
 		return 
-				k == Input.DN_EVENT;
+			k == Input.DN_EVENT;
 	}
 	
 	public static boolean isKeyUp(int key) {
 		byte b = getKey(key);
 		return
-				b == Input.UP ||
-				b == Input.UP_EVENT;
+			b == Input.UP ||
+			b == Input.UP_EVENT;
 	}
 	
 	public static boolean isKeyUpEvent(int key) {
 		byte b = getKey(key);
 		return 
-				b == Input.UP_EVENT;
+			b == Input.UP_EVENT;
 	}
 	
 	public static byte getBtn(int btn) {
@@ -456,27 +456,27 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 	public static boolean isBtnDn(int btn) {
 		byte b = getBtn(btn);
 		return
-				b == Input.DN ||
-				b == Input.DN_EVENT;
+			b == Input.DN ||
+			b == Input.DN_EVENT;
 	}
 	
 	public static boolean isBtnDnEvent(int btn) {
 		byte b = getBtn(btn);
 		return 
-				b == Input.DN_EVENT;
+			b == Input.DN_EVENT;
 	}
 	
 	public static boolean isBtnUp(int btn) {
 		byte b = getBtn(btn);
 		return
-				b == Input.UP ||
-				b == Input.UP_EVENT;
+			b == Input.UP ||
+			b == Input.UP_EVENT;
 	}
 	
 	public static boolean isBtnUpEvent(int btn) {
 		byte b = getBtn(btn);
 		return 
-				b == Input.UP_EVENT;
+			b == Input.UP_EVENT;
 	}
 	
 	public static class MouseInput {

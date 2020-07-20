@@ -283,10 +283,10 @@ public class Stage extends Module {
 			g = (Graphics2D)b.getDrawGraphics();
 		
 		g.fillRect(
-				0, 0,
-				window_w,
-				window_h
-				);
+			0, 0,
+			window_w,
+			window_h
+		);
 		
 		RenderContext context = new RenderContext();
 		
@@ -300,31 +300,33 @@ public class Stage extends Module {
 		context = context.push();
 			context.color(window_background_color);
 			context.rect(
-					0, 0, 
-					window_w, 
-					window_h, 
-					true);
+				0, 0, 
+				window_w, 
+				window_h, 
+				true
+			);
 			
 			context.translate(
-					(int)(window_w - canvas_w * canvas_scale) / 2,
-					(int)(window_h - canvas_h * canvas_scale) / 2
-					);
+				(int)(window_w - canvas_w * canvas_scale) / 2,
+				(int)(window_h - canvas_h * canvas_scale) / 2
+			);
 			context.scale(
-					canvas_scale,
-					canvas_scale
-					);
+				canvas_scale,
+				canvas_scale
+			);
 			context.clip(
-					0, 0,
-					canvas_w,
-					canvas_h
-					);
+				0, 0,
+				canvas_w,
+				canvas_h
+			);
 			
 			context.color(canvas_background_color);
 			context.rect(
-					0, 0,
-					canvas_w,
-					canvas_h,
-					true);
+				0, 0,
+				canvas_w,
+				canvas_h,
+				true
+			);
 			
 			if(scene != null)
 				scene.render(context);
@@ -441,9 +443,9 @@ public class Stage extends Module {
 		canvas_w = (int)b.w();
 		canvas_h = (int)b.h();
 		canvas_scale = Math.min(
-				(float)window_w / canvas_w,
-				(float)window_h / canvas_h
-				);
+			(float)window_w / canvas_w,
+			(float)window_h / canvas_h
+		);
 		
 		window.addWindowListener(new WindowAdapter() {
 			@Override
@@ -598,7 +600,7 @@ public class Stage extends Module {
 		long sync = Math.min(
 			fixed_render_nanos - render_nanos,
 			fixed_update_nanos - update_nanos
-			) / ONE_MILLIS;
+		) / ONE_MILLIS;
 		if(sync > 1) Thread.sleep(1);		
 	}
 	
@@ -627,16 +629,16 @@ public class Stage extends Module {
 	public void onCanvasEvent(CanvasEvent event) {		
 		Region2	a, b;		
 		a = new Region2(
-				this.window_w = event.window_w,
-				this.window_h = event.window_h
+			this.window_w = event.window_w,
+			this.window_h = event.window_h
 		);
 		b = canvas_layout.region(a);
 		this.canvas_w = (int)b.w();
 		this.canvas_h = (int)b.h();
 		this.canvas_scale = Math.min(
-				(float)this.window_w / this.canvas_w,
-				(float)this.window_h / this.canvas_h
-				);
+			(float)this.window_w / this.canvas_w,
+			(float)this.window_h / this.canvas_h
+		);
 		if(scene != null)
 			scene.onResize();
 		

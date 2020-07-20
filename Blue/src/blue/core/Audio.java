@@ -26,12 +26,12 @@ public class Audio extends Module {
 		PLAYBACK_SAMPLE_SIZE =    16;
 	public static final AudioFormat
 		PLAYBACK_FORMAT = new AudioFormat(
-				PLAYBACK_SAMPLE_RATE,
-				PLAYBACK_SAMPLE_SIZE,
-				PLAYBACK_CHANNELS,
-				true ,
-				false
-				);
+			PLAYBACK_SAMPLE_RATE,
+			PLAYBACK_SAMPLE_SIZE,
+			PLAYBACK_CHANNELS,
+			true ,
+			false
+		);
 	
 	private Audio() {
 		//do nothing

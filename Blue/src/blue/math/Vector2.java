@@ -1,5 +1,7 @@
 package blue.math;
 
+import java.util.HashMap;
+
 import blue.util.Util;
 
 public class Vector2 extends Vector {
@@ -67,7 +69,7 @@ public class Vector2 extends Vector {
 	                s = s.substring(++i);
 	        }
 	        
-	        java.util.Map<String, String> t = Util.parse(s, "x", "y");
+	        java.util.Map<String, String> t = Util.parse(new HashMap<>(), s, "x", "y");
 	        v.x = Util.getEntryAsFloat(t, "x");
 	        v.y = Util.getEntryAsFloat(t, "y");
 		}        

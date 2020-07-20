@@ -25,7 +25,6 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -424,8 +423,7 @@ public final class Util {
 		});
 	}
 	
-	public static Map<String, String> parse(String s, String... tags) {
-		Map<String, String> map = new TreeMap<>();		
+	public static Map<String, String> parse(Map<String, String> map, String s, String... tags) {
 		String[] t = s.split("\\,");
 		
 		int i = 0;

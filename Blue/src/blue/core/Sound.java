@@ -36,21 +36,21 @@ public class Sound {
 		mode;
 	
 	public Sound(
-			Source source,
-			Filter filter
-			) {
+		Source source,
+		Filter filter
+	) {
 		this(
-				Mixer.MASTER,
-				source,
-				filter
-				);
+			Mixer.MASTER,
+			source,
+			filter
+		);
 	}
 	
 	public Sound(
-			Mixer mixer,
-			Source source,
-			Filter filter
-			) {
+		Mixer mixer,
+		Source source,
+		Filter filter
+	) {
 		this.mixer = mixer;
 		this.source = source;
 		this.filter = filter;
@@ -209,15 +209,15 @@ public class Sound {
 			length;
 		
 		public Source(
-				String name,
-				String path,
-				short[] pcm
-				) {
+			String name,
+			String path,
+			short[] pcm
+		) {
 			this.name = name;
 			this.path = path;
 			this.length = pcm.length / 2;
 			
-			cache.put(null, pcm);	
+			cache.put(null, pcm);
 		}
 		
 		public static Source getByName(String name) {

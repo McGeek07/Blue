@@ -1,5 +1,10 @@
 package blue.math;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import blue.util.Util;
+
 public class Matrix4 extends Matrix {
 	private static final long 
 		serialVersionUID = 1L;
@@ -185,28 +190,33 @@ public class Matrix4 extends Matrix {
 		if(m != null && s != null) {
 			s = s.replace("[", "");
 		    s = s.replace("]", "");
-		    String[] t = s.split("\n");
 		    
-		    Vector4
-		    	r0 = new Vector4(),
-		    	r1 = new Vector4(),
-		    	r2 = new Vector4(),
-		    	r3 = new Vector4();
-		    switch(t.length) {
-		        default:
-		        case 4:
-		        	Vector4.parseVector4(r3, t[3]);
-		        case 3:
-		        	Vector4.parseVector4(r2, t[2]);
-		        case 2:
-		        	Vector4.parseVector4(r1, t[1]);
-		        case 1:
-		        	Vector4.parseVector4(r0, t[0]);
-		        case 0:
-		    }
-		    m.mSetRowMajor(r0, r1, r2, r3);
-		}   
-	    
+		    Map<String, String> map = new HashMap<>();	        
+	        for(String t : s.split("\n"))	        
+		        Util.parse(
+	        		map, t,
+	        		"xx", "xy", "xz", "xw",
+	        		"yx", "yy", "yz", "yw",
+	        		"zx", "zy", "zz", "zw",
+	        		"wx", "wy", "wz", "ww"
+	    		);
+	        m.xx = Util.getEntryAsFloat(map, "xx");
+	        m.xy = Util.getEntryAsFloat(map, "xy");
+	        m.xz = Util.getEntryAsFloat(map, "xz");
+	        m.xw = Util.getEntryAsFloat(map, "xw");
+	        m.yx = Util.getEntryAsFloat(map, "yx");
+	        m.yy = Util.getEntryAsFloat(map, "yy");
+	        m.yz = Util.getEntryAsFloat(map, "yz");
+	        m.yw = Util.getEntryAsFloat(map, "yw");
+	        m.zx = Util.getEntryAsFloat(map, "zx");
+	        m.zy = Util.getEntryAsFloat(map, "zy");
+	        m.zz = Util.getEntryAsFloat(map, "zz");
+	        m.zw = Util.getEntryAsFloat(map, "zw");
+	        m.wx = Util.getEntryAsFloat(map, "wx");
+	        m.wy = Util.getEntryAsFloat(map, "wy");
+	        m.wz = Util.getEntryAsFloat(map, "wz");
+	        m.ww = Util.getEntryAsFloat(map, "ww");
+		}	    
 	    return m;
 	}
 	

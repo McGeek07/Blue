@@ -1,5 +1,10 @@
 package blue.math;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import blue.util.Util;
+
 public class Matrix2 extends Matrix {
 	private static final long 
 		serialVersionUID = 1L;
@@ -131,20 +136,18 @@ public class Matrix2 extends Matrix {
 		if(m != null && s != null) {
 			s = s.replace("[", "");
 	        s = s.replace("]", "");
-	        String[] t = s.split("\n");
 	        
-	        Vector2
-	        	r0 = new Vector2(),
-	        	r1 = new Vector2();    
-	        switch(t.length) {
-		        default:
-		        case 2:
-		        	Vector2.parseVector2(r1, t[1]);
-		        case 1:
-		        	Vector2.parseVector2(r0, t[0]);
-		        case 0:
-	        }
-	        m.mSetRowMajor(r0, r1);
+	        Map<String, String> map = new HashMap<>();	        
+	        for(String t : s.split("\n"))	        
+		        Util.parse(
+	        		map, t,
+	        		"xx", "xy",
+	        		"yx", "yy"     		
+	    		);
+	        m.xx = Util.getEntryAsFloat(map, "xx");
+	        m.xy = Util.getEntryAsFloat(map, "xy");
+	        m.yx = Util.getEntryAsFloat(map, "yx");
+	        m.yy = Util.getEntryAsFloat(map, "yy");
 		}       
         return m;
 	}

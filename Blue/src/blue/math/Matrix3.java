@@ -1,5 +1,10 @@
 package blue.math;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import blue.util.Util;
+
 public class Matrix3 extends Matrix {
 	private static final long 
 		serialVersionUID = 1L;
@@ -156,23 +161,24 @@ public class Matrix3 extends Matrix {
 		if(m != null && s != null) {
 			s = s.replace("[", "");
 		    s = s.replace("]", "");
-		    String[] t = s.split("\n");
 		    
-		    Vector3
-		    	r0 = new Vector3(),
-		    	r1 = new Vector3(),
-		    	r2 = new Vector3();
-		    switch(t.length) {
-		        default:
-		        case 3:
-		        	Vector3.parseVector3(r2, t[2]);
-		        case 2:
-		        	Vector3.parseVector3(r1, t[1]);
-		        case 1:
-		        	Vector3.parseVector3(r0, t[0]);
-		        case 0:
-		    }
-		    m.mSetRowMajor(r0, r1, r2);
+		    Map<String, String> map = new HashMap<>();	        
+	        for(String t : s.split("\n"))	        
+		        Util.parse(
+	        		map, t,
+	        		"xx", "xy", "xz",
+	        		"yx", "yy", "yz",
+	        		"zx", "zy", "zz"
+	    		);
+	        m.xx = Util.getEntryAsFloat(map, "xx");
+	        m.xy = Util.getEntryAsFloat(map, "xy");
+	        m.xz = Util.getEntryAsFloat(map, "xz");
+	        m.yx = Util.getEntryAsFloat(map, "yx");
+	        m.yy = Util.getEntryAsFloat(map, "yy");
+	        m.yz = Util.getEntryAsFloat(map, "yz");
+	        m.zx = Util.getEntryAsFloat(map, "zx");
+	        m.zy = Util.getEntryAsFloat(map, "zy");
+	        m.zz = Util.getEntryAsFloat(map, "zz");
 		}	    
 	    return m;
 	}

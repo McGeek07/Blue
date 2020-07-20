@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import blue.math.Box;
 import blue.math.Region2;
 import blue.math.Vector;
+import blue.math.Vector2;
 import blue.util.Debug;
 import blue.util.Util;
 
@@ -46,17 +47,17 @@ public class Sprite implements Renderable, Updateable {
 		bounds = new Region2.Mutable();
 	
 	public Sprite(			
-			Source source,
-			Filter filter
-			) {
+		Source source,
+		Filter filter
+	) {
 		this.source = source;
 		this.filter = filter;
 		
 		this.bounds.set(
-				0, 0,
-				source.frame_w,
-				source.frame_h
-				);
+			0, 0,
+			source.frame_w,
+			source.frame_h
+		);
 		
 		this.frames = this.source != null ? this.source.filter(this.filter) : null;
 	}
@@ -171,6 +172,14 @@ public class Sprite implements Renderable, Updateable {
 		return this.flop;
 	}
 	
+	public Vector2.Mutable loc() {
+		return bounds.loc();
+	}
+	
+	public Vector2.Mutable dim() {
+		return bounds.dim();
+	}
+	
 	public void align(Box<?> b) {
 		Box.m_align(bounds, b);
 	}
@@ -227,26 +236,26 @@ public class Sprite implements Renderable, Updateable {
 				
 				context.g.setComposite(alpha_composite);
 				context.g.drawImage(
-						frames[(int)frame],
-						x1, y1,
-						x2, y2,
-						0 , 0 ,
-						source.frame_w,
-						source.frame_h,
-						null
-						);
+					frames[(int)frame],
+					x1, y1,
+					x2, y2,
+					0 , 0 ,
+					source.frame_w,
+					source.frame_h,
+					null
+				);
 				
 				context = context.pop();
 			} else
 				context.g.drawImage(
-						frames[(int)frame],
-						x1, y1,
-						x2, y2,
-						0 , 0 ,
-						source.frame_w,
-						source.frame_h,
-						null
-						);
+					frames[(int)frame],
+					x1, y1,
+					x2, y2,
+					0 , 0 ,
+					source.frame_w,
+					source.frame_h,
+					null
+				);
 		}
 	}
 
@@ -288,12 +297,12 @@ public class Sprite implements Renderable, Updateable {
 			length;
 		
 		public Source(
-				String name,
-				String path,
-				BufferedImage atlas,
-				int frame_w,
-				int frame_h
-				) {			
+			String name,
+			String path,
+			BufferedImage atlas,
+			int frame_w,
+			int frame_h
+		) {			
 			this.name = name;
 			this.path = path;
 			this.atlas = atlas;
@@ -310,18 +319,18 @@ public class Sprite implements Renderable, Updateable {
 			for(int x = 0; x < w; x ++)
 				for(int y = 0; y < h; y ++)
 					frames[h * y + x] = atlas.getSubimage(
-							x * frame_w,
-							y * frame_h,
-							frame_w,
-							frame_h
-							);
+						x * frame_w,
+						y * frame_h,
+						frame_w,
+						frame_h
+					);
 			cache.put(null, frames);
 		}
 		
 		public BufferedImage[] filter(Filter filter) {
 			BufferedImage[]
-					source_frames = cache.get(null  ),
-					filter_frames = cache.get(filter);
+				source_frames = cache.get(null  ),
+				filter_frames = cache.get(filter);
 			if(filter_frames == null) {
 				filter_frames = new BufferedImage[source_frames.length];
 				for(int i = 0; i < source_frames.length; i ++) {
@@ -338,10 +347,10 @@ public class Sprite implements Renderable, Updateable {
 					g0.dispose();
 					
 					filter.filter(
-							((DataBufferInt)buffer_frame.getRaster().getDataBuffer()).getData(),
-							frame_w,
-							frame_h
-							);
+						((DataBufferInt)buffer_frame.getRaster().getDataBuffer()).getData(),
+						frame_w,
+						frame_h
+					);
 					
 					Graphics2D g1 = filter_frame.createGraphics();
 					g1.drawImage(buffer_frame, 0, 0, null);
@@ -384,14 +393,14 @@ public class Sprite implements Renderable, Updateable {
 					image,
 					frame_w,
 					frame_h
-					);				
+				);	
 				NAME_INDEX.put(name, source);
 				PATH_INDEX.put(path, source);
 				return source;
 				
 			} catch(Exception e) {
 				Debug.warn(new Object() {/* trace */}, "Failed to load Sprite.Source (" + name + ", " + path + ", " + frame_w + ", " + frame_h + ").");
-				e.printStackTrace();				
+				e.printStackTrace();		
 				return null;
 			}
 		}		
