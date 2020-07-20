@@ -15,6 +15,7 @@ public class Mixer {
 		sounds = new Sound.Group();
 	
 	protected float
+		speed   = 1f,
 		level   = 1f,
 		balance = 0f;
 	protected float
@@ -30,6 +31,10 @@ public class Mixer {
 			mixer.attach(this);
 	}
 	
+	public void setSpeed(float speed) {
+		this.speed = speed;
+	}
+	
 	public void setLevel(float level) {
 		this.level = Util.clamp(level, 0f, Float.POSITIVE_INFINITY);		
 		this.stereo_l = Math.min(1f - this.balance, 1f) * this.level;
@@ -40,7 +45,19 @@ public class Mixer {
 		this.balance = Util.clamp(balance, -1f, 1f);
 		this.stereo_l = Math.min(1f - this.balance, 1f) * this.level;
 		this.stereo_r = Math.min(1f + this.balance, 1f) * this.level;
-	}	
+	}
+	
+	public float getSpeed() {
+		return this.speed;
+	}
+	
+	public float getLevel() {
+		return this.level;
+	}
+	
+	public float getBalance() {
+		return this.balance;
+	}
 	
 	public void attach(Mixer mixer) {
 		mixers.attach(mixer);
@@ -90,15 +107,16 @@ public class Mixer {
 	}
 	
 	public short[] step(float dt) {
+		float _dt = dt * speed;
 		short[] frame = {0, 0};
 		
 		for(Sound sound: sounds) {
-			int f = (int)sound.step(dt).frame * 2;
+			int f = (int)sound.step(_dt).frame * 2;
 			frame[0] += (short)(sound.frames[f + 0] * sound.stereo_l);
 			frame[1] += (short)(sound.frames[f + 1] * sound.stereo_r);
 		}		
 		for(Mixer mixer: mixers) {
-			short[] _frame = mixer.step(dt);
+			short[] _frame = mixer.step(_dt);
 			frame[0] += _frame[0];
 			frame[1] += _frame[1];
 		}		
@@ -136,9 +154,17 @@ public class Mixer {
 					onAttach(mixer);
 				attach.clear();
 			}
+			if(mixers.size() > 0) {
+				for(Mixer mixer: mixers)
+					mixer.attachPending();
+			}
 		}
 		
 		public void detachPending() {
+			if(mixers.size() > 0) {
+				for(Mixer mixer: mixers)
+					mixer.detachPending();
+			}
 			if(detach.size() > 0) {
 				for(Mixer mixer: detach)
 					onDetach(mixer);
