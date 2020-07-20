@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import blue.util.Debug;
 import blue.util.Util;
 
 public class Sound {
@@ -222,14 +223,14 @@ public class Sound {
 		public static Source getByName(String name) {
 			Source source = NAME_INDEX.get(name);
 			if(source == null)
-				System.err.println("[blue.core.Sound.Source.getByName] A Sound.Source with name '" + name + "' does not exist.");
+				Debug.warn(new Object() {/* trace */}, "A Sound.Source with name '" + name + "' does not exist.");
 			return source;
 		}
 		
 		public static Source getByPath(String path) {
 			Source source = PATH_INDEX.get(path);
 			if(source == null)
-				System.err.println("[blue.core.Sound.Source.getByPath] A Sound.Source with path '" + path + "' does not exist.");
+				Debug.warn(new Object() {/* trace */}, "A Sound.Source with path '" + path + "' does not exist.");
 			return source;
 		}
 		
@@ -255,9 +256,9 @@ public class Sound {
 		
 		public static Source load(String name, String path) {
 			if(NAME_INDEX.containsKey(name))
-				System.err.println("[blue.core.Sound.Source.load] A Sound.Source with name '" + name + "' already exists.");
+				Debug.warn(new Object() {/* trace */}, "A Sound.Source with name '" + name + "' already exists.");
 			if(PATH_INDEX.containsKey(path))
-				System.err.println("[blue.core.Sound.Source.load] A Sound.Source with path '" + path + "' already exists.");
+				Debug.warn(new Object() {/* trace */}, "A Sound.Source with path '" + path + "' already exists.");
 			
 			try {
 				byte [] bytes = Audio.read(path);
@@ -274,7 +275,7 @@ public class Sound {
 				return source;
 				
 			} catch (Exception e) {
-				System.err.println("[blue.core.Sound.Source.load] Failed to load Sound.Source (" + name + ", " + path + ").");
+				Debug.warn(new Object() {/* trace */}, "Failed to load Sound.Source (" + name + ", " + path + ").");
 				e.printStackTrace();
 				return null;
 			}

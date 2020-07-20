@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import blue.math.Box;
 import blue.math.Region2;
 import blue.math.Vector;
+import blue.util.Debug;
 import blue.util.Util;
 
 public class Sprite implements Renderable, Updateable {
@@ -356,22 +357,22 @@ public class Sprite implements Renderable, Updateable {
 		public static Source getByName(String name) {
 			Source source = NAME_INDEX.get(name);
 			if(source == null)
-				System.err.println("[blue.core.Sprite.Source.getByName] A Sprite.Source with name '" + name + "' does not exist.");
+				Debug.warn(new Object() {/* trace */}, "A Sprite.Source with name '" + name + "' does not exist.");
 			return source;
 		}
 		
 		public static Source getByPath(String path) {
 			Source source = PATH_INDEX.get(path);
 			if(source == null)
-				System.err.println("[blue.core.Sprite.Source.getByPath] A Sprite.Source with path '" + path + "' does not exist.");
+				Debug.warn(new Object() {/* trace */}, "A Sprite.Source with path '" + path + "' does not exist.");
 			return source;
 		}
 		
 		public static Source load(String name, String path, int frame_w, int frame_h) {
 			if(NAME_INDEX.containsKey(name))
-				System.err.println("[blue.core.Sprite.Source.load] A Sprite.Source with name '" + name + "' already exists.");
+				Debug.warn(new Object() {/* trace */}, "A Sprite.Source with name '" + name + "' already exists.");
 			if(PATH_INDEX.containsKey(path))
-				System.err.println("[blue.core.Sprite.Source.load] A Sprite.Source with path '" + path + "' already exists.");
+				Debug.warn(new Object() {/* trace */}, "A Sprite.Source with path '" + path + "' already exists.");
 			
 			try {
 				BufferedImage 
@@ -389,7 +390,7 @@ public class Sprite implements Renderable, Updateable {
 				return source;
 				
 			} catch(Exception e) {
-				System.err.println("[blue.core.Sprite.Source.load] Failed to load Sprite.Source (" + name + ", " + path + ", " + frame_w + ", " + frame_h + ").");
+				Debug.warn(new Object() {/* trace */}, "Failed to load Sprite.Source (" + name + ", " + path + ", " + frame_w + ", " + frame_h + ").");
 				e.printStackTrace();				
 				return null;
 			}

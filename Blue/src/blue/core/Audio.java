@@ -10,6 +10,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import blue.util.Debug;
 import blue.util.Util;
 import blue.util.event.Broker;
 import blue.util.event.Handle;
@@ -102,7 +103,7 @@ public class Audio extends Module {
 			sdl.open(PLAYBACK_FORMAT, 4096);
 			sdl.start();			
 		} catch (Exception e) {
-			System.err.println("[blue.core.Audio.onInit] Failed to init module '" + getClass().getName() + "'.");
+			Debug.warn(new Object() {/* trace */}, "Failed to init module '" + getClass().getName() + "'.");
 			e.printStackTrace();
 			Engine.stop(MODULE);
 		}
