@@ -10,6 +10,6 @@ public class Blue {
 	
 	public static void main(String[] args) {
 		Debug.info(VERSION);
-		Engine.init();		
+		Engine.init();
 	}
 }

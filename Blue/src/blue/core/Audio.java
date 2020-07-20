@@ -16,7 +16,22 @@ import blue.util.event.Broker;
 import blue.util.event.Handle;
 import blue.util.event.Listener;
 
+/**
+ * The Audio module is the singleton in charge of the audio thread. It is a
+ * basic wrapper for a java.sound.sampled.SourceDataLine which handles audio
+ * playback by writing raw audio bytes to the output device. The Audio module
+ * can be initialized implicitly via Engine.init() or explicitly via 
+ * Audio.init()
+ * <br>
+ * <br>
+ * The Audio module also contains static helper methods for reading raw audio 
+ * bytes and converting them to the correct playback format. Because sound can
+ * be loaded at any time, even before the Audio module has been initialized, the
+ * playback format cannot be changed. Any change in the playback format could 
+ * make previously loaded sounds incompatible.
+ */
 public class Audio extends Module {
+	//singleton instance
 	protected static final Audio
 		MODULE = new Audio();
 	
@@ -31,19 +46,29 @@ public class Audio extends Module {
 			PLAYBACK_CHANNELS,
 			true ,
 			false
-		);
+		);	
 	
 	private Audio() {
-		//do nothing
+		//hide constructor
 	}
 	
 	private SourceDataLine
 		sdl;
 	
+	/**
+	 * Explicitly init the module. This method is explicit. This method is 
+	 * thread-safe and can be called at any time. If the Audio module is already
+	 * running this method will do nothing.
+	 */
 	public static void init() {
 		Engine.init(MODULE);
 	}
 	
+	/**
+	 * Explicitly stop the module. This method is explicit. This method is 
+	 * thread-safe and can be called at any time. If the Audio module is not
+	 * already running this method will do nothing.
+	 */
 	public static void stop() {
 		Engine.stop(MODULE);
 	}
@@ -56,38 +81,118 @@ public class Audio extends Module {
 		return Util.getEntry(MODULE.cfg, key, alt);
 	}
 	
+	/**
+	 * Queue an event Listener to be attached to the Audio module. This method
+	 * is explicit. This method is thread-safe and can be called at any time. 
+	 * Any queued items will remain until the queue is flushed either implicitly
+	 * while the module is running or explicitly via Audio.poll().
+	 * <br>
+	 * <br>
+	 * Each module is run in a separate thread and is backed by it own private 
+	 * event queue; therefore, attached Listeners will not implicitly receive
+	 * events from other modules.
+	 */
 	public static <T> void attach(Class<T> type, Listener<T> listener) {
 		MODULE.handle.attach(type, listener);
 	}
 	
+	/**
+	 * Queue an event Listener to be detached from the Audio module. This method
+	 * is explicit. This method is thread-safe and can be called at any time. 
+	 * Any queued items will remain until the queue is flushed either implicitly
+	 * while the module is running or explicitly via Audio.poll().
+	 * <br>
+	 * <br>
+	 * Each module is run in a separate thread and is backed by it own private 
+	 * event queue; therefore, attached Listeners will not implicitly receive
+	 * events from other modules.
+	 */
 	public static <T> void detach(Class<T> type, Listener<T> listener) {
 		MODULE.handle.detach(type, listener);
 	}
 	
+	/**
+	 * Queue an event Broker to be attached to the Audio module. This method
+	 * is explicit. This method is thread-safe and can be called at any time. 
+	 * Any queued items will remain until the queue is flushed either implicitly
+	 * while the module is running or explicitly via Audio.poll().
+	 * <br>
+	 * <br>
+	 * Each module is run in a separate thread and is backed by it own private 
+	 * event queue; therefore, attached Brokers will not implicitly receive
+	 * events from other modules.
+	 */
 	public static void attach(Broker broker) {
 		MODULE.broker.attach(broker);
 	}
 	
+	/**
+	 * Queue an event Broker to be detached from the Audio module. This method
+	 * is explicit. This method is thread-safe and can be called at any time. 
+	 * Any queued items will remain until the queue is flushed either implicitly
+	 * while the module is running or explicitly via Audio.poll().
+	 * <br>
+	 * <br>
+	 * Each module is run in a separate thread and is backed by it own private 
+	 * event queue; therefore, attached Brokers will not implicitly receive
+	 * events from other modules.
+	 */
 	public static void detach(Broker broker) {
 		MODULE.broker.detach(broker);
 	}
 	
+	/**
+	 * Queue an event Handle to be attached to the Audio module. This method
+	 * is explicit. This method is thread-safe and can be called at any time. 
+	 * Any queued items will remain until the queue is flushed either implicitly
+	 * while the module is running or explicitly via Audio.poll().
+	 * <br>
+	 * <br>
+	 * Each module is run in a separate thread and is backed by it own private 
+	 * event queue; therefore, attached Handles will not implicitly receive
+	 * events from other modules.
+	 */
 	public static void attach(Handle handle) {
 		MODULE.broker.attach(handle);
 	}
 	
+	/**
+	 * Queue an event Handle to be detached from the Audio module. This method
+	 * is explicit. This method is thread-safe and can be called at any time. 
+	 * Any queued items will remain until the queue is flushed either implicitly
+	 * while the module is running or explicitly via Audio.poll().
+	 * <br>
+	 * <br>
+	 * Each module is run in a separate thread and is backed by it own private 
+	 * event queue; therefore, attached Handles will not implicitly receive
+	 * events from other modules.
+	 */
 	public static void detach(Handle handle) {
 		MODULE.broker.detach(handle);
 	}
 	
+	/**
+	 * Queue an event. This method is explicit. This method is thread-safe and
+	 * can be called at any time. Any queued items will remain until the queue 
+	 * is flushed implicitly by the module or explicitly via Audio.poll().
+	 */
 	public static <T> void queue(T event) {
 		MODULE.broker.queue(event);
 	}
 	
+	/**
+	 * Flush an event. This method is explicit. This method is not thread-safe 
+	 * and should only be called explicitly via the Audio thread.
+	 */
 	public static <T> void flush(T event) {
 		MODULE.broker.flush(event);
 	}
 	
+	/**
+	 * Flush queued items. This method is implicit and explicit. This method is 
+	 * not thread-safe and should only be called implicitly by the module or 
+	 * explicitly via the Audio thread.
+	 */
 	public static void poll() {
 		MODULE.broker.poll();
 	}
@@ -101,7 +206,7 @@ public class Audio extends Module {
 		try {			
 			sdl = AudioSystem.getSourceDataLine(PLAYBACK_FORMAT);
 			sdl.open(PLAYBACK_FORMAT, 4096);
-			sdl.start();			
+			sdl.start();
 		} catch (Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Failed to init module '" + getClass().getName() + "'.");
 			e.printStackTrace();
@@ -116,7 +221,7 @@ public class Audio extends Module {
 	
 	@Override
 	public void onStep() throws InterruptedException {
-		             poll();	
+		             poll();
 		Mixer.MASTER.poll();
 		
 		short[] frame = Mixer.MASTER.step(1f);		
@@ -130,10 +235,18 @@ public class Audio extends Module {
 		sdl.write(buffer, 0, buffer.length);
 	}
 	
+	/**
+	 * Read raw audio bytes from a file and convert them to the correct playback
+	 * format.
+	 */
 	public static byte[] read(String path) throws IOException, UnsupportedAudioFileException {
 		return read(new File(path));
 	}
 	
+	/**
+	 * Read raw audio bytes from a file and convert them to the correct playback 
+	 * format.
+	 */
 	public static byte[] read(File   file) throws IOException, UnsupportedAudioFileException {
 		AudioInputStream 
 			ais0 = AudioSystem.getAudioInputStream(                 file),
