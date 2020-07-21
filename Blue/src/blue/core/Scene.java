@@ -19,7 +19,7 @@ public abstract class Scene implements Renderable, Updateable {
 	public void onBtnDn(int btn) { }
 	public void onBtnUp(int btn) { }
 	public void onKeyDn(int key) { }
-	public void onKeyUp(int key) { }	
+	public void onKeyUp(int key) { }
 
 	public void onGainFocus() { }
 	public void onLoseFocus() { }

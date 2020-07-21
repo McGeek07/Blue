@@ -9,7 +9,7 @@ public class Blue {
 		VERSION = new Version("Blue", 0, 2, 3);
 	
 	public static void main(String[] args) {
-		Debug.info(VERSION);
+		Debug.info(new Object() {}, VERSION);
 		Engine.init();
 	}
 }

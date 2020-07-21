@@ -601,7 +601,7 @@ public class Stage extends Module {
 			fixed_render_nanos - render_nanos,
 			fixed_update_nanos - update_nanos
 		) / ONE_MILLIS;
-		if(sync > 1) Thread.sleep(1);		
+		if(sync > 1) Thread.sleep(1);
 	}
 	
 	public void onSceneEvent(SceneEvent event) {
