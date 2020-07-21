@@ -10,7 +10,14 @@ import java.awt.event.MouseWheelListener;
 
 import blue.math.Vector2;
 
+/**
+ * The Input singleton is responsible for polling keyboard and mouse input. It 
+ * is a basic adapter for various java.awt input events and acts as a static 
+ * helper for the Stage module; therefore, the Stage module must be running to
+ * receive input events.
+ */
 public final class Input implements KeyListener, MouseListener, MouseWheelListener, MouseMotionListener {
+	//singleton instance
 	protected static final Input
 		INSTANCE = new Input();
 	public static final Class<MouseInput>
@@ -42,7 +49,7 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 		btns = new byte[NUM_BTNS];
 	
 	private Input() {
-		//do nothing
+		//hide constructor
 	}
 	
 	protected static void poll() {
@@ -406,7 +413,6 @@ public final class Input implements KeyListener, MouseListener, MouseWheelListen
 	public static Vector2 getMouse() {
 		return INSTANCE.mouse;
 	}
-	
 	public static float getWheel() {
 		return INSTANCE.wheel;
 	}
