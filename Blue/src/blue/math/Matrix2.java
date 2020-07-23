@@ -1,9 +1,8 @@
 package blue.math;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import blue.util.Util;
+import blue.util.Configuration;
 
 public class Matrix2 extends Matrix {
 	private static final long 
@@ -137,17 +136,17 @@ public class Matrix2 extends Matrix {
 			s = s.replace("[", "");
 	        s = s.replace("]", "");
 	        
-	        Map<String, String> map = new HashMap<>();	        
+	        HashMap<String, String> map = new HashMap<>();	        
 	        for(String t : s.split("\n"))	        
-		        Util.parse(
+		        Configuration.parse(
 	        		map, t,
 	        		"xx", "xy",
 	        		"yx", "yy"     		
 	    		);
-	        m.xx = Util.getEntryAsFloat(map, "xx");
-	        m.xy = Util.getEntryAsFloat(map, "xy");
-	        m.yx = Util.getEntryAsFloat(map, "yx");
-	        m.yy = Util.getEntryAsFloat(map, "yy");
+	        m.xx = Configuration.getPropertyAsFloat(map, "xx");
+	        m.xy = Configuration.getPropertyAsFloat(map, "xy");
+	        m.yx = Configuration.getPropertyAsFloat(map, "yx");
+	        m.yy = Configuration.getPropertyAsFloat(map, "yy");
 		}       
         return m;
 	}

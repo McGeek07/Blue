@@ -28,6 +28,10 @@ public class Tuple2<T0, T1> implements Serializable {
 		return t1;
 	}
 	
+	public int n() {
+		return 2;
+	}
+	
 	public static class Mutable<T0, T1> extends Tuple2<T0, T1> {
 		private static final long 
 			serialVersionUID = 1L;

@@ -2,8 +2,8 @@ package blue.math;
 
 import java.io.Serializable;
 
+import blue.util.Configuration;
 import blue.util.Copyable;
-import blue.util.Util;
 
 public abstract class Box<T extends Vector> implements Serializable, Copyable<Box<T>> {
 	private static final long 
@@ -88,13 +88,13 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 		        switch (t.length) {
 		            default:
 		            case 4:
-		            	b.v1.y = Util.stringToFloat(t[3]);
+		            	b.v1.y = Configuration.stringToFloat(t[3]);
 		            case 3:
-		            	b.v1.x = Util.stringToFloat(t[2]);
+		            	b.v1.x = Configuration.stringToFloat(t[2]);
 		            case 2:
-		                b.v0.y = Util.stringToFloat(t[1]);
+		                b.v0.y = Configuration.stringToFloat(t[1]);
 		            case 1:
-		                b.v0.x = Util.stringToFloat(t[0]);
+		                b.v0.x = Configuration.stringToFloat(t[0]);
 		            case 0:
 		        }
 			}	        
@@ -159,17 +159,17 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 		        switch (t.length) {
 		            default:
 		            case 6:
-		            	b.v1.z = Util.stringToFloat(t[5]);
+		            	b.v1.z = Configuration.stringToFloat(t[5]);
 		            case 5:
-		            	b.v1.y = Util.stringToFloat(t[4]);
+		            	b.v1.y = Configuration.stringToFloat(t[4]);
 		            case 4:
-		            	b.v1.x = Util.stringToFloat(t[3]);
+		            	b.v1.x = Configuration.stringToFloat(t[3]);
 		            case 3:
-		            	b.v0.z = Util.stringToFloat(t[2]);
+		            	b.v0.z = Configuration.stringToFloat(t[2]);
 		            case 2:
-		                b.v0.y = Util.stringToFloat(t[1]);
+		                b.v0.y = Configuration.stringToFloat(t[1]);
 		            case 1:
-		                b.v0.x = Util.stringToFloat(t[0]);
+		                b.v0.x = Configuration.stringToFloat(t[0]);
 		            case 0:
 		        }
 			}	        

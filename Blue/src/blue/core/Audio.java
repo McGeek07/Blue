@@ -10,11 +10,11 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import blue.util.Log;
-import blue.util.Util;
-import blue.util.event.Broker;
-import blue.util.event.Handle;
-import blue.util.event.Listener;
+import blue.core.Event.Broker;
+import blue.core.Event.Handle;
+import blue.core.Event.Listener;
+import blue.util.Configuration;
+import blue.util.Debug;
 
 /**
  * The Audio module is the singleton responsible for the audio thread. It is a
@@ -74,11 +74,11 @@ public class Audio extends Module {
 	}
 	
 	public static String setProperty(Object key, Object val) {
-		return Util.setEntry(MODULE.cfg, key, val);
+		return Configuration.setProperty(MODULE.cfg, key, val);
 	}
 	
 	public static String getProperty(Object key, Object alt) {
-		return Util.getEntry(MODULE.cfg, key, alt);
+		return Configuration.setProperty(MODULE.cfg, key, alt);
 	}
 	
 	/**
@@ -207,7 +207,7 @@ public class Audio extends Module {
 			sdl.open(PLAYBACK_FORMAT, 4096);
 			sdl.start();
 		} catch (Exception e) {
-			Log.warn(new Object() {/* trace */}, "Failed to init module '" + getClass().getName() + "'.");
+			Debug.warn(new Object() {/* trace */}, "Failed to init module '" + getClass().getName() + "'.");
 			e.printStackTrace();
 			Engine.stop(MODULE);
 		}

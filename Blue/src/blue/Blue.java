@@ -1,16 +1,15 @@
 package blue;
 
 import blue.core.Engine;
-import blue.util.Log;
+import blue.util.Debug;
 import blue.util.Version;
 
 public class Blue {
 	public static final Version
-		VERSION = new Version("Blue", 0, 2, 5);
+		VERSION = new Version("Blue", 0, 2, 7);
 	
 	public static void main(String[] args) {
-		Log.info(new Object() {/* trace */}, VERSION);
-		
+		Debug.info(new Object() {/* trace */}, VERSION);
 		Engine.init();
 	}
 }

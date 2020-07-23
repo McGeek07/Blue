@@ -3,8 +3,8 @@ package blue.math;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import blue.util.Configuration;
 import blue.util.Copyable;
-import blue.util.Util;
 
 public class Layout implements Serializable, Copyable<Layout> {
 	private static final long 
@@ -104,7 +104,7 @@ public class Layout implements Serializable, Copyable<Layout> {
 	            else
 	                s = s.substring(++i);
 	        }
-	        java.util.Map<String, String> t = Util.parse(
+	        HashMap<String, String> map = Configuration.parse(
 	        	new HashMap<>(), s, 
         		"x0", "y0", 
         		"x1", "y1",
@@ -112,16 +112,16 @@ public class Layout implements Serializable, Copyable<Layout> {
         		"w1", "h1",
         		"w2", "h2"
     		);
-	        l.x0.set(Util.getEntry(t, "x0", 0f));
-	        l.y0.set(Util.getEntry(t, "y0", 0f));
-	        l.x1.set(Util.getEntry(t, "x1", 0f));
-	        l.y1.set(Util.getEntry(t, "y1", 0f));
-	        l.w0.set(Util.getEntry(t, "w0", 1f));
-	        l.h0.set(Util.getEntry(t, "h0", 1f));
-	        l.w1.set(Util.getEntry(t, "w1", 0f));
-	        l.h1.set(Util.getEntry(t, "h1", 0f));
-	        l.w2.set(Util.getEntry(t, "w2", 1f));
-	        l.h2.set(Util.getEntry(t, "h2", 1f));
+	        l.x0.set(Configuration.getProperty(map, "x0", 0f));
+	        l.y0.set(Configuration.getProperty(map, "y0", 0f));
+	        l.x1.set(Configuration.getProperty(map, "x1", 0f));
+	        l.y1.set(Configuration.getProperty(map, "y1", 0f));
+	        l.w0.set(Configuration.getProperty(map, "w0", 1f));
+	        l.h0.set(Configuration.getProperty(map, "h0", 1f));
+	        l.w1.set(Configuration.getProperty(map, "w1", 0f));
+	        l.h1.set(Configuration.getProperty(map, "h1", 0f));
+	        l.w2.set(Configuration.getProperty(map, "w2", 1f));
+	        l.h2.set(Configuration.getProperty(map, "h2", 1f));
 		}
 		return l;
 	}
@@ -224,7 +224,7 @@ public class Layout implements Serializable, Copyable<Layout> {
 			int i = s.indexOf('#');
 			s = s.substring(i + 1);
 			
-			value = Util.stringToFloat(s);
+			value = Configuration.stringToFloat(s);
 			fixed = i >= 0;
 		}
 		

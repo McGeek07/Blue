@@ -36,6 +36,10 @@ public class Tuple3<T0, T1, T2> implements Serializable {
 		return t2;
 	}
 	
+	public int n() {
+		return 3;
+	}
+	
 	public static class Mutable<T0, T1, T2> extends Tuple3<T0, T1, T2> {
 		private static final long 
 			serialVersionUID = 1L;

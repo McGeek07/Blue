@@ -2,7 +2,7 @@ package blue.math;
 
 import java.util.HashMap;
 
-import blue.util.Util;
+import blue.util.Configuration;
 
 public class Vector2 extends Vector {
 	private static final long 
@@ -69,9 +69,9 @@ public class Vector2 extends Vector {
 	                s = s.substring(++i);
 	        }
 	        
-	        java.util.Map<String, String> t = Util.parse(new HashMap<>(), s, "x", "y");
-	        v.x = Util.getEntryAsFloat(t, "x");
-	        v.y = Util.getEntryAsFloat(t, "y");
+	        HashMap<String, String> map = Configuration.parse(new HashMap<>(), s, "x", "y");
+	        v.x = Configuration.getPropertyAsFloat(map, "x");
+	        v.y = Configuration.getPropertyAsFloat(map, "y");
 		}        
         return v;
 	}

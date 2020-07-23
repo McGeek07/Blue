@@ -5,8 +5,11 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.WindowAdapter;
@@ -15,18 +18,21 @@ import java.io.File;
 import java.util.Map;
 
 import blue.Blue;
+import blue.core.Event.Broker;
+import blue.core.Event.Handle;
+import blue.core.Event.Listener;
 import blue.core.Renderable.RenderContext;
 import blue.core.Updateable.UpdateContext;
+import blue.math.Bounds2;
 import blue.math.Box;
 import blue.math.Layout;
 import blue.math.Region2;
 import blue.math.Vector;
 import blue.math.Vector2;
 import blue.math.Vector4;
+import blue.util.Configuration;
+import blue.util.Files;
 import blue.util.Util;
-import blue.util.event.Broker;
-import blue.util.event.Handle;
-import blue.util.event.Listener;
 
 public class Stage extends Module {
 	protected static final Stage
@@ -105,7 +111,7 @@ public class Stage extends Module {
 		update_hz;
 	
 	private Stage() {
-		Util.map(cfg,
+		Configuration.map(cfg,
 			CANVAS_LAYOUT, canvas_layout,
 			WINDOW_BORDER, window_border,
 			WINDOW_DEVICE, window_device,
@@ -131,27 +137,27 @@ public class Stage extends Module {
 	}
 	
 	public static String setProperty(Object key, Object val) {
-		return Util.setEntry(MODULE.cfg, key, val);
+		return Configuration.setProperty(MODULE.cfg, key, val);
 	}
 	
 	public static String getProperty(Object key, Object alt) {
-		return Util.getEntry(MODULE.cfg, key, alt);
+		return Configuration.getProperty(MODULE.cfg, key, alt);
 	}
 	
-	public static void saveConfig(String path) {
-		saveConfig(new File(path));
+	public static void saveConfiguration(String path) {
+		saveConfiguration(new File(path));
 	}
 	
-	public static void saveConfig(File   file) {
-		Util.printToFile(file, false, MODULE.cfg);
+	public static void saveConfiguration(File   file) {
+		Files.print(file, false, MODULE.cfg);
 	}
 	
-	public static void loadConfig(String path) {
-		loadConfig(new File(path));
+	public static void loadConfiguration(String path) {
+		loadConfiguration(new File(path));
 	}
 	
-	public static void loadConfig(File   file) {
-		Util.parseFromFile(file, MODULE.cfg);
+	public static void loadConfiguration(File   file) {
+		Files.parse(file, MODULE.cfg);
 	}
 	
 	public static <T> void attach(Class<T> type, Listener<T> listener) {
@@ -271,6 +277,64 @@ public class Stage extends Module {
 		MODULE.debug_metrics = metrics;
 	}
 	
+	public static Region2 getMaximumScreenRegion(int i) {
+		GraphicsDevice        gd = Util.getGraphicsDevice(i);
+		GraphicsConfiguration gc = gd.getDefaultConfiguration();
+		
+		Rectangle bounds = gc.getBounds();
+		
+		return new Region2(
+				bounds.x,
+				bounds.y,
+				bounds.width,
+				bounds.height
+				);
+	}
+	
+	public static Region2 getMaximumWindowRegion(int i) {
+		GraphicsDevice        gd = Util.getGraphicsDevice(i);
+		GraphicsConfiguration gc = gd.getDefaultConfiguration();
+		
+		Rectangle bounds = gc.getBounds();
+		Insets    insets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
+		
+		return new Region2(
+				bounds.x + insets.left,
+				bounds.y + insets.top ,
+				bounds.width  - insets.left - insets.right ,
+				bounds.height - insets.top  - insets.bottom
+				);		
+	}
+	
+	public static Bounds2 getMaximumScreenBounds(int i) {
+		GraphicsDevice        gd = Util.getGraphicsDevice(i);
+		GraphicsConfiguration gc = gd.getDefaultConfiguration();
+		
+		Rectangle bounds = gc.getBounds();
+		
+		return new Bounds2(
+				bounds.x,
+				bounds.y,
+				bounds.x + bounds.width,
+				bounds.y + bounds.height
+				);
+	}
+	
+	public static Bounds2 getMaximumWindowBounds(int i) {
+		GraphicsDevice        gd = Util.getGraphicsDevice(i);
+		GraphicsConfiguration gc = gd.getDefaultConfiguration();
+		
+		Rectangle bounds = gc.getBounds();
+		Insets    insets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
+		
+		return new Bounds2(
+				bounds.x + insets.left,
+				bounds.y + insets.top ,
+				bounds.x + bounds.width  - insets.left - insets.right ,
+				bounds.y + bounds.height - insets.top  - insets.bottom
+				);		
+	}
+	
 	protected BufferStrategy
 		b;
 	public void render(float t, float dt, float fixed_dt) {
@@ -386,21 +450,21 @@ public class Stage extends Module {
 	
 	@Override
 	public void onInit() {
-		debug = Util.getEntry(cfg, DEBUG, debug);
-		debug_background = Util.getEntry(cfg, Vector4::parseVector4, DEBUG_BACKGROUND, debug_background);
-		debug_foreground = Util.getEntry(cfg, Vector4::parseVector4, DEBUG_FOREGROUND, debug_foreground);
-		debug_font_name  = Util.getEntry     (cfg, DEBUG_FONT_NAME, debug_font_name);
-		debug_font_size  = Util.getEntryAsInt(cfg, DEBUG_FONT_SIZE, debug_font_size);
+		debug = Configuration.getProperty(cfg, DEBUG, debug);
+		debug_background = Configuration.getPropertyAsObject(cfg, Vector4::parseVector4, DEBUG_BACKGROUND, debug_background);
+		debug_foreground = Configuration.getPropertyAsObject(cfg, Vector4::parseVector4, DEBUG_FOREGROUND, debug_foreground);
+		debug_font_name  = Configuration.getProperty     (cfg, DEBUG_FONT_NAME, debug_font_name);
+		debug_font_size  = Configuration.getPropertyAsInt(cfg, DEBUG_FONT_SIZE, debug_font_size);
 		
-		thread_fps = Util.getEntryAsFloat(cfg, THREAD_FPS, thread_fps);
-		thread_tps = Util.getEntryAsFloat(cfg, THREAD_TPS, thread_tps);
-		canvas_background = Util.getEntry(cfg, Vector4::parseVector4, CANVAS_BACKGROUND, canvas_background);
-		window_background = Util.getEntry(cfg, Vector4::parseVector4, WINDOW_BACKGROUND, window_background);		
-		canvas_layout = Util.getEntry(cfg, Layout::parseLayout, CANVAS_LAYOUT, canvas_layout);
-		window_layout = Util.getEntry(cfg, Layout::parseLayout, WINDOW_LAYOUT, window_layout);
-		window_border = Util.getEntryAsBoolean(cfg, WINDOW_BORDER, window_border);
-		window_device = Util.getEntryAsInt    (cfg, WINDOW_DEVICE, window_device);
-		window_title  = Util.getEntry(cfg, WINDOW_TITLE, window_title);
+		thread_fps = Configuration.getPropertyAsFloat(cfg, THREAD_FPS, thread_fps);
+		thread_tps = Configuration.getPropertyAsFloat(cfg, THREAD_TPS, thread_tps);
+		canvas_background = Configuration.getPropertyAsObject(cfg, Vector4::parseVector4, CANVAS_BACKGROUND, canvas_background);
+		window_background = Configuration.getPropertyAsObject(cfg, Vector4::parseVector4, WINDOW_BACKGROUND, window_background);
+		canvas_layout = Configuration.getPropertyAsObject(cfg, Layout::parseLayout, CANVAS_LAYOUT, canvas_layout);
+		window_layout = Configuration.getPropertyAsObject(cfg, Layout::parseLayout, WINDOW_LAYOUT, window_layout);
+		window_border = Configuration.getPropertyAsBoolean(cfg, WINDOW_BORDER, window_border);
+		window_device = Configuration.getPropertyAsInt    (cfg, WINDOW_DEVICE, window_device);
+		window_title  = Configuration.getProperty(cfg, WINDOW_TITLE, window_title);
 		
 		debug_metrics = Metrics.getByName(debug);
 		debug_background_color  = Vector.toColor4i(debug_background);
@@ -420,9 +484,9 @@ public class Stage extends Module {
 		Region2
 			a, b;
 		if(window_border)
-			a = Util.getMaximumWindowRegion(window_device);
+			a = getMaximumWindowRegion(window_device);
 		else
-			a = Util.getMaximumScreenRegion(window_device);
+			a = getMaximumScreenRegion(window_device);
 		b = window_layout.region(a);		
 		
 		window.setUndecorated(!window_border);

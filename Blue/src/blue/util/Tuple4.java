@@ -44,6 +44,10 @@ public class Tuple4<T0, T1, T2, T3> implements Serializable {
 		return t3;
 	}
 	
+	public int n() {
+		return 4;
+	}
+	
 	public static class Mutable<T0, T1, T2, T3> extends Tuple4<T0, T1, T2, T3> {
 		private static final long 
 			serialVersionUID = 1L;

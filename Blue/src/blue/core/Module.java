@@ -5,10 +5,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
 
-import blue.util.Log;
-import blue.util.Util;
-import blue.util.event.Broker;
-import blue.util.event.Handle;
+import blue.core.Event.Broker;
+import blue.core.Event.Handle;
+import blue.util.Configuration;
+import blue.util.Debug;
 
 public abstract class Module implements Runnable {
 	protected static final HashSet<Module>
@@ -45,15 +45,15 @@ public abstract class Module implements Runnable {
 	@Override
 	public final void run() {
 		try {
-			Log.info(new Object() {/* trace */}, "Init module '" + getClass().getName() + "'.");
+			Debug.info(new Object() {/* trace */}, "Init module '" + getClass().getName() + "'.");
 			onInit();
 			while(running)
 				onStep();
 		} catch(Exception fatal) {
-			Log.warn(new Object() {/* trace */}, "A fatal exception has occurred in module '" + getClass().getName() + "'.");
+			Debug.warn(new Object() {/* trace */}, "A fatal exception has occurred in module '" + getClass().getName() + "'.");
 			fatal.printStackTrace();
 		} finally {
-			Log.info(new Object() {/* trace */}, "Stop module '" + getClass().getName() + "'.");
+			Debug.info(new Object() {/* trace */}, "Stop module '" + getClass().getName() + "'.");
 			onStop();
 		}
 	}
@@ -69,11 +69,11 @@ public abstract class Module implements Runnable {
 		}
 		
 		public String setMetric(Object key, Object val) {
-			return Util.setEntry(map, key, val);
+			return Configuration.setProperty(map, key, val);
 		}
 		
 		public String getMetric(Object key, Object alt) {
-			return Util.getEntry(map, key, alt);
+			return Configuration.setProperty(map, key, alt);
 		}
 		
 		public static <T extends Module> Metrics getByType(Class<T> type) {

@@ -1,6 +1,6 @@
-package blue.util;
+package blue.math;
 
-public class Random {
+public class RNG {
 	public static final LFSR08 LFSR08() {
 		byte seed = (byte)System.currentTimeMillis();
         return new LFSR08(seed != 0 ? seed : LFSR08.DEFAULT_MODE);

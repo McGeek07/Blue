@@ -44,7 +44,7 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 				return 0;
 		}
 		throw new UnsupportedOperationException();
-	}	
+	}
 
 	/* IMMUTABLE ADDITION */
 	public static Vector2 add(Vector2 a, Vector2 b) {
