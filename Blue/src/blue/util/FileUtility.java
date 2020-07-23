@@ -294,7 +294,7 @@ public final class FileUtility {
 	
 	public static <T> void printToFile(File   file, boolean append, T[] list) {
 		try(PrintWriter out = createPrintWriter(file, append)) {
-			PrintUtility.print(out, list);
+			for(T t: list) out.println(t);
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to print to file \"" + file + "\"");
 			e.printStackTrace();
@@ -311,7 +311,7 @@ public final class FileUtility {
 	
 	public static <T> void printToFile(File   file, boolean append, Iterable<T> list) {
 		try(PrintWriter out = createPrintWriter(file, append)) {
-			PrintUtility.print(out, list);
+			for(T t: list) out.println(t);
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to print to file \"" + file + "\"");
 			e.printStackTrace();
@@ -328,7 +328,9 @@ public final class FileUtility {
 	
 	public static <K, V> void printToFile(File   file, boolean append, Map<K, V> map) {
 		try(PrintWriter out = createPrintWriter(file, append)) {
-			PrintUtility.print(out, map);
+			map.forEach((key, val) -> {
+				out.println(key + "=" + val);
+			});
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to print to file \"" + file + "\"");
 			e.printStackTrace();

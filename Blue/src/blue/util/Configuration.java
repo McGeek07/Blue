@@ -17,33 +17,6 @@ public final class Configuration {
 	private Configuration() {
 		//hide constructor
 	}
-
-	public static <T extends Map<String, String>> T parse(T map, String s, String... tags) {
-		String[] t = s.split("\\,");
-		
-		int i = 0;
-		for(; i < t.length; i ++)
-			if(t[i] != null) {
-				String
-					u[] = t[i].split("\\="),
-					u0 = u.length > 1 ? u[0].trim() : null,
-					u1 = u.length > 1 ? u[1].trim() : u[0].trim();
-				if(u0 != null) {
-					map.put(u0 , u1);
-					t[i] = null;
-				}
-			}
-		int j = 0;
-		for(String tag: tags)
-			if(!map.containsKey(tag))
-				for(; j < t.length; j ++)
-					if(t[j] != null) {
-						map.put(tag, t[j]);
-						t[j] = null;
-						break;
-					}
-		return map;
-	}
 	
 	public static void map(Map<String, String> map, Object... args) {
 		int length = args.length - (args.length & 1);
@@ -135,5 +108,32 @@ public final class Configuration {
 	
 	public static <T> T getPropertyAsObject(Map<String, String> map, StringToObject<T> s2o, Object key, T alt) {
 		return stringToObject(s2o, getProperty(map, key), alt);
-	}	
+	}
+
+	public static <T extends Map<String, String>> T parse(T map, String s, String... tags) {
+		String[] t = s.split("[\\,|\n]");
+		
+		int i = 0;
+		for(; i < t.length; i ++)
+			if(t[i] != null) {
+				String
+					u[] = t[i].split("\\="),
+					u0 = u.length > 1 ? u[0].trim() : null,
+					u1 = u.length > 1 ? u[1].trim() : u[0].trim();
+				if(u0 != null) {
+					map.put(u0 , u1);
+					t[i] = null;
+				}
+			}
+		int j = 0;
+		for(String tag: tags)
+			if(!map.containsKey(tag))
+				for(; j < t.length; j ++)
+					if(t[j] != null) {
+						map.put(tag, t[j]);
+						t[j] = null;
+						break;
+					}
+		return map;
+	}
 }
