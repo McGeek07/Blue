@@ -33,14 +33,14 @@ import blue.math.Vector2;
 import blue.math.Vector4;
 import blue.util.Configuration;
 import blue.util.FileUtility;
-import blue.util.GraphicsUtility;
+import blue.util.ScreenUtility;
 
 public class Stage extends Module {
 	protected static final Stage
 		MODULE = new Stage();
 	public static final Cursor
 		NULL_CURSOR = Toolkit.getDefaultToolkit().createCustomCursor(
-			GraphicsUtility.createBufferedImage(0, 16, 16),
+			ScreenUtility.createBufferedImage(0, 16, 16),
 			new Point(0, 0),
 			null
 		);
@@ -287,7 +287,7 @@ public class Stage extends Module {
 	}
 	
 	public static Region2 getMaximumScreenRegion(int i) {
-		GraphicsDevice        gd = GraphicsUtility.getGraphicsDevice(i);
+		GraphicsDevice        gd = ScreenUtility.getGraphicsDevice(i);
 		GraphicsConfiguration gc = gd.getDefaultConfiguration();
 		
 		Rectangle bounds = gc.getBounds();
@@ -301,7 +301,7 @@ public class Stage extends Module {
 	}
 	
 	public static Region2 getMaximumWindowRegion(int i) {
-		GraphicsDevice        gd = GraphicsUtility.getGraphicsDevice(i);
+		GraphicsDevice        gd = ScreenUtility.getGraphicsDevice(i);
 		GraphicsConfiguration gc = gd.getDefaultConfiguration();
 		
 		Rectangle bounds = gc.getBounds();
@@ -316,7 +316,7 @@ public class Stage extends Module {
 	}
 	
 	public static Bounds2 getMaximumScreenBounds(int i) {
-		GraphicsDevice        gd = GraphicsUtility.getGraphicsDevice(i);
+		GraphicsDevice        gd = ScreenUtility.getGraphicsDevice(i);
 		GraphicsConfiguration gc = gd.getDefaultConfiguration();
 		
 		Rectangle bounds = gc.getBounds();
@@ -330,7 +330,7 @@ public class Stage extends Module {
 	}
 	
 	public static Bounds2 getMaximumWindowBounds(int i) {
-		GraphicsDevice        gd = GraphicsUtility.getGraphicsDevice(i);
+		GraphicsDevice        gd = ScreenUtility.getGraphicsDevice(i);
 		GraphicsConfiguration gc = gd.getDefaultConfiguration();
 		
 		Rectangle bounds = gc.getBounds();

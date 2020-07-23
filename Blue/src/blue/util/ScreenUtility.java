@@ -7,9 +7,9 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
 
-public class GraphicsUtility {
+public class ScreenUtility {
 	
-	private GraphicsUtility() {
+	private ScreenUtility() {
 		//hide constructor
 	}
 	
