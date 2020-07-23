@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +22,36 @@ public final class Files {
 	
 	private Files() {
 		//hide constructor
+	}
+	
+	public static File file(String path) {
+		try {
+			return new File(path);
+		} catch(Exception e) {
+			Debug.warn(new Object() {/* trace */}, "Unable to convert path '" + path + "' to file.");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static File file(URL    path) {
+		try {
+			return new File(path.toURI());
+		} catch(URISyntaxException use) {
+			return new File(path.getPath());
+		} catch(Exception e) {
+			Debug.warn(new Object() {/* trace */}, "Unable to convert path '" + path + "' to file.");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static File create(URL    path) {
+		return create(file(path));
+	}
+	
+	public static File create(String path) {
+		return create(file(path));
 	}
 	
 	public static File create(File file) {
@@ -35,6 +67,14 @@ public final class Files {
 		return file;
 	}
 	
+	public static File delete(URL    path) {
+		return delete(file(path));
+	}
+	
+	public static File delete(String path) {
+		return delete(file(path));
+	}
+	
 	public static File delete(File file) {
 		if(file.exists()) {
 			try {
@@ -47,8 +87,12 @@ public final class Files {
 		return file;
 	}
 	
+	public static ObjectOutputStream createObjectOutputStream(URL    path, boolean append) {
+		return createObjectOutputStream(file(path), append);
+	}
+	
 	public static ObjectOutputStream createObjectOutputStream(String path, boolean append) {
-		return createObjectOutputStream(new File(path), append);
+		return createObjectOutputStream(file(path), append);
 	}
 	
 	public static ObjectOutputStream createObjectOutputStream(File   file, boolean append) {
@@ -60,8 +104,12 @@ public final class Files {
 		return null;
 	}
 	
+	public static ObjectInputStream createObjectInputStream(URL    path) {
+		return createObjectInputStream(file(path));
+	}
+	
 	public static ObjectInputStream createObjectInputStream(String path) {
-		return createObjectInputStream(new File(path));
+		return createObjectInputStream(file(path));
 	}
 	
 	public static ObjectInputStream createObjectInputStream(File   file) {
@@ -73,8 +121,12 @@ public final class Files {
 		return null;
 	}
 	
+	public static BufferedWriter createBufferedWriter(URL    path, boolean append) {
+		return createBufferedWriter(file(path), append);
+	}
+	
 	public static BufferedWriter createBufferedWriter(String path, boolean append) {
-		return createBufferedWriter(new File(path), append);
+		return createBufferedWriter(file(path), append);
 	}
 	
 	public static BufferedWriter createBufferedWriter(File   file, boolean append) {
@@ -86,8 +138,12 @@ public final class Files {
 		return null;
 	}
 	
+	public static PrintWriter createPrintWriter(URL    path, boolean append) {
+		return createPrintWriter(file(path), append);
+	}
+	
 	public static PrintWriter createPrintWriter(String path, boolean append) {
-		return createPrintWriter(new File(path), append);
+		return createPrintWriter(file(path), append);
 	}
 	
 	public static PrintWriter createPrintWriter(File   file, boolean append) {
@@ -99,8 +155,12 @@ public final class Files {
 		return null;
 	}
 	
+	public static BufferedReader createBufferedReader(URL    path) {
+		return createBufferedReader(file(path));
+	}
+	
 	public static BufferedReader createBufferedReader(String path) {
-		return createBufferedReader(new File(path));
+		return createBufferedReader(file(path));
 	}
 	
 	public static BufferedReader createBufferedReader(File   file) {
@@ -112,8 +172,12 @@ public final class Files {
 		return null;
 	}
 	
+	public static <T> void write(URL    path, boolean append, T obj) {
+		write(file(path), append, obj);
+	}
+	
 	public static <T> void write(String path, boolean append, T obj) {
-		write(new File(path), append, obj);
+		write(file(path), append, obj);
 	}
 	
 	public static <T> void write(File   file, boolean append, T obj) {
@@ -124,8 +188,12 @@ public final class Files {
 		}
 	}
 	
+	public static <T> void write(URL    path, boolean append, T[] list) {
+		write(file(path), append, list);
+	}
+	
 	public static <T> void write(String path, boolean append, T[] list) {
-		write(new File(path), append, list);
+		write(file(path), append, list);
 	}
 	
 	public static <T> void write(File   file, boolean append, T[] list) {
@@ -136,8 +204,12 @@ public final class Files {
 		}
 	}
 	
+	public static <T> void write(URL    path, boolean append, Iterable<T> list) {
+		write(file(path), append, list);
+	}
+	
 	public static <T> void write(String path, boolean append, Iterable<T> list) {
-		write(new File(path), append, list);
+		write(file(path), append, list);
 	}
 	
 	public static <T> void write(File   file, boolean append, Iterable<T> list) {
@@ -148,8 +220,12 @@ public final class Files {
 		}
 	}
 	
+	public static <T> T read(URL    path) {
+		return read(file(path));
+	}
+	
 	public static <T> T read(String path) {
-		return read(new File(path));
+		return read(file(path));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -163,8 +239,12 @@ public final class Files {
 		return obj;
 	}
 	
+	public static <T> List<T> read(URL    path, List<T> list) {
+		return read(file(path), list);
+	}
+	
 	public static <T> List<T> read(String path, List<T> list) {
-		return read(new File(path), list);
+		return read(file(path), list);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -183,8 +263,12 @@ public final class Files {
 		return list;
 	}
 	
+	public static <T> void print(URL    path, boolean append, T obj) {
+		print(file(path), append, obj);
+	}
+	
 	public static <T> void print(String path, boolean append, T obj) {
-		print(new File(path), append, obj);
+		print(file(path), append, obj);
 	}
 	
 	public static <T> void print(File   file, boolean append, T obj) {
@@ -195,8 +279,12 @@ public final class Files {
 		}
 	}
 	
+	public static <T> void print(URL    path, boolean append, T[] list) {
+		print(file(path), append, list);
+	}
+	
 	public static <T> void print(String path, boolean append, T[] list) {
-		print(new File(path), append, list);
+		print(file(path), append, list);
 	}
 	
 	public static <T> void print(File   file, boolean append, T[] list) {
@@ -208,8 +296,12 @@ public final class Files {
 		}
 	}
 	
+	public static <T> void print(URL    path, boolean append, Iterable<T> list) {
+		print(file(path), append, list);
+	}
+	
 	public static <T> void print(String path, boolean append, Iterable<T> list) {
-		print(new File(path), append, list);
+		print(file(path), append, list);
 	}
 	
 	public static <T> void print(File   file, boolean append, Iterable<T> list) {
@@ -221,8 +313,12 @@ public final class Files {
 		}
 	}
 	
+	public static <K, V> void print(URL    path, boolean append, Map<K, V> map) {
+		print(file(path), append, map);
+	}
+	
 	public static <K, V> void print(String path, boolean append, Map<K, V> map) {
-		print(new File(path), append, map);
+		print(file(path), append, map);
 	}
 	
 	public static <K, V> void print(File   file, boolean append, Map<K, V> map) {
@@ -239,8 +335,12 @@ public final class Files {
 		}
 	}
 	
+	public static String parse(URL    path) {
+		return parse(file(path));
+	}
+	
 	public static String parse(String path) {
-		return parse(new File(path));
+		return parse(file(path));
 	}
 	
 	public static String parse(File   file) {
@@ -253,8 +353,12 @@ public final class Files {
 		return sb.toString();
 	}
 	
+	public static List<String> parse(URL    path, List<String> list) {
+		return parse(file(path), list);
+	}
+	
 	public static List<String> parse(String path, List<String> list) {
-		return parse(new File(path), list);
+		return parse(file(path), list);
 	}
 	
 	public static List<String> parse(File   file, List<String> list) {
@@ -266,8 +370,12 @@ public final class Files {
 		return list;
 	}
 	
+	public static Map<String, String> parse(URL    path, Map<String, String> map) {
+		return parse(file(path), map);
+	}
+	
 	public static Map<String, String> parse(String path, Map<String, String> map) {
-		return parse(new File(path), map);
+		return parse(file(path), map);
 	}
 	
 	public static Map<String, String> parse(File   file, Map<String, String> map) {
@@ -288,8 +396,12 @@ public final class Files {
 		return map;
 	}
 	
+	public static void clear(URL    path) {
+		clear(file(path));
+	}
+	
 	public static void clear(String path) {
-		clear(new File(path));
+		clear(file(path));
 	}
 	
 	public static void clear(File   file) {

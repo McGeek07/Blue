@@ -2,7 +2,6 @@ package blue.util;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.Map;
 
 public class Debug {
 	public static final Logger
@@ -51,35 +50,7 @@ public class Debug {
 				_trace = trace.getClass().getEnclosingMethod()                    .getName();
 			out.printf("[%1$s.%2$s] %3$s%n", _class, _trace, event);
 		}
-	}
-	
-	public static <T> void log(PrintStream out, T[] list) {
-		for(T t: list) out.println(t);
-	}
-	
-	public static <T> void log(PrintWriter out, T[] list) {
-		for(T t: list) out.println(t);
-	}
-	
-	public static <T> void log(PrintStream out, Iterable<T> list) {
-		for(T t: list) out.println(t);
-	}
-	
-	public static <T> void log(PrintWriter out, Iterable<T> list) {
-		for(T t: list) out.println(t);
-	}
-	
-	public static <K, V> void log(PrintStream out, Map<K, V> map) {
-		map.forEach((key, val) -> {
-			out.println(key + "=" + val);
-		});
-	}
-	
-	public static <K, V> void log(PrintWriter out, Map<K, V> map) {
-		map.forEach((key, val) -> {
-			out.println(key + "=" + val);
-		});
-	}
+	}	
 	
 	public static interface Logger {
 		

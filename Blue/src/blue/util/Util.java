@@ -6,6 +6,9 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.util.Map;
 
 public final class Util {
 	
@@ -80,6 +83,34 @@ public final class Util {
 	
 	public static double sign(double x) {
 		return x != 0. ? x > 0. ? 1. : -1. : 0.;
+	}
+	
+	public static <T> void print(PrintStream out, T[] list) {
+		for(T t: list) out.println(t);
+	}
+	
+	public static <T> void print(PrintWriter out, T[] list) {
+		for(T t: list) out.println(t);
+	}
+	
+	public static <T> void print(PrintStream out, Iterable<T> list) {
+		for(T t: list) out.println(t);
+	}
+	
+	public static <T> void print(PrintWriter out, Iterable<T> list) {
+		for(T t: list) out.println(t);
+	}
+	
+	public static <K, V> void print(PrintStream out, Map<K, V> map) {
+		map.forEach((key, val) -> {
+			out.println(key + "=" + val);
+		});
+	}
+	
+	public static <K, V> void print(PrintWriter out, Map<K, V> map) {
+		map.forEach((key, val) -> {
+			out.println(key + "=" + val);
+		});
 	}
 	
 	public static GraphicsDevice getGraphicsDevice(int i) {
