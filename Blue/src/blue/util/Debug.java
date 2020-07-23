@@ -4,10 +4,14 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Map;
 
-public interface Debug {
+public class Debug {
 	public static final Logger
 		info = Logger.create(System.out),
 		warn = Logger.create(System.err);
+	
+	private Debug() {
+		//hide constructor
+	}
 	
 	public static void info(Object event) {
 		info.log("INFO", event);
