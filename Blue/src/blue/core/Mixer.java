@@ -3,7 +3,7 @@ package blue.core;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import blue.util.Util;
+import blue.math.Math;
 
 public class Mixer {
 	public static final Mixer
@@ -36,13 +36,13 @@ public class Mixer {
 	}
 	
 	public void setLevel(float level) {
-		this.level = Util.clamp(level, 0f, Float.POSITIVE_INFINITY);		
+		this.level = Math.clamp(level, 0f, Float.POSITIVE_INFINITY);		
 		this.stereo_l = Math.min(1f - this.balance, 1f) * this.level;
 		this.stereo_r = Math.min(1f + this.balance, 1f) * this.level;
 	}
 	
 	public void setBalance(float balance) {
-		this.balance = Util.clamp(balance, -1f, 1f);
+		this.balance = Math.clamp(balance, -1f, 1f);
 		this.stereo_l = Math.min(1f - this.balance, 1f) * this.level;
 		this.stereo_r = Math.min(1f + this.balance, 1f) * this.level;
 	}

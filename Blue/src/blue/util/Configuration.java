@@ -1,6 +1,16 @@
 package blue.util;
 
+import static blue.util.StringUtility.stringToBoolean;
+import static blue.util.StringUtility.stringToDouble;
+import static blue.util.StringUtility.stringToFloat;
+import static blue.util.StringUtility.stringToInt;
+import static blue.util.StringUtility.stringToLong;
+import static blue.util.StringUtility.stringToObject;
+
 import java.util.Map;
+
+import blue.util.StringUtility.ObjectToString;
+import blue.util.StringUtility.StringToObject;
 
 public final class Configuration {
 	
@@ -21,7 +31,7 @@ public final class Configuration {
 				if(u0 != null) {
 					map.put(u0 , u1);
 					t[i] = null;
-				}			
+				}
 			}
 		int j = 0;
 		for(String tag: tags)
@@ -79,18 +89,6 @@ public final class Configuration {
 		return _val != null ? _val : _alt;
 	}
 	
-	public static int stringToInt(String s) {
-		return stringToInt(s, 0);
-	}	
-	
-	public static int stringToInt(String s, int i) {
-		try {
-			return Integer.parseInt(s);
-		} catch(Exception e) {
-			return i;
-		}
-	}
-	
 	public static int getPropertyAsInt(Map<String, String> map, Object key) {
 		return getPropertyAsInt(map, key, 0);
 	}
@@ -99,37 +97,13 @@ public final class Configuration {
 		return stringToInt(getProperty(map, key), alt);
 	}
 	
-	public static float stringToFloat(String s) {
-		return stringToFloat(s, 0f);
-	}
-	
-	public static float stringToFloat(String str, float f) {
-		try {
-			return Float.parseFloat(str);
-		} catch(Exception e) {
-			return f;
-		}
-	}
-	
 	public static float getPropertyAsFloat(Map<String, String> map, Object key) {
 		return getPropertyAsFloat(map, key, 0f);
 	}
 	
 	public static float getPropertyAsFloat(Map<String, String> map, Object key, float alt) {
 		return stringToFloat(getProperty(map, key), alt);
-	}
-	
-	public static long stringToLong(String s) {
-		return stringToLong(s, 0l);
-	}
-	
-	public static long stringToLong(String s, long l) {
-		try {
-			return Long.parseLong(s);
-		} catch(Exception e) {
-			return l;
-		}
-	}
+	}	
 	
 	public static long getPropertyAsLong(Map<String, String> map, Object key) {
 		return getPropertyAsLong(map, key, 0l);
@@ -137,18 +111,6 @@ public final class Configuration {
 	
 	public static long getPropertyAsLong(Map<String, String> map, Object key, long alt) {
 		return stringToLong(getProperty(map, key), alt);
-	}
-	
-	public static double stringToDouble(String s) {
-		return stringToDouble(s, 0.);
-	}
-	
-	public static double stringToDouble(String s, double d) {
-		try {
-			return Double.parseDouble(s);
-		} catch(Exception e) {
-			return d;
-		}
 	}
 	
 	public static double getPropertyAsDouble(Map<String, String> map, Object key) {
@@ -159,33 +121,13 @@ public final class Configuration {
 		return stringToDouble(getProperty(map, key), alt);
 	}
 	
-	public static boolean stringToBoolean(String s) {
-		return stringToBoolean(s, false);
-	}
-	
-	public static boolean stringToBoolean(String s, boolean b) {
-		try {
-			return Boolean.parseBoolean(s);
-		} catch(Exception e) {
-			return b;
-		}
-	}
-	
 	public static boolean getPropertyAsBoolean(Map<String, String> map, Object key) {
 		return getPropertyAsBoolean(map, key, false);
 	}
 	
 	public static boolean getPropertyAsBoolean(Map<String, String> map, Object key, boolean alt) {
 		return stringToBoolean(getProperty(map, key), alt);
-	}
-	
-	public static <T> T stringToObject(StringToObject<T> s2o, String s) {
-		return stringToObject(s2o, s, null);
 	}	
-	
-	public static <T> T stringToObject(StringToObject<T> s2o, String s, T t) {
-		return s2o != null && s != null ? s2o.toObject(s) : t;
-	}
 	
 	public static <T> T getPropertyAsObject(Map<String, String> map, StringToObject<T> s2o, Object key) {
 		return getPropertyAsObject(map, s2o, key, null);
@@ -193,19 +135,5 @@ public final class Configuration {
 	
 	public static <T> T getPropertyAsObject(Map<String, String> map, StringToObject<T> s2o, Object key, T alt) {
 		return stringToObject(s2o, getProperty(map, key), alt);
-	}
-	
-	public static <T> String objectToString(ObjectToString<T> o2s, T t) {
-		return t != null ? o2s != null ? o2s.toString(t) : t.toString() : null;
 	}	
-
-	public static interface ObjectToString<T> {
-		public String toString(T obj);
-	}
-	public static interface StringToObject<T> {
-		public T toObject(String str);
-	}
-	
-	public static final ObjectToString<?>
-		OBJECT_TO_STRING = Object::toString;
 }

@@ -52,6 +52,7 @@ public abstract class Module implements Runnable {
 		} catch(Exception fatal) {
 			Debug.warn(new Object() {/* trace */}, "A fatal exception has occurred in module '" + getClass().getName() + "'.");
 			fatal.printStackTrace();
+			Engine.exit();
 		} finally {
 			Debug.info(new Object() {/* trace */}, "Stop module '" + getClass().getName() + "'.");
 			onStop();
@@ -61,6 +62,9 @@ public abstract class Module implements Runnable {
 	public static class Metrics {
 		protected static final HashMap<String, Metrics>
 			NAME_INDEX = new HashMap<String, Metrics>();
+		public static final String
+			STAGE_METRICS = Stage.class.getName(),
+			AUDIO_MATRICS = Audio.class.getName();
 		protected final TreeMap<String, String>
 			map = new TreeMap<String, String>();
 		

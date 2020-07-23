@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import blue.util.Configuration;
 import blue.util.Copyable;
+import blue.util.StringUtility;
 
 public class Layout implements Serializable, Copyable<Layout> {
 	private static final long 
@@ -224,7 +225,7 @@ public class Layout implements Serializable, Copyable<Layout> {
 			int i = s.indexOf('#');
 			s = s.substring(i + 1);
 			
-			value = Configuration.stringToFloat(s);
+			value = StringUtility.stringToFloat(s);
 			fixed = i >= 0;
 		}
 		

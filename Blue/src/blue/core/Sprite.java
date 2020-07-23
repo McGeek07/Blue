@@ -15,7 +15,7 @@ import blue.math.Region2;
 import blue.math.Vector;
 import blue.math.Vector2;
 import blue.util.Debug;
-import blue.util.Util;
+import blue.util.GraphicsUtility;
 
 public class Sprite implements Renderable, Updateable {
 	public static final int
@@ -339,8 +339,8 @@ public class Sprite implements Renderable, Updateable {
 						frame_h = source_frames[i].getHeight();
 					BufferedImage
 						source_frame = source_frames[i],
-						buffer_frame = Util.createBufferedImage(0, frame_w, frame_h),
-						filter_frame = Util.createBufferedImage(0, frame_w, frame_h);			
+						buffer_frame = GraphicsUtility.createBufferedImage(0, frame_w, frame_h),
+						filter_frame = GraphicsUtility.createBufferedImage(0, frame_w, frame_h);		
 					
 					Graphics2D g0 = buffer_frame.createGraphics();
 					g0.drawImage(source_frame, 0, 0, null);

@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import blue.util.Util;
+import blue.util.ObjectUtility;
 
 public interface Event extends Serializable {
 	
@@ -106,7 +106,7 @@ public interface Event extends Serializable {
 		}
 		
 		public <T> void flush(T event) {
-			getListeners(Util.typeOf(event)).flush(event);
+			getListeners(ObjectUtility.typeOf(event)).flush(event);
 		}
 		
 		public static class Group implements Iterable<Handle> {

@@ -15,6 +15,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.image.BufferStrategy;
 import java.io.File;
+import java.net.URL;
 import java.util.Map;
 
 import blue.Blue;
@@ -31,15 +32,15 @@ import blue.math.Vector;
 import blue.math.Vector2;
 import blue.math.Vector4;
 import blue.util.Configuration;
-import blue.util.Files;
-import blue.util.Util;
+import blue.util.FileUtility;
+import blue.util.GraphicsUtility;
 
 public class Stage extends Module {
 	protected static final Stage
 		MODULE = new Stage();
 	public static final Cursor
 		NULL_CURSOR = Toolkit.getDefaultToolkit().createCustomCursor(
-			Util.createBufferedImage(0, 16, 16),
+			GraphicsUtility.createBufferedImage(0, 16, 16),
 			new Point(0, 0),
 			null
 		);
@@ -80,7 +81,7 @@ public class Stage extends Module {
 		scene;
 	
 	protected Metrics
-		debug_metrics;
+		debug_metrics = metrics;
 	protected Color
 		debug_background_color,
 		debug_foreground_color;
@@ -144,20 +145,28 @@ public class Stage extends Module {
 		return Configuration.getProperty(MODULE.cfg, key, alt);
 	}
 	
+	public static void saveConfiguration(URL    path) {
+		saveConfiguration(FileUtility.getFile(path));
+	}
+	
 	public static void saveConfiguration(String path) {
-		saveConfiguration(new File(path));
+		saveConfiguration(FileUtility.getFile(path));
 	}
 	
 	public static void saveConfiguration(File   file) {
-		Files.print(file, false, MODULE.cfg);
+		FileUtility.printToFile(file, false, MODULE.cfg);
+	}
+	
+	public static void loadConfiguration(URL    path) {
+		loadConfiguration(FileUtility.getFile(path));
 	}
 	
 	public static void loadConfiguration(String path) {
-		loadConfiguration(new File(path));
+		loadConfiguration(FileUtility.getFile(path));
 	}
 	
 	public static void loadConfiguration(File   file) {
-		Files.parse(file, MODULE.cfg);
+		FileUtility.parseFromFile(file, MODULE.cfg);
 	}
 	
 	public static <T> void attach(Class<T> type, Listener<T> listener) {
@@ -265,74 +274,74 @@ public class Stage extends Module {
 		return MODULE.metrics;
 	}
 	
-	public static <T extends Module> void showMetrics(Class<T> type) {
+	public static <T extends Module> void debug(Class<T> type) {
 		MODULE.debug_metrics = Metrics.getByType(type);
 	}
 	
-	public static <T extends Module> void showMetrics(String   name) {
+	public static <T extends Module> void debug(String   name) {
 		MODULE.debug_metrics = Metrics.getByName(name);
 	}
 	
-	public static void showMetrics(Metrics metrics) {
+	public static void debug(Metrics metrics) {
 		MODULE.debug_metrics = metrics;
 	}
 	
 	public static Region2 getMaximumScreenRegion(int i) {
-		GraphicsDevice        gd = Util.getGraphicsDevice(i);
+		GraphicsDevice        gd = GraphicsUtility.getGraphicsDevice(i);
 		GraphicsConfiguration gc = gd.getDefaultConfiguration();
 		
 		Rectangle bounds = gc.getBounds();
 		
 		return new Region2(
-				bounds.x,
-				bounds.y,
-				bounds.width,
-				bounds.height
-				);
+			bounds.x,
+			bounds.y,
+			bounds.width,
+			bounds.height
+		);
 	}
 	
 	public static Region2 getMaximumWindowRegion(int i) {
-		GraphicsDevice        gd = Util.getGraphicsDevice(i);
+		GraphicsDevice        gd = GraphicsUtility.getGraphicsDevice(i);
 		GraphicsConfiguration gc = gd.getDefaultConfiguration();
 		
 		Rectangle bounds = gc.getBounds();
 		Insets    insets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
 		
 		return new Region2(
-				bounds.x + insets.left,
-				bounds.y + insets.top ,
-				bounds.width  - insets.left - insets.right ,
-				bounds.height - insets.top  - insets.bottom
-				);		
+			bounds.x + insets.left,
+			bounds.y + insets.top ,
+			bounds.width  - insets.left - insets.right ,
+			bounds.height - insets.top  - insets.bottom
+		);
 	}
 	
 	public static Bounds2 getMaximumScreenBounds(int i) {
-		GraphicsDevice        gd = Util.getGraphicsDevice(i);
+		GraphicsDevice        gd = GraphicsUtility.getGraphicsDevice(i);
 		GraphicsConfiguration gc = gd.getDefaultConfiguration();
 		
 		Rectangle bounds = gc.getBounds();
 		
 		return new Bounds2(
-				bounds.x,
-				bounds.y,
-				bounds.x + bounds.width,
-				bounds.y + bounds.height
-				);
+			bounds.x,
+			bounds.y,
+			bounds.x + bounds.width,
+			bounds.y + bounds.height
+		);
 	}
 	
 	public static Bounds2 getMaximumWindowBounds(int i) {
-		GraphicsDevice        gd = Util.getGraphicsDevice(i);
+		GraphicsDevice        gd = GraphicsUtility.getGraphicsDevice(i);
 		GraphicsConfiguration gc = gd.getDefaultConfiguration();
 		
 		Rectangle bounds = gc.getBounds();
 		Insets    insets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
 		
 		return new Bounds2(
-				bounds.x + insets.left,
-				bounds.y + insets.top ,
-				bounds.x + bounds.width  - insets.left - insets.right ,
-				bounds.y + bounds.height - insets.top  - insets.bottom
-				);		
+			bounds.x + insets.left,
+			bounds.y + insets.top ,
+			bounds.x + bounds.width  - insets.left - insets.right ,
+			bounds.y + bounds.height - insets.top  - insets.bottom
+		);
 	}
 	
 	protected BufferStrategy
@@ -464,7 +473,7 @@ public class Stage extends Module {
 		window_layout = Configuration.getPropertyAsObject(cfg, Layout::parseLayout, WINDOW_LAYOUT, window_layout);
 		window_border = Configuration.getPropertyAsBoolean(cfg, WINDOW_BORDER, window_border);
 		window_device = Configuration.getPropertyAsInt    (cfg, WINDOW_DEVICE, window_device);
-		window_title  = Configuration.getProperty(cfg, WINDOW_TITLE, window_title);
+		window_title  = Configuration.getProperty(cfg, WINDOW_TITLE, window_title);		
 		
 		debug_metrics = Metrics.getByName(debug);
 		debug_background_color  = Vector.toColor4i(debug_background);
@@ -491,9 +500,9 @@ public class Stage extends Module {
 		
 		window.setUndecorated(!window_border);
 		window.setBounds(
-				(int)b.x(), (int)b.y(),
-				(int)b.w(), (int)b.h()
-				);
+			(int)b.x(), (int)b.y(),
+			(int)b.w(), (int)b.h()
+		);
 		window.setTitle(window_title);
 		
 		Insets insets = window.getInsets();
@@ -539,9 +548,9 @@ public class Stage extends Module {
 			@Override
 			public void componentResized(java.awt.event.ComponentEvent ce) {
 				queue(new CanvasEvent(
-						(int)canvas.getWidth() ,
-						(int)canvas.getHeight()
-						));
+					(int)canvas.getWidth() ,
+					(int)canvas.getHeight()
+				));
 			}
 		});
 		

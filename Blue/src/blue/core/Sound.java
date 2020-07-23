@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import blue.math.Math;
 import blue.util.Debug;
-import blue.util.Util;
 
 public class Sound {
 	public static final int
@@ -87,13 +87,13 @@ public class Sound {
 	}
 	
 	public void setLevel(float level) {
-		this.level = Util.clamp(level, 0f, Float.POSITIVE_INFINITY);		
+		this.level = Math.clamp(level, 0f, Float.POSITIVE_INFINITY);		
 		this.stereo_l = Math.min(1f - this.balance, 1f) * this.level;
 		this.stereo_r = Math.min(1f + this.balance, 1f) * this.level;
 	}
 	
 	public void setBalance(float balance) {
-		this.balance = Util.clamp(balance, -1f, 1f);
+		this.balance = Math.clamp(balance, -1f, 1f);
 		this.stereo_l = Math.min(1f - this.balance, 1f) * this.level;
 		this.stereo_r = Math.min(1f + this.balance, 1f) * this.level;
 	}
