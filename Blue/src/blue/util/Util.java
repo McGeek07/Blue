@@ -457,7 +457,7 @@ public final class Util {
 					file.getParentFile().mkdirs();
 				file.createNewFile();
 			} catch(Exception e) {
-				Debug.warn(new Object() {/* trace */}, "Unable to create file \"" + file + "\"");
+				Log.warn(new Object() {/* trace */}, "Unable to create file \"" + file + "\"");
 				e.printStackTrace();
 			}
 		return file;
@@ -468,7 +468,7 @@ public final class Util {
 			try {
 				file.delete();
 			} catch(Exception e) {
-				Debug.warn(new Object() {/* trace */}, "Unable to delete file \"" + file + "\"");
+				Log.warn(new Object() {/* trace */}, "Unable to delete file \"" + file + "\"");
 				e.printStackTrace();
 			}
 		}
@@ -483,7 +483,7 @@ public final class Util {
 		try {
 			return AudioSystem.getAudioInputStream(createFile(file));
 		} catch(IOException | UnsupportedAudioFileException uafe) {
-			Debug.warn(new Object() {/* trace */}, "Unable to open file \"" + file + "\"");
+			Log.warn(new Object() {/* trace */}, "Unable to open file \"" + file + "\"");
 		}
 		return null;
 	}
@@ -496,7 +496,7 @@ public final class Util {
 		try {
 			return new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(createFile(file), append)));
 		} catch (IOException ioe) {
-			Debug.warn(new Object() {/* trace */}, "Unable to open file \"" + file + "\"");
+			Log.warn(new Object() {/* trace */}, "Unable to open file \"" + file + "\"");
 		}
 		return null;
 	}
@@ -509,7 +509,7 @@ public final class Util {
 		try {
 			return new ObjectInputStream(new BufferedInputStream(new FileInputStream(createFile(file))));
 		} catch(IOException ioe) {
-			Debug.warn(new Object() {/* trace */}, "Unable to open file \"" + file + "\"");
+			Log.warn(new Object() {/* trace */}, "Unable to open file \"" + file + "\"");
 		}
 		return null;
 	}
@@ -522,7 +522,7 @@ public final class Util {
 		try {
 			return new BufferedWriter(new FileWriter(createFile(file), append));
 		} catch(IOException ioe) {
-			Debug.warn(new Object() {/* trace */}, "Unable to open file \"" + file + "\"");
+			Log.warn(new Object() {/* trace */}, "Unable to open file \"" + file + "\"");
 		}
 		return null;
 	}
@@ -535,7 +535,7 @@ public final class Util {
 		try {
 			return new PrintWriter(new BufferedWriter(new FileWriter(createFile(file), append)));
 		} catch(IOException ioe) {
-			Debug.warn(new Object() {/* trace */}, "Unable to open file \"" + file + "\"");
+			Log.warn(new Object() {/* trace */}, "Unable to open file \"" + file + "\"");
 		}
 		return null;
 	}
@@ -548,7 +548,7 @@ public final class Util {
 		try {
 			return new BufferedReader(new FileReader(createFile(file)));
 		} catch(IOException ioe) {
-			Debug.warn(new Object() {/* trace */}, "Unable to open file \"" + file + "\"");
+			Log.warn(new Object() {/* trace */}, "Unable to open file \"" + file + "\"");
 		}
 		return null;
 	}

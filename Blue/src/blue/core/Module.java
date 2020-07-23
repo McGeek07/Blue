@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
 
-import blue.util.Debug;
+import blue.util.Log;
 import blue.util.Util;
 import blue.util.event.Broker;
 import blue.util.event.Handle;
@@ -45,15 +45,15 @@ public abstract class Module implements Runnable {
 	@Override
 	public final void run() {
 		try {
-			Debug.info(new Object() {/* trace */}, "Init module '" + getClass().getName() + "'.");
+			Log.info(new Object() {/* trace */}, "Init module '" + getClass().getName() + "'.");
 			onInit();
 			while(running)
 				onStep();
 		} catch(Exception fatal) {
-			Debug.warn(new Object() {/* trace */}, "A fatal exception has occurred in module '" + getClass().getName() + "'.");
+			Log.warn(new Object() {/* trace */}, "A fatal exception has occurred in module '" + getClass().getName() + "'.");
 			fatal.printStackTrace();
 		} finally {
-			Debug.info(new Object() {/* trace */}, "Stop module '" + getClass().getName() + "'.");
+			Log.info(new Object() {/* trace */}, "Stop module '" + getClass().getName() + "'.");
 			onStop();
 		}
 	}
