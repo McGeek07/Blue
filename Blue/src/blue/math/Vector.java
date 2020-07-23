@@ -432,15 +432,15 @@ public abstract class Vector implements Serializable, Copyable<Vector> {
 	
 	/* MAGNITUDE */
 	public static float magnitude(Vector2 a) {
-		return (float)Math.sqrt(dot(a));
+		return Math.sqrt(dot(a));
 	}
 	
 	public static float magnitude(Vector3 a) {
-		return (float)Math.sqrt(dot(a));
+		return Math.sqrt(dot(a));
 	}
 	
 	public static float magnitude(Vector4 a) {
-		return (float)Math.sqrt(dot(a));
+		return Math.sqrt(dot(a));
 	}
 	
 	/*IMMUTABLE NORMALIZE */

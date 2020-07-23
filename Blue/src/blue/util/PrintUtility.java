@@ -10,6 +10,18 @@ public class PrintUtility {
 		//hide constructor
 	}
 	
+	public static <T> void print(T[] list) {
+		print(System.out, list);
+	}
+	
+	public static <T> void print(Iterable<T> list) {
+		print(System.out, list);
+	}
+	
+	public static <K, V> void print(Map<K, V> map) {
+		print(System.out, map);
+	}
+	
 	public static <T> void print(PrintStream out, T[] list) {
 		for(T t: list) out.println(t);
 	}
