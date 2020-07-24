@@ -7,9 +7,9 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
 
-public class ScreenUtility {
+public class ImageUtility {
 	
-	private ScreenUtility() {
+	private ImageUtility() {
 		//hide constructor
 	}
 	
@@ -21,7 +21,7 @@ public class ScreenUtility {
 			return gd[0];
 		else
 			return null;
-	}	
+	}
 	
 	public static BufferedImage createBufferedImage(int i, int w, int h) {
 		return createBufferedImage(i, w, h, Transparency.TRANSLUCENT);
