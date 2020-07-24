@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
@@ -26,11 +27,10 @@ public final class FileUtility {
 	public static File getFile(URL    path) {
 		try {
 			return new File(path.toURI());
-		} catch(URISyntaxException use) {
+		} catch (URISyntaxException use) {
 			return new File(path.getPath());
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to convert path '" + path + "' to file.");
-			e.printStackTrace();
 		}
 		return null;
 	}
@@ -40,7 +40,6 @@ public final class FileUtility {
 			return new File(path);
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to convert path '" + path + "' to file.");
-			e.printStackTrace();
 		}
 		return null;
 	}
@@ -61,7 +60,6 @@ public final class FileUtility {
 				file.createNewFile();
 			} catch(Exception e) {
 				Debug.warn(new Object() {/* trace */}, "Unable to create file \"" + file + "\"");
-				e.printStackTrace();
 			}
 		return file;
 	}
@@ -80,7 +78,6 @@ public final class FileUtility {
 				file.delete();
 			} catch(Exception e) {
 				Debug.warn(new Object() {/* trace */}, "Unable to delete file \"" + file + "\"");
-				e.printStackTrace();
 			}
 		}
 		return file;
@@ -116,6 +113,15 @@ public final class FileUtility {
 			return new ObjectInputStream(new BufferedInputStream(new FileInputStream(createFile(file))));
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to open file \"" + file + "\"");
+		}
+		return null;
+	}
+	
+	public static ObjectInputStream createObjectInputStream(Class<?> from, String name) {
+		try {
+			return new ObjectInputStream(new BufferedInputStream(from.getResourceAsStream(name)));
+		} catch(Exception e) {
+			Debug.warn(new Object() {/* trace */}, "Unable to open resource \"" + from.getPackageName() + "." + name + "\"");
 		}
 		return null;
 	}
@@ -171,6 +177,15 @@ public final class FileUtility {
 		return null;
 	}
 	
+	public static BufferedReader createBufferedReader(Class<?> from, String name) {
+		try {			
+			return new BufferedReader(new InputStreamReader(from.getResourceAsStream(name)));
+		} catch(Exception e) {
+			Debug.warn(new Object() {/* trace */}, "Unable to open resource \"" + from.getPackageName() + "." + name + "\"");
+		}
+		return null;
+	}
+	
 	public static <T> void writeToFile(URL    path, boolean append, T obj) {
 		writeToFile(getFile(path), append, obj);
 	}
@@ -184,7 +199,6 @@ public final class FileUtility {
 			out.writeObject(obj);
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to write to file \"" + file + "\"");
-			e.printStackTrace();
 		}
 	}
 	
@@ -201,7 +215,6 @@ public final class FileUtility {
 			out.writeObject(list);
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to write to file \"" + file + "\"");
-			e.printStackTrace();
 		}
 	}
 	
@@ -218,7 +231,6 @@ public final class FileUtility {
 			out.writeObject(list);
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to write to file \"" + file + "\"");
-			e.printStackTrace();
 		}
 	}
 	
@@ -237,7 +249,17 @@ public final class FileUtility {
 			obj = (T)in.readObject();
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to read from file \"" + file + "\"");
-			e.printStackTrace();
+		}
+		return obj;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T readFromResource(Class<?> from, String name) {
+		T obj = null;
+		try(ObjectInputStream in = createObjectInputStream(from, name)) {
+			obj = (T)in.readObject();
+		} catch(Exception e) {
+			Debug.warn(new Object() {/* trace */}, "Unable to read from resource \"" + from.getPackageName() + "." + name + "\"");
 		}
 		return obj;
 	}
@@ -262,7 +284,22 @@ public final class FileUtility {
 					list.add(t);
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to read from file \"" + file + "\"");
-			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> List<T> readFromResource(Class<?> from, String name, List<T> list) {
+		try(ObjectInputStream in = createObjectInputStream(from, name)) {
+			Object o = in.readObject();
+			if(o instanceof Iterable)
+				for(T t: (Iterable<T>)o)
+					list.add(t);
+			else
+				for(T t: (T[])o)
+					list.add(t);
+		} catch(Exception e) {
+			Debug.warn(new Object() {/* trace */}, "Unable to read from resource \"" + from.getPackageName() + "." + name + "\"");
 		}
 		return list;
 	}
@@ -280,7 +317,6 @@ public final class FileUtility {
 			out.println(obj);
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to print to file \"" + file + "\"");
-			e.printStackTrace();
 		}
 	}
 	
@@ -297,7 +333,6 @@ public final class FileUtility {
 			for(T t: list) out.println(t);
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to print to file \"" + file + "\"");
-			e.printStackTrace();
 		}
 	}
 	
@@ -314,7 +349,6 @@ public final class FileUtility {
 			for(T t: list) out.println(t);
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to print to file \"" + file + "\"");
-			e.printStackTrace();
 		}
 	}
 	
@@ -333,7 +367,6 @@ public final class FileUtility {
 			});
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to print to file \"" + file + "\"");
-			e.printStackTrace();
 		}
 	}
 	
@@ -351,7 +384,6 @@ public final class FileUtility {
 			while(in.ready()) sb.append(in.readLine());
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to parse from file \"" + file + "\"");
-			e.printStackTrace();
 		}
 		return sb.toString();
 	}
@@ -369,7 +401,6 @@ public final class FileUtility {
 			while(in.ready()) list.add(in.readLine());
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to parse from file \"" + file + "\"");
-			e.printStackTrace();
 		}
 		return list;
 	}
@@ -396,7 +427,24 @@ public final class FileUtility {
 			}
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to parse from file \"" + file + "\"");
-			e.printStackTrace();
+		}
+		return map;
+	}
+	
+	public static Map<String, String> parseFromResource(Class<?> from, String name, Map<String, String> map) {
+		try(BufferedReader in = createBufferedReader(from, name)) {
+			while(in.ready()) {
+				String 
+					line = in.readLine();
+				int
+					i = line.indexOf(':');		
+				String
+					key = i >= 0 ? line.substring(0, i).trim() : line.trim(),
+					val = i >= 0 ? line.substring(++ i).trim() :          "";
+				map.put(key, val);
+			}
+		} catch(Exception e) {
+			Debug.warn(new Object() {/* trace */}, "Unable to parse from resource \"" + from.getPackageName() + "." + name + "\"");
 		}
 		return map;
 	}
@@ -414,7 +462,6 @@ public final class FileUtility {
 			out.write("");
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to clear file \"" + file + "\"");
-			e.printStackTrace();
 		}
 	}
 }

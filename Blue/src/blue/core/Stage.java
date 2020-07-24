@@ -169,6 +169,10 @@ public class Stage extends Module {
 		FileUtility.parseFromFile(file, MODULE.cfg);
 	}
 	
+	public static void loadConfiguration(Class<?> from, String name) {
+		FileUtility.parseFromResource(from, name, MODULE.cfg);
+	}
+	
 	public static <T> void attach(Class<T> type, Listener<T> listener) {
 		MODULE.handle.attach(type, listener);
 	}
