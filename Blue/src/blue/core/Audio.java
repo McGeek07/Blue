@@ -25,10 +25,10 @@ import blue.util.Debug;
  * <br>
  * <br>
  * The Audio module also contains static helper methods for reading raw audio 
- * bytes and converting them to the correct playback format. Because sound can
+ * bytes and converting them to the proper playback format. Because sounds can 
  * be loaded at any time, even before the Audio module has been initialized, the
- * playback format cannot be changed. Any change in the playback format could 
- * make previously loaded sounds incompatible.
+ * playback format is readonly and cannot be changed. Any change to the playback
+ * format could make previously loaded sounds incompatible.
  */
 public class Audio extends Module {
 	//singleton instance
@@ -181,16 +181,18 @@ public class Audio extends Module {
 	}
 	
 	/**
-	 * Flush an event. This method is not thread-safe and should only be called 
-	 * explicitly via the Audio thread.
+	 * Flush an event. This method is executed immediately and therefore is not
+	 * thread-safe. To avoid race conditions or "stutter" this method should 
+	 * only be called explicitly via the Audio thread.
 	 */
 	public static <T> void flush(T event) {
 		MODULE.broker.flush(event);
 	}
 	
 	/**
-	 * Flush queued items. This method is not thread-safe and should only be 
-	 * called explicitly via the Audio thread.
+	 * Flush queued items. This method is executed immediately and therefore is 
+	 * not thread-safe. To avoid race conditions or "stutter" this method should 
+	 * only be called explicitly via the Audio thread.
 	 */
 	public static void poll() {
 		MODULE.broker.poll();
