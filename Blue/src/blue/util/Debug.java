@@ -71,13 +71,13 @@ public class Debug {
 	
 	public static <K, V> void log(PrintStream out, Map<K, V> map) {
 		map.forEach((key, val) -> {
-			out.println(key + "=" + val);
+			out.println(key + ":" + val);
 		});
 	}
 	
 	public static <K, V> void log(PrintWriter out, Map<K, V> map) {
 		map.forEach((key, val) -> {
-			out.println(key + "=" + val);
+			out.println(key + ":" + val);
 		});
 	}	
 	

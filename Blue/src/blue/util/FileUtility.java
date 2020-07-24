@@ -329,7 +329,7 @@ public final class FileUtility {
 	public static <K, V> void printToFile(File   file, boolean append, Map<K, V> map) {
 		try(PrintWriter out = createPrintWriter(file, append)) {
 			map.forEach((key, val) -> {
-				out.println(key + "=" + val);
+				out.println(key + ":" + val);
 			});
 		} catch(Exception e) {
 			Debug.warn(new Object() {/* trace */}, "Unable to print to file \"" + file + "\"");
@@ -387,11 +387,11 @@ public final class FileUtility {
 			while(in.ready()) {
 				String 
 					line = in.readLine();
-				String[] 
-					temp = line.split("\\=");
+				int
+					i = line.indexOf(':');		
 				String
-					key = temp.length > 0 ? temp[0]: "",
-					val = temp.length > 1 ? temp[1]: "";
+					key = i >= 0 ? line.substring(0, i).trim() : line.trim(),
+					val = i >= 0 ? line.substring(++ i).trim() :          "";
 				map.put(key, val);
 			}
 		} catch(Exception e) {
