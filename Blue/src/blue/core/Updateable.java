@@ -16,10 +16,6 @@ public interface Updateable {
 			//do nothing
 		}
 		
-		public void update(Updateable updateable) {
-			updateable.update(this);
-		}
-		
 		private UpdateContext
 			root;
 	

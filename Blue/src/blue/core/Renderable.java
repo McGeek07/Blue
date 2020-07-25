@@ -26,10 +26,6 @@ public interface Renderable {
 			//do nothing
 		}
 		
-		public void render(Renderable renderable) {
-			renderable.render(this);
-		}
-		
 		public void stroke(float w) {
 			g.setStroke(new BasicStroke(w));
 		}	
