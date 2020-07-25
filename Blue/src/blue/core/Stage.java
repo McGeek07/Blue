@@ -247,10 +247,17 @@ public class Stage extends Module {
 			MODULE.scene.onKeyUp(key);
 	}
 	
-	public static Box<?> bounds() {
+	public static Box<?> canvas() {
 		return new Region2(
 			MODULE.canvas_w,
 			MODULE.canvas_h
+		);
+	}
+	
+	public static Box<?> window() {
+		return new Region2(
+			MODULE.window_w,
+			MODULE.window_h
 		);
 	}
 	
@@ -477,7 +484,7 @@ public class Stage extends Module {
 		window_layout = Configuration.getPropertyAsObject(cfg, Layout::parseLayout, WINDOW_LAYOUT, window_layout);
 		window_border = Configuration.getPropertyAsBoolean(cfg, WINDOW_BORDER, window_border);
 		window_device = Configuration.getPropertyAsInt    (cfg, WINDOW_DEVICE, window_device);
-		window_title  = Configuration.getProperty(cfg, WINDOW_TITLE, window_title);		
+		window_title  = Configuration.getProperty(cfg, WINDOW_TITLE, window_title);
 		
 		debug_metrics = Metrics.getByName(debug);
 		debug_background_color  = Vector.toColor4i(debug_background);
@@ -670,8 +677,8 @@ public class Stage extends Module {
 			
 			elapsed_nanos = 0;
 			
-			metrics.setMetric(Metric.FPS, String.format("%1$d hz @ %2$.2f [%3$.2f - %4$.2f] ms", render_hz, avg_render_dt, min_render_dt, max_render_dt));
-			metrics.setMetric(Metric.TPS, String.format("%1$d hz @ %2$.2f [%3$.2f - %4$.2f] ms", update_hz, avg_update_dt, min_update_dt, max_update_dt));
+			metrics.setMetric(FPS_METRIC, String.format("%1$d hz @ %2$.2f [%3$.2f - %4$.2f] ms", render_hz, avg_render_dt, min_render_dt, max_render_dt));
+			metrics.setMetric(TPS_METRIC, String.format("%1$d hz @ %2$.2f [%3$.2f - %4$.2f] ms", update_hz, avg_update_dt, min_update_dt, max_update_dt));
 		}
 		
 		long sync = Math.min(
@@ -717,9 +724,10 @@ public class Stage extends Module {
 			(float)this.window_h / this.canvas_h
 		);
 		if(scene != null)
-			scene.onResize();
+			scene.onResize();		
 		
-		metrics.setMetric(Metric.CANVAS, String.format("%1$d x %2$d @ %3$.2f%%", canvas_w, canvas_h, canvas_scale * 100));
+		metrics.setMetric(CANVAS_METRIC, String.format("%1$d x %2$d @ %3$.2f%%", canvas_w, canvas_h, canvas_scale * 100));
+		metrics.setMetric(WINDOW_METRIC, String.format("%1$d x %2$d",            window_w, window_h                    ));		
 	}
 	
 	public static class SceneEvent {
@@ -763,10 +771,10 @@ public class Stage extends Module {
 		WINDOW_BORDER     = "window-border",
 		WINDOW_TITLE      = "window-title";
 	
-	public static class Metric {
-		public static final String
-			CANVAS = "Canvas",
-			FPS = "FPS",
-			TPS = "TPS";
-	}
+	public static final String
+		METRICS = Stage.class.getName(),
+		CANVAS_METRIC = "Canvas",
+		WINDOW_METRIC = "Window",
+		FPS_METRIC = "FPS",
+		TPS_METRIC = "TPS";
 }

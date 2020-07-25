@@ -46,10 +46,12 @@ public class Audio extends Module {
 			PLAYBACK_CHANNELS,
 			true ,
 			false
-		);	
+		);
 	
 	private Audio() {
-		//hide constructor
+		metrics.setMetric(Audio.PLAYBACK_CHANNELS_METRIC   , String.format("%1$s", PLAYBACK_CHANNELS));
+		metrics.setMetric(Audio.PLAYBACK_SAMPLE_RATE_METRIC, String.format("%1$s hz", PLAYBACK_SAMPLE_RATE));
+		metrics.setMetric(Audio.PLAYBACK_SAMPLE_SIZE_METRIC, String.format("%1$s bits", PLAYBACK_SAMPLE_SIZE));
 	}
 	
 	private SourceDataLine
@@ -269,4 +271,10 @@ public class Audio extends Module {
 		
 		return baos.toByteArray();
 	}
+	
+	public static final String
+		METRICS = Audio.class.getName(),
+		PLAYBACK_CHANNELS_METRIC = "Playback Channels",
+		PLAYBACK_SAMPLE_RATE_METRIC = "Playback Sample Rate",
+		PLAYBACK_SAMPLE_SIZE_METRIC = "Playback Sample Size";
 }

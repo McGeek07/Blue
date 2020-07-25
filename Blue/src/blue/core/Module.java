@@ -62,9 +62,6 @@ public abstract class Module implements Runnable {
 	public static class Metrics {
 		protected static final HashMap<String, Metrics>
 			NAME_INDEX = new HashMap<String, Metrics>();
-		public static final String
-			STAGE_METRICS = Stage.class.getName(),
-			AUDIO_MATRICS = Audio.class.getName();
 		protected final TreeMap<String, String>
 			map = new TreeMap<String, String>();
 		
