@@ -178,6 +178,10 @@ public class Sound {
 		return new Sound(Source.load(name, path), null);
 	}
 	
+	public static Sound load(String name, Class<?> from, String resource) {
+		return new Sound(Source.load(name, from, resource), null);
+	}
+	
 	public static Sound fromName(Mixer mixer, String name, Filter filter) {
 		return new Sound(mixer, Source.getByName(name), filter);
 	}
@@ -269,17 +273,43 @@ public class Sound {
 					name,
 					path,
 					frames
-					);
+				);
 				NAME_INDEX.put(name, source);
 				PATH_INDEX.put(path, source);				
 				return source;
 				
 			} catch (Exception e) {
 				Debug.warn(new Object() {/* trace */}, "Failed to load Sound.Source (" + name + ", " + path + ").");
-				e.printStackTrace();
 				return null;
 			}
-		}		
+		}
+		
+		public static Source load(String name, Class<?> from, String resource) {
+			String path = from.getPackageName() + "/" + resource;
+			if(NAME_INDEX.containsKey(name))
+				Debug.warn(new Object() {/* trace */}, "A Sound.Source with name '" + name + "' already exists.");
+			if(PATH_INDEX.containsKey(path))
+				Debug.warn(new Object() {/* trace */}, "A Sound.Source with path '" + path + "' already exists.");
+			
+			try {
+				byte [] bytes = Audio.read(from, resource);
+				short[] frames = new short[bytes.length / 2]; 
+				ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(frames);
+				
+				Source source = new Source(
+					name,
+					path,
+					frames
+				);
+				NAME_INDEX.put(name, source);
+				PATH_INDEX.put(path, source);				
+				return source;
+				
+			} catch (Exception e) {
+				Debug.warn(new Object() {/* trace */}, "Failed to load Sound.Source (" + name + ", " + path + ").");
+				return null;
+			}
+		}
 	}
 	
 	public static interface Filter {

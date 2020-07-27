@@ -239,7 +239,7 @@ public class Audio extends Module {
 	}
 	
 	/**
-	 * Read raw audio bytes from a file and convert them to the correct playback
+	 * Read raw audio bytes from a file and convert them to the proper playback
 	 * format.
 	 */
 	public static byte[] read(String path) throws IOException, UnsupportedAudioFileException {
@@ -247,13 +247,39 @@ public class Audio extends Module {
 	}
 	
 	/**
-	 * Read raw audio bytes from a file and convert them to the correct playback 
+	 * Read raw audio bytes from a file and convert them to the proper playback 
 	 * format.
 	 */
 	public static byte[] read(File   file) throws IOException, UnsupportedAudioFileException {
 		AudioInputStream 
 			ais0 = AudioSystem.getAudioInputStream(                 file),
 			ais1 = AudioSystem.getAudioInputStream(PLAYBACK_FORMAT, ais0);
+		ByteArrayOutputStream 
+			baos = new ByteArrayOutputStream();
+		
+		int    
+			read;
+		byte[] 
+			bits = new byte[1024];
+		
+		while((read = ais1.read(bits)) > 0)
+			baos.write(bits, 0, read);
+		
+		baos.flush();
+		ais0.close();
+		ais1.close();
+		
+		return baos.toByteArray();
+	}
+	
+	/**
+	 * Read raw audio bytes from a resource and convert them to the proper 
+	 * playback format.
+	 */
+	public static byte[] read(Class<?> from, String resource) throws IOException, UnsupportedAudioFileException {
+		AudioInputStream 
+			ais0 = AudioSystem.getAudioInputStream(from.getResource(resource)),
+			ais1 = AudioSystem.getAudioInputStream(PLAYBACK_FORMAT ,    ais0 );
 		ByteArrayOutputStream 
 			baos = new ByteArrayOutputStream();
 		

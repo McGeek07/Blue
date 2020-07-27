@@ -268,6 +268,10 @@ public class Sprite implements Renderable, Updateable {
 		return new Sprite(Source.load(name, path, frame_w, frame_h), null);
 	}
 	
+	public static Sprite load(String name, Class<?> from, String resource, int frame_w, int frame_h) {
+		return new Sprite(Source.load(name, from, resource, frame_w, frame_h), null);
+	}
+	
 	public static Sprite fromName(String name, Filter filter) {
 		return new Sprite(Source.getByName(name), filter);
 	}
@@ -399,11 +403,38 @@ public class Sprite implements Renderable, Updateable {
 				return source;
 				
 			} catch(Exception e) {
-				Debug.warn(new Object() {/* trace */}, "Failed to load Sprite.Source (" + name + ", " + path + ", " + frame_w + ", " + frame_h + ").");
-				e.printStackTrace();		
+				Debug.warn(new Object() {/* trace */}, "Failed to load Sprite.Source (" + name + ", " + path + ", " + frame_w + ", " + frame_h + ").");		
 				return null;
 			}
-		}		
+		}
+		
+		public static Source load(String name, Class<?> from, String resource, int frame_w, int frame_h) {
+			String path = from.getPackageName() + "/" + resource;
+			if(NAME_INDEX.containsKey(name))
+				Debug.warn(new Object() {/* trace */}, "A Sprite.Source with name '" + name + "' already exists.");
+			if(PATH_INDEX.containsKey(path))
+				Debug.warn(new Object() {/* trace */}, "A Sprite.Source with path '" + path + "' already exists.");
+			
+			try {
+				BufferedImage 
+					image = ImageIO.read(from.getResource(resource));
+				
+				Source source = new Source(
+					name,
+					path,
+					image,
+					frame_w,
+					frame_h
+				);	
+				NAME_INDEX.put(name, source);
+				PATH_INDEX.put(path, source);
+				return source;
+				
+			} catch(Exception e) {
+				Debug.warn(new Object() {/* trace */}, "Failed to load Sprite.Source (" + name + ", " + path + ", " + frame_w + ", " + frame_h + ").");
+				return null;
+			}
+		}
 	}
 	
 	public static interface Filter {

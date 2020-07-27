@@ -39,7 +39,7 @@ public class Stage extends Module {
 	protected static final Stage
 		MODULE = new Stage();
 	public static final Cursor
-		NULL_CURSOR = Toolkit.getDefaultToolkit().createCustomCursor(
+		NO_CURSOR = Toolkit.getDefaultToolkit().createCustomCursor(
 			ImageUtility.createBufferedImage(0, 16, 16),
 			new Point(0, 0),
 			null
@@ -99,6 +99,9 @@ public class Stage extends Module {
 	protected float
 		canvas_scale;
 	
+	protected Cursor
+		cursor;
+	
 	protected float
 		avg_render_dt,
 		min_render_dt,
@@ -126,6 +129,9 @@ public class Stage extends Module {
 		});
 		handle.attach(CanvasEvent.class, (event) -> {
 			onCanvasEvent(event);
+		});
+		handle.attach(CursorEvent.class, (event) -> {
+			onCursorEvent(event);
 		});
 	}
 	
@@ -214,7 +220,7 @@ public class Stage extends Module {
 	}
 	
 	public static void setCursor(Cursor cursor) {
-		MODULE.window.setCursor(cursor);
+		queue(new CursorEvent(cursor));
 	}
 	
 	public static void mouseMoved(Vector2 mouse) {
@@ -563,7 +569,8 @@ public class Stage extends Module {
 					(int)canvas.getHeight()
 				));
 			}
-		});
+		});		
+		window.setCursor(cursor);
 		
 		window.setVisible(true);
 		canvas.requestFocus();
@@ -727,7 +734,10 @@ public class Stage extends Module {
 			scene.onResize();		
 		
 		metrics.setMetric(CANVAS_METRIC, String.format("%1$d x %2$d @ %3$.2f%%", canvas_w, canvas_h, canvas_scale * 100));
-		metrics.setMetric(WINDOW_METRIC, String.format("%1$d x %2$d",            window_w, window_h                    ));		
+	}
+	
+	public void onCursorEvent(CursorEvent event) {
+		MODULE.window.setCursor(cursor = event.cursor);
 	}
 	
 	public static class SceneEvent {
@@ -755,6 +765,15 @@ public class Stage extends Module {
 		}
 	}
 	
+	public static class CursorEvent {
+		public final Cursor
+			cursor;
+		
+		public CursorEvent(Cursor cursor) {
+			this.cursor = cursor;
+		}
+	}
+	
 	public static final String
 		CANVAS_BACKGROUND = "canvas-background",
 		CANVAS_LAYOUT     = "canvas-layout",
@@ -774,7 +793,6 @@ public class Stage extends Module {
 	public static final String
 		METRICS = Stage.class.getName(),
 		CANVAS_METRIC = "Canvas",
-		WINDOW_METRIC = "Window",
 		FPS_METRIC = "FPS",
 		TPS_METRIC = "TPS";
 }
