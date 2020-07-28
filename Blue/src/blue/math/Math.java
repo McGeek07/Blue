@@ -1,6 +1,8 @@
 package blue.math;
 
 public final class Math {
+	public static final float
+		PI = (float)java.lang.Math.PI;
 	
 	private Math() {
 		//hide constructor
@@ -84,6 +86,26 @@ public final class Math {
 	
 	public static float tan(float x) {
 		return (float)java.lang.Math.tan(x);
+	}
+	
+	public static float atan2(float y, float x) {
+		return (float)java.lang.Math.atan2(y, x);
+	}
+	
+	public static int abs(int x) {
+		return x >= 0 ? x : -x;
+	}
+	
+	public static float abs(float x) {
+		return x >= 0 ? x : -x;
+	}
+	
+	public static long abs(long x) {
+		return x >= 0 ? x : -x;
+	}
+	
+	public static double abs(double x) {
+		return x >= 0 ? x : -x;
 	}
 	
 	public static int   min(int   a, int   b) {
