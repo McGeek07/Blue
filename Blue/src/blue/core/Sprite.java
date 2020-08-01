@@ -322,7 +322,7 @@ public class Sprite implements Renderable, Updateable {
 			atlas_h,
 			frame_w,
 			frame_h,
-			frames;
+			length;
 		
 		public Source(
 			String name,
@@ -338,12 +338,12 @@ public class Sprite implements Renderable, Updateable {
 			this.frame_h = frame_h;
 			this.atlas_w = atlas.getWidth() ;
 			this.atlas_h = atlas.getHeight();
-			this.frames = (atlas_w / frame_w) * (atlas_h / frame_h);
+			this.length = (atlas_w / frame_w) * (atlas_h / frame_h);
 			
 			int
 				w = atlas_w / frame_w,
 				h = atlas_h / frame_h;
-			BufferedImage[] frames = new BufferedImage[this.frames];
+			BufferedImage[] frames = new BufferedImage[length];
 			for(int x = 0; x < w; x ++)
 				for(int y = 0; y < h; y ++)
 					frames[h * y + x] = atlas.getSubimage(
