@@ -82,10 +82,6 @@ public class Sprite implements Renderable, Updateable {
 		return source != null ? source.path : null;
 	}
 	
-	public BufferedImage[] getFrames() {
-		return frames;
-	}
-	
 	public Source getSource() {
 		return this.source;
 	}
@@ -219,9 +215,8 @@ public class Sprite implements Renderable, Updateable {
 		}
 		return this;
 	}
-
-	@Override
-	public void render(RenderContext context) {		
+	
+	public Sprite draw(Graphics2D g) {
 		if(alpha > 0f) {
 			int
 				x1, y1,
@@ -241,25 +236,24 @@ public class Sprite implements Renderable, Updateable {
 				y2 = (int)bounds.y2();
 			}
 			if(alpha < 1f) {				
-				context = context.push();
-				
 				if(alpha_composite == null)
 					alpha_composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+				g = (Graphics2D)g.create();
 				
-				context.g.setComposite(alpha_composite);
-				context.g.drawImage(
-					frames[(int)frame],
-					x1, y1,
-					x2, y2,
-					0 , 0 ,
-					source.frame_w,
-					source.frame_h,
-					null
-				);
+					g.setComposite(alpha_composite);
+					g.drawImage(
+						frames[(int)frame],
+						x1, y1,
+						x2, y2,
+						0 , 0 ,
+						source.frame_w,
+						source.frame_h,
+						null
+					);
 				
-				context = context.pop();
+				g.dispose();
 			} else
-				context.g.drawImage(
+				g.drawImage(
 					frames[(int)frame],
 					x1, y1,
 					x2, y2,
@@ -269,6 +263,12 @@ public class Sprite implements Renderable, Updateable {
 					null
 				);
 		}
+		return this;
+	}
+
+	@Override
+	public void render(RenderContext context) {
+		draw(context.g       );
 	}
 
 	@Override

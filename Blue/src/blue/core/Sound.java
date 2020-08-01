@@ -78,10 +78,6 @@ public class Sound {
 		return source != null ? source.path : null;
 	}
 	
-	public short[] getFrames() {
-		return frames;
-	}
-	
 	public Source getSource() {
 		return this.source;
 	}
