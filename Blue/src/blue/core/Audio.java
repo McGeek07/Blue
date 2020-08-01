@@ -276,10 +276,10 @@ public class Audio extends Module {
 	 * Read raw audio bytes from a resource and convert them to the proper 
 	 * playback format.
 	 */
-	public static byte[] read(Class<?> from, String resource) throws IOException, UnsupportedAudioFileException {
+	public static byte[] read(Class<?> from, String path) throws IOException, UnsupportedAudioFileException {
 		AudioInputStream 
-			ais0 = AudioSystem.getAudioInputStream(from.getResource(resource)),
-			ais1 = AudioSystem.getAudioInputStream(PLAYBACK_FORMAT ,    ais0 );
+			ais0 = AudioSystem.getAudioInputStream(from.getResource(path)),
+			ais1 = AudioSystem.getAudioInputStream(PLAYBACK_FORMAT, ais0 );
 		ByteArrayOutputStream 
 			baos = new ByteArrayOutputStream();
 		
