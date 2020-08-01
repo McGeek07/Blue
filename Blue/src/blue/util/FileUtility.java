@@ -117,11 +117,11 @@ public final class FileUtility {
 		return null;
 	}
 	
-	public static ObjectInputStream createObjectInputStream(Class<?> from, String resource) {
+	public static ObjectInputStream createObjectInputStream(Class<?> from, String path) {
 		try {
-			return new ObjectInputStream(new BufferedInputStream(from.getResourceAsStream(resource)));
+			return new ObjectInputStream(new BufferedInputStream(from.getResourceAsStream(path)));
 		} catch(Exception e) {
-			Debug.warn(new Object() {/* trace */}, "Unable to open resource \"" + from.getPackage().getName() + "/" + resource + "\"");
+			Debug.warn(new Object() {/* trace */}, "Unable to open resource \"" + from.getPackage().getName() + "/" + path + "\"");
 		}
 		return null;
 	}
@@ -177,11 +177,11 @@ public final class FileUtility {
 		return null;
 	}
 	
-	public static BufferedReader createBufferedReader(Class<?> from, String resource) {
+	public static BufferedReader createBufferedReader(Class<?> from, String path) {
 		try {			
-			return new BufferedReader(new InputStreamReader(from.getResourceAsStream(resource)));
+			return new BufferedReader(new InputStreamReader(from.getResourceAsStream(path)));
 		} catch(Exception e) {
-			Debug.warn(new Object() {/* trace */}, "Unable to open resource \"" + from.getPackage().getName() + "/" + resource + "\"");
+			Debug.warn(new Object() {/* trace */}, "Unable to open resource \"" + from.getPackage().getName() + "/" + path + "\"");
 		}
 		return null;
 	}
@@ -254,12 +254,12 @@ public final class FileUtility {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <T> T readFromResource(Class<?> from, String resource) {
+	public static <T> T readFromFile(Class<?> from, String path) {
 		T obj = null;
-		try(ObjectInputStream in = createObjectInputStream(from, resource)) {
+		try(ObjectInputStream in = createObjectInputStream(from, path)) {
 			obj = (T)in.readObject();
 		} catch(Exception e) {
-			Debug.warn(new Object() {/* trace */}, "Unable to read from resource \"" + from.getPackage().getName() + "/" + resource + "\"");
+			Debug.warn(new Object() {/* trace */}, "Unable to read from resource \"" + from.getPackage().getName() + "/" + path + "\"");
 		}
 		return obj;
 	}
@@ -289,8 +289,8 @@ public final class FileUtility {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <T> List<T> readFromResource(Class<?> from, String resource, List<T> list) {
-		try(ObjectInputStream in = createObjectInputStream(from, resource)) {
+	public static <T> List<T> readFromFile(Class<?> from, String path, List<T> list) {
+		try(ObjectInputStream in = createObjectInputStream(from, path)) {
 			Object o = in.readObject();
 			if(o instanceof Iterable)
 				for(T t: (Iterable<T>)o)
@@ -299,7 +299,7 @@ public final class FileUtility {
 				for(T t: (T[])o)
 					list.add(t);
 		} catch(Exception e) {
-			Debug.warn(new Object() {/* trace */}, "Unable to read from resource \"" + from.getPackage().getName() + "/" + resource + "\"");
+			Debug.warn(new Object() {/* trace */}, "Unable to read from resource \"" + from.getPackage().getName() + "/" + path + "\"");
 		}
 		return list;
 	}
@@ -388,12 +388,12 @@ public final class FileUtility {
 		return sb.toString();
 	}
 	
-	public static String parseFromResource(Class<?> from, String resource) {
+	public static String parseFromFile(Class<?> from, String path) {
 		StringBuilder sb = new StringBuilder();
-		try(BufferedReader in = createBufferedReader(from, resource)) {
+		try(BufferedReader in = createBufferedReader(from, path)) {
 			while(in.ready()) sb.append(in.readLine());
 		} catch(Exception e) {
-			Debug.warn(new Object() {/* trace */}, "Unable to parse from resource \"" + from.getPackage().getName() + "/" + resource + "\"");
+			Debug.warn(new Object() {/* trace */}, "Unable to parse from resource \"" + from.getPackage().getName() + "/" + path + "\"");
 		}
 		return sb.toString();
 	}
@@ -415,11 +415,11 @@ public final class FileUtility {
 		return list;
 	}
 	
-	public static List<String> parseFromResource(Class<?> from, String resource, List<String> list) {
-		try(BufferedReader in = createBufferedReader(from, resource)) {
+	public static List<String> parseFromFile(Class<?> from, String path, List<String> list) {
+		try(BufferedReader in = createBufferedReader(from, path)) {
 			while(in.ready()) list.add(in.readLine());
 		} catch(Exception e) {
-			Debug.warn(new Object() {/* trace */}, "Unable to parse from resource \"" + from.getPackage().getName() + "/" + resource + "\"");
+			Debug.warn(new Object() {/* trace */}, "Unable to parse from resource \"" + from.getPackage().getName() + "/" + path + "\"");
 		}
 		return list;
 	}
@@ -450,8 +450,8 @@ public final class FileUtility {
 		return map;
 	}
 	
-	public static Map<String, String> parseFromResource(Class<?> from, String resource, Map<String, String> map) {
-		try(BufferedReader in = createBufferedReader(from, resource)) {
+	public static Map<String, String> parseFromFile(Class<?> from, String path, Map<String, String> map) {
+		try(BufferedReader in = createBufferedReader(from, path)) {
 			while(in.ready()) {
 				String 
 					line = in.readLine();
@@ -463,7 +463,7 @@ public final class FileUtility {
 				map.put(key, val);
 			}
 		} catch(Exception e) {
-			Debug.warn(new Object() {/* trace */}, "Unable to parse from resource \"" + from.getPackage().getName() + "/" + resource + "\"");
+			Debug.warn(new Object() {/* trace */}, "Unable to parse from resource \"" + from.getPackage().getName() + "/" + path + "\"");
 		}
 		return map;
 	}
