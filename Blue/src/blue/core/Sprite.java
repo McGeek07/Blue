@@ -74,16 +74,20 @@ public class Sprite implements Renderable, Updateable {
 		this.frames = this.source != null ? this.source.filter(this.filter) : null;
 	}
 	
-	public Source getSource() {
-		return this.source;
-	}
-	
 	public String getName() {
 		return source != null ? source.name : null;
 	}
 	
 	public String getPath() {
 		return source != null ? source.path : null;
+	}
+	
+	public BufferedImage[] getFrames() {
+		return frames;
+	}
+	
+	public Source getSource() {
+		return this.source;
 	}
 	
 	public Filter getFilter() {
