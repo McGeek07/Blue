@@ -285,7 +285,7 @@ public class Sound {
 		}
 		
 		public static Source load(String name, Class<?> from, String resource) {
-			String path = from.getPackageName() + "/" + resource;
+			String path = from.getPackage().getName() + "/" + resource;
 			if(NAME_INDEX.containsKey(name))
 				Debug.warn(new Object() {/* trace */}, "A Sound.Source with name '" + name + "' already exists.");
 			if(PATH_INDEX.containsKey(path))
