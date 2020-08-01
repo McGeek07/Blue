@@ -74,6 +74,14 @@ public class Sound {
 		return this.source;
 	}
 	
+	public String getName() {
+		return source != null ? source.name : null;
+	}
+	
+	public String getPath() {
+		return source != null ? source.path : null;
+	}
+	
 	public Filter getFilter() {
 		return this.filter;
 	}
