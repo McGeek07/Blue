@@ -86,22 +86,6 @@ public class Sprite implements Renderable, Updateable {
 		return source != null ? source.path : null;
 	}
 	
-	public int getAtlasW() {
-		return source != null ? source.atlas_w : -1;
-	}
-	
-	public int getAtlasH() {
-		return source != null ? source.atlas_h : -1;
-	}
-	
-	public int getFrameW() {
-		return source != null ? source.frame_w : -1;
-	}
-	
-	public int getFrameH() {
-		return source != null ? source.frame_h : -1;
-	}
-	
 	public Filter getFilter() {
 		return this.filter;
 	}
