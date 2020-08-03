@@ -57,7 +57,7 @@ public class Vector2 extends Vector {
 			+ String.format(f, v.y) + ">";
 	}
 	
-	protected static final <V extends Vector2> V parseVector2(V v, String s) {
+	protected static final <V extends Vector2> V fromString(V v, String s) {
 		if(v != null && s != null) {
 			int
 	            i = s.indexOf("<"),
@@ -76,8 +76,8 @@ public class Vector2 extends Vector {
         return v;
 	}
 	
-	public static Vector2 parseVector2(String str) {
-		return Vector2.parseVector2(new Vector2(), str);
+	public static Vector2 fromString(String s) {
+		return Vector2.fromString(new Vector2(), s);
 	}
 	
 	public static class Mutable extends Vector2 {
@@ -123,8 +123,8 @@ public class Vector2 extends Vector {
 			return new Vector2.Mutable(this);
 		}
 		
-		public static Vector2.Mutable parseVector2(String str) {
-			return Vector2.parseVector2(new Vector2.Mutable(), str);
+		public static Vector2.Mutable fromString(String s) {
+			return Vector2.fromString(new Vector2.Mutable(), s);
 		}
 	}
 }

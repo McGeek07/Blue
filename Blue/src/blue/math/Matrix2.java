@@ -131,7 +131,7 @@ public class Matrix2 extends Matrix {
 			"[" + String.format(f, m.yx) + ", " + String.format(f, m.yy) + "]";			
 	}	
 	
-	protected static final <M extends Matrix2> M parseMatrix2(M m, String s) {
+	protected static final <M extends Matrix2> M fromString(M m, String s) {
 		if(m != null && s != null) {
 			s = s.replace("[", "");
 	        s = s.replace("]", "");
@@ -151,8 +151,8 @@ public class Matrix2 extends Matrix {
         return m;
 	}
 	
-	public static Matrix2 parseMatrix2(String s) {
-		return Matrix2.parseMatrix2(new Matrix2(), s);
+	public static Matrix2 fromString(String s) {
+		return Matrix2.fromString(new Matrix2(), s);
 	}
 	
 	public static Matrix2 identity() {
@@ -280,8 +280,8 @@ public class Matrix2 extends Matrix {
 			return this;
 		}
 		
-		public static Matrix2.Mutable parseMatrix2(String s) {
-			return Matrix2.parseMatrix2(new Matrix2.Mutable(), s);
+		public static Matrix2.Mutable fromString(String s) {
+			return Matrix2.fromString(new Matrix2.Mutable(), s);
 		}
 		
 		public static Matrix2.Mutable identity() {

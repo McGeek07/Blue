@@ -94,7 +94,7 @@ public class Layout implements Serializable, Copyable<Layout> {
 			Attribute.toString(l.w2, f) + ", " + Attribute.toString(l.h2, f) + "}";
 	}
 	
-	protected static <L extends Layout> L parseLayout(L l, String s) {
+	protected static <L extends Layout> L fromString(L l, String s) {
 		if(l != null && s != null) {
 			int
 	            i = s.indexOf("{"),
@@ -127,8 +127,8 @@ public class Layout implements Serializable, Copyable<Layout> {
 		return l;
 	}
 	
-	public static Layout parseLayout(String s) {
-		return Layout.parseLayout(new Layout(), s);
+	public static Layout fromString(String s) {
+		return Layout.fromString(new Layout(), s);
 	}
 
 	public static class Mutable extends Layout {
@@ -177,8 +177,8 @@ public class Layout implements Serializable, Copyable<Layout> {
 			return new Layout.Mutable(this);
 		}
 		
-		public static Layout.Mutable parseLayout(String s) {
-			return Layout.parseLayout(new Layout.Mutable(), s);
+		public static Layout.Mutable fromString(String s) {
+			return Layout.fromString(new Layout.Mutable(), s);
 		}
 	}	
 	

@@ -66,7 +66,7 @@ public class Vector3 extends Vector {
 			+ String.format(f, v.z) + ">";
 	}
 	
-	protected static final <V extends Vector3> V parseVector3(V v, String s) {
+	protected static final <V extends Vector3> V fromString(V v, String s) {
 		if(v != null && s != null) {
 			int
 	            i = s.indexOf("<"),
@@ -86,8 +86,8 @@ public class Vector3 extends Vector {
         return v;
 	}
 	
-	public static Vector3 parseVector3(String str) {
-		return Vector3.parseVector3(new Vector3(), str);
+	public static Vector3 fromString(String s) {
+		return Vector3.fromString(new Vector3(), s);
 	}
 	
 	public static class Mutable extends Vector3 {
@@ -140,8 +140,8 @@ public class Vector3 extends Vector {
 			return new Vector3.Mutable(this);
 		}
 		
-		public static Vector3.Mutable parseVector3(String str) {
-			return Vector3.parseVector3(new Vector3.Mutable(), str);
+		public static Vector3.Mutable fromString(String s) {
+			return Vector3.fromString(new Vector3.Mutable(), s);
 		}
 	}
 }

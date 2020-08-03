@@ -64,15 +64,15 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 			return toString(this, "%s");
 		}
 		
-		public static String toString(Box2 b2, String format) {
+		public static String toString(Box2 b2, String f) {
 			return "<"
-				+ String.format(format, b2.v0.x) + ", "
-				+ String.format(format, b2.v0.y) + ", "
-				+ String.format(format, b2.v1.x) + ", "
-				+ String.format(format, b2.v1.y) + ">";
+				+ String.format(f, b2.v0.x) + ", "
+				+ String.format(f, b2.v0.y) + ", "
+				+ String.format(f, b2.v1.x) + ", "
+				+ String.format(f, b2.v1.y) + ">";
 		}
 		
-		protected static final <B extends Box2> B parseBox2(B b, String s) {
+		protected static final <B extends Box2> B fromString(B b, String s) {
 			if(b != null && s != null) {
 				int
 		            i = s.indexOf("<"),
@@ -133,17 +133,17 @@ public abstract class Box<T extends Vector> implements Serializable, Copyable<Bo
 			return toString(this, "%s");
 		}
 		
-		public static String toString(Box3 b3, String format) {
+		public static String toString(Box3 b3, String f) {
 			return "<"
-				+ String.format(format, b3.v0.x) + ", "
-				+ String.format(format, b3.v0.y) + ", "
-				+ String.format(format, b3.v0.z) + ", "
-				+ String.format(format, b3.v1.x) + ", "
-				+ String.format(format, b3.v1.y) + ", "
-				+ String.format(format, b3.v1.z) + ">";
+				+ String.format(f, b3.v0.x) + ", "
+				+ String.format(f, b3.v0.y) + ", "
+				+ String.format(f, b3.v0.z) + ", "
+				+ String.format(f, b3.v1.x) + ", "
+				+ String.format(f, b3.v1.y) + ", "
+				+ String.format(f, b3.v1.z) + ">";
 		}
 		
-		protected static final <B extends Box3> B parseBox3(B b, String s) {
+		protected static final <B extends Box3> B fromString(B b, String s) {
 			if(b != null && s != null) {
 				int
 		            i = s.indexOf("<"),

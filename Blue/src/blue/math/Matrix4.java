@@ -185,7 +185,7 @@ public class Matrix4 extends Matrix {
 			"[" + String.format(f, m.wx) + ", " + String.format(f, m.wy) + ", " + String.format(f, m.wz) + ", " + String.format(f, m.ww) + "]";
 	}	
 	
-	protected static final <M extends Matrix4> M parseMatrix4(M m, String s) {
+	protected static final <M extends Matrix4> M fromString(M m, String s) {
 		if(m != null && s != null) {
 			s = s.replace("[", "");
 		    s = s.replace("]", "");
@@ -219,8 +219,8 @@ public class Matrix4 extends Matrix {
 	    return m;
 	}
 	
-	public static Matrix4 parseMatrix4(String str) {
-		return Matrix4.parseMatrix4(new Matrix4(), str);
+	public static Matrix4 fromString(String str) {
+		return Matrix4.fromString(new Matrix4(), str);
 	}
 	
 	public static Matrix4 identity() {
@@ -430,8 +430,8 @@ public class Matrix4 extends Matrix {
 			return this;
 		}
 		
-		public static Matrix4.Mutable parseMatrix4(String str) {
-			return Matrix4.parseMatrix4(new Matrix4.Mutable(), str);
+		public static Matrix4.Mutable fromString(String str) {
+			return Matrix4.fromString(new Matrix4.Mutable(), str);
 		}
 		
 		public static Matrix4.Mutable identity() {

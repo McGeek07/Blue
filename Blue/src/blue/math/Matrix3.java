@@ -156,7 +156,7 @@ public class Matrix3 extends Matrix {
 			"[" + String.format(f, m.zx) + ", " + String.format(f, m.zy) + ", " + String.format(f, m.zz) + "]";
 	}	
 	
-	protected static final <M extends Matrix3> M parseMatrix3(M m, String s) {
+	protected static final <M extends Matrix3> M fromString(M m, String s) {
 		if(m != null && s != null) {
 			s = s.replace("[", "");
 		    s = s.replace("]", "");
@@ -182,8 +182,8 @@ public class Matrix3 extends Matrix {
 	    return m;
 	}
 	
-	public static Matrix3 parseMatrix3(String s) {
-		return Matrix3.parseMatrix3(new Matrix3(), s);
+	public static Matrix3 fromString(String s) {
+		return Matrix3.fromString(new Matrix3(), s);
 	}
 	
 	public static Matrix3 identity() {
@@ -347,8 +347,8 @@ public class Matrix3 extends Matrix {
 			return this;
 		}
 		
-		public static Matrix3.Mutable parseMatrix3(String s) {
-			return Matrix3.parseMatrix3(new Matrix3.Mutable(), s);
+		public static Matrix3.Mutable fromString(String s) {
+			return Matrix3.fromString(new Matrix3.Mutable(), s);
 		}
 		
 		public static Matrix3.Mutable identity() {

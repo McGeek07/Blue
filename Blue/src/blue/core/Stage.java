@@ -477,17 +477,17 @@ public class Stage extends Module {
 	@Override
 	public void onInit() {
 		debug = Configuration.getProperty(cfg, DEBUG, debug);
-		debug_background = Configuration.getPropertyAsObject(cfg, Vector4::parseVector4, DEBUG_BACKGROUND, debug_background);
-		debug_foreground = Configuration.getPropertyAsObject(cfg, Vector4::parseVector4, DEBUG_FOREGROUND, debug_foreground);
+		debug_background = Configuration.getPropertyAsObject(cfg, Vector4::fromString, DEBUG_BACKGROUND, debug_background);
+		debug_foreground = Configuration.getPropertyAsObject(cfg, Vector4::fromString, DEBUG_FOREGROUND, debug_foreground);
 		debug_font_name  = Configuration.getProperty     (cfg, DEBUG_FONT_NAME, debug_font_name);
 		debug_font_size  = Configuration.getPropertyAsInt(cfg, DEBUG_FONT_SIZE, debug_font_size);
 		
 		thread_fps = Configuration.getPropertyAsFloat(cfg, THREAD_FPS, thread_fps);
 		thread_tps = Configuration.getPropertyAsFloat(cfg, THREAD_TPS, thread_tps);
-		canvas_background = Configuration.getPropertyAsObject(cfg, Vector4::parseVector4, CANVAS_BACKGROUND, canvas_background);
-		window_background = Configuration.getPropertyAsObject(cfg, Vector4::parseVector4, WINDOW_BACKGROUND, window_background);
-		canvas_layout = Configuration.getPropertyAsObject(cfg, Layout::parseLayout, CANVAS_LAYOUT, canvas_layout);
-		window_layout = Configuration.getPropertyAsObject(cfg, Layout::parseLayout, WINDOW_LAYOUT, window_layout);
+		canvas_background = Configuration.getPropertyAsObject(cfg, Vector4::fromString, CANVAS_BACKGROUND, canvas_background);
+		window_background = Configuration.getPropertyAsObject(cfg, Vector4::fromString, WINDOW_BACKGROUND, window_background);
+		canvas_layout = Configuration.getPropertyAsObject(cfg, Layout::fromString, CANVAS_LAYOUT, canvas_layout);
+		window_layout = Configuration.getPropertyAsObject(cfg, Layout::fromString, WINDOW_LAYOUT, window_layout);
 		window_border = Configuration.getPropertyAsBoolean(cfg, WINDOW_BORDER, window_border);
 		window_device = Configuration.getPropertyAsInt    (cfg, WINDOW_DEVICE, window_device);
 		window_title  = Configuration.getProperty(cfg, WINDOW_TITLE, window_title);
