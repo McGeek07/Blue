@@ -31,7 +31,7 @@ import blue.math.Region2;
 import blue.math.Vector;
 import blue.math.Vector2;
 import blue.math.Vector4;
-import blue.util.Configuration;
+import blue.util.Config;
 import blue.util.FileUtility;
 import blue.util.ImageUtility;
 
@@ -115,7 +115,7 @@ public class Stage extends Module {
 		update_hz;
 	
 	private Stage() {
-		Configuration.map(cfg,
+		Config.map(cfg,
 			CANVAS_LAYOUT, canvas_layout,
 			WINDOW_BORDER, window_border,
 			WINDOW_DEVICE, window_device,
@@ -144,11 +144,11 @@ public class Stage extends Module {
 	}
 	
 	public static String setProperty(Object key, Object val) {
-		return Configuration.setProperty(MODULE.cfg, key, val);
+		return Config.setProperty(MODULE.cfg, key, val);
 	}
 	
 	public static String getProperty(Object key, Object alt) {
-		return Configuration.getProperty(MODULE.cfg, key, alt);
+		return Config.getProperty(MODULE.cfg, key, alt);
 	}
 	
 	public static void saveConfiguration(URL    path) {
@@ -476,21 +476,21 @@ public class Stage extends Module {
 	
 	@Override
 	public void onInit() {
-		debug = Configuration.getProperty(cfg, DEBUG, debug);
-		debug_background = Configuration.getPropertyAsObject(cfg, Vector4::fromString, DEBUG_BACKGROUND, debug_background);
-		debug_foreground = Configuration.getPropertyAsObject(cfg, Vector4::fromString, DEBUG_FOREGROUND, debug_foreground);
-		debug_font_name  = Configuration.getProperty     (cfg, DEBUG_FONT_NAME, debug_font_name);
-		debug_font_size  = Configuration.getPropertyAsInt(cfg, DEBUG_FONT_SIZE, debug_font_size);
+		debug = Config.getProperty(cfg, DEBUG, debug);
+		debug_background = Config.getPropertyAsObject(cfg, Vector4::fromString, DEBUG_BACKGROUND, debug_background);
+		debug_foreground = Config.getPropertyAsObject(cfg, Vector4::fromString, DEBUG_FOREGROUND, debug_foreground);
+		debug_font_name  = Config.getProperty     (cfg, DEBUG_FONT_NAME, debug_font_name);
+		debug_font_size  = Config.getPropertyAsInt(cfg, DEBUG_FONT_SIZE, debug_font_size);
 		
-		thread_fps = Configuration.getPropertyAsFloat(cfg, THREAD_FPS, thread_fps);
-		thread_tps = Configuration.getPropertyAsFloat(cfg, THREAD_TPS, thread_tps);
-		canvas_background = Configuration.getPropertyAsObject(cfg, Vector4::fromString, CANVAS_BACKGROUND, canvas_background);
-		window_background = Configuration.getPropertyAsObject(cfg, Vector4::fromString, WINDOW_BACKGROUND, window_background);
-		canvas_layout = Configuration.getPropertyAsObject(cfg, Layout::fromString, CANVAS_LAYOUT, canvas_layout);
-		window_layout = Configuration.getPropertyAsObject(cfg, Layout::fromString, WINDOW_LAYOUT, window_layout);
-		window_border = Configuration.getPropertyAsBoolean(cfg, WINDOW_BORDER, window_border);
-		window_device = Configuration.getPropertyAsInt    (cfg, WINDOW_DEVICE, window_device);
-		window_title  = Configuration.getProperty(cfg, WINDOW_TITLE, window_title);
+		thread_fps = Config.getPropertyAsFloat(cfg, THREAD_FPS, thread_fps);
+		thread_tps = Config.getPropertyAsFloat(cfg, THREAD_TPS, thread_tps);
+		canvas_background = Config.getPropertyAsObject(cfg, Vector4::fromString, CANVAS_BACKGROUND, canvas_background);
+		window_background = Config.getPropertyAsObject(cfg, Vector4::fromString, WINDOW_BACKGROUND, window_background);
+		canvas_layout = Config.getPropertyAsObject(cfg, Layout::fromString, CANVAS_LAYOUT, canvas_layout);
+		window_layout = Config.getPropertyAsObject(cfg, Layout::fromString, WINDOW_LAYOUT, window_layout);
+		window_border = Config.getPropertyAsBoolean(cfg, WINDOW_BORDER, window_border);
+		window_device = Config.getPropertyAsInt    (cfg, WINDOW_DEVICE, window_device);
+		window_title  = Config.getProperty(cfg, WINDOW_TITLE, window_title);
 		
 		debug_metrics = Metrics.getByName(debug);
 		debug_background_color  = Vector.toColor4i(debug_background);

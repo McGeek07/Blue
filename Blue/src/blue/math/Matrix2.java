@@ -2,7 +2,7 @@ package blue.math;
 
 import java.util.HashMap;
 
-import blue.util.Configuration;
+import blue.util.Config;
 
 public class Matrix2 extends Matrix {
 	private static final long 
@@ -138,15 +138,15 @@ public class Matrix2 extends Matrix {
 	        
 	        HashMap<String, String> map = new HashMap<>();	        
 	        for(String t : s.split("\n"))	        
-		        Configuration.parse(
+		        Config.parse(
 	        		map, t,
 	        		"xx", "xy",
 	        		"yx", "yy"     		
 	    		);
-	        m.xx = Configuration.getPropertyAsFloat(map, "xx");
-	        m.xy = Configuration.getPropertyAsFloat(map, "xy");
-	        m.yx = Configuration.getPropertyAsFloat(map, "yx");
-	        m.yy = Configuration.getPropertyAsFloat(map, "yy");
+	        m.xx = Config.getPropertyAsFloat(map, "xx");
+	        m.xy = Config.getPropertyAsFloat(map, "xy");
+	        m.yx = Config.getPropertyAsFloat(map, "yx");
+	        m.yy = Config.getPropertyAsFloat(map, "yy");
 		}       
         return m;
 	}

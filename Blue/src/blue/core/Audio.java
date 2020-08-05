@@ -13,7 +13,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import blue.core.Event.Broker;
 import blue.core.Event.Handle;
 import blue.core.Event.Listener;
-import blue.util.Configuration;
+import blue.util.Config;
 import blue.util.Debug;
 
 /**
@@ -76,11 +76,11 @@ public class Audio extends Module {
 	}
 	
 	public static String setProperty(Object key, Object val) {
-		return Configuration.setProperty(MODULE.cfg, key, val);
+		return Config.setProperty(MODULE.cfg, key, val);
 	}
 	
 	public static String getProperty(Object key, Object alt) {
-		return Configuration.setProperty(MODULE.cfg, key, alt);
+		return Config.setProperty(MODULE.cfg, key, alt);
 	}
 	
 	/**

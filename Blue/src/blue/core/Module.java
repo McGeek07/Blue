@@ -7,7 +7,7 @@ import java.util.TreeMap;
 
 import blue.core.Event.Broker;
 import blue.core.Event.Handle;
-import blue.util.Configuration;
+import blue.util.Config;
 import blue.util.Debug;
 
 public abstract class Module implements Runnable {
@@ -70,11 +70,11 @@ public abstract class Module implements Runnable {
 		}
 		
 		public String setMetric(Object key, Object val) {
-			return Configuration.setProperty(map, key, val);
+			return Config.setProperty(map, key, val);
 		}
 		
 		public String getMetric(Object key, Object alt) {
-			return Configuration.setProperty(map, key, alt);
+			return Config.setProperty(map, key, alt);
 		}
 		
 		public static <T extends Module> Metrics getByType(Class<T> type) {

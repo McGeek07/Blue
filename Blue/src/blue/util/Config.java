@@ -12,9 +12,9 @@ import java.util.Map;
 import blue.util.StringUtility.ObjectToString;
 import blue.util.StringUtility.StringToObject;
 
-public final class Configuration {
+public final class Config {
 	
-	private Configuration() {
+	private Config() {
 		//hide constructor
 	}
 	

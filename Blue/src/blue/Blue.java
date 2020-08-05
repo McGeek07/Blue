@@ -6,7 +6,7 @@ import blue.util.Version;
 
 public class Blue {
 	public static final Version
-		VERSION = new Version("Blue", 0, 2, 33);
+		VERSION = new Version("Blue", 0, 2, 34);
 	
 	public static void main(String[] args) {		
 		Debug.info(new Object() { /* trace */ }, VERSION);

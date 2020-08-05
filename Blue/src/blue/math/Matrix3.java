@@ -2,7 +2,7 @@ package blue.math;
 
 import java.util.HashMap;
 
-import blue.util.Configuration;
+import blue.util.Config;
 
 public class Matrix3 extends Matrix {
 	private static final long 
@@ -163,21 +163,21 @@ public class Matrix3 extends Matrix {
 		    
 		    HashMap<String, String> map = new HashMap<>();	        
 	        for(String t : s.split("\n"))	        
-		        Configuration.parse(
+		        Config.parse(
 	        		map, t,
 	        		"xx", "xy", "xz",
 	        		"yx", "yy", "yz",
 	        		"zx", "zy", "zz"
 	    		);
-	        m.xx = Configuration.getPropertyAsFloat(map, "xx");
-	        m.xy = Configuration.getPropertyAsFloat(map, "xy");
-	        m.xz = Configuration.getPropertyAsFloat(map, "xz");
-	        m.yx = Configuration.getPropertyAsFloat(map, "yx");
-	        m.yy = Configuration.getPropertyAsFloat(map, "yy");
-	        m.yz = Configuration.getPropertyAsFloat(map, "yz");
-	        m.zx = Configuration.getPropertyAsFloat(map, "zx");
-	        m.zy = Configuration.getPropertyAsFloat(map, "zy");
-	        m.zz = Configuration.getPropertyAsFloat(map, "zz");
+	        m.xx = Config.getPropertyAsFloat(map, "xx");
+	        m.xy = Config.getPropertyAsFloat(map, "xy");
+	        m.xz = Config.getPropertyAsFloat(map, "xz");
+	        m.yx = Config.getPropertyAsFloat(map, "yx");
+	        m.yy = Config.getPropertyAsFloat(map, "yy");
+	        m.yz = Config.getPropertyAsFloat(map, "yz");
+	        m.zx = Config.getPropertyAsFloat(map, "zx");
+	        m.zy = Config.getPropertyAsFloat(map, "zy");
+	        m.zz = Config.getPropertyAsFloat(map, "zz");
 		}	    
 	    return m;
 	}

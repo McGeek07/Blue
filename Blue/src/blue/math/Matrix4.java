@@ -2,7 +2,7 @@ package blue.math;
 
 import java.util.HashMap;
 
-import blue.util.Configuration;
+import blue.util.Config;
 
 public class Matrix4 extends Matrix {
 	private static final long 
@@ -192,29 +192,29 @@ public class Matrix4 extends Matrix {
 		    
 		    HashMap<String, String> map = new HashMap<>();	        
 	        for(String t : s.split("\n"))	        
-		        Configuration.parse(
+		        Config.parse(
 	        		map, t,
 	        		"xx", "xy", "xz", "xw",
 	        		"yx", "yy", "yz", "yw",
 	        		"zx", "zy", "zz", "zw",
 	        		"wx", "wy", "wz", "ww"
 	    		);
-	        m.xx = Configuration.getPropertyAsFloat(map, "xx");
-	        m.xy = Configuration.getPropertyAsFloat(map, "xy");
-	        m.xz = Configuration.getPropertyAsFloat(map, "xz");
-	        m.xw = Configuration.getPropertyAsFloat(map, "xw");
-	        m.yx = Configuration.getPropertyAsFloat(map, "yx");
-	        m.yy = Configuration.getPropertyAsFloat(map, "yy");
-	        m.yz = Configuration.getPropertyAsFloat(map, "yz");
-	        m.yw = Configuration.getPropertyAsFloat(map, "yw");
-	        m.zx = Configuration.getPropertyAsFloat(map, "zx");
-	        m.zy = Configuration.getPropertyAsFloat(map, "zy");
-	        m.zz = Configuration.getPropertyAsFloat(map, "zz");
-	        m.zw = Configuration.getPropertyAsFloat(map, "zw");
-	        m.wx = Configuration.getPropertyAsFloat(map, "wx");
-	        m.wy = Configuration.getPropertyAsFloat(map, "wy");
-	        m.wz = Configuration.getPropertyAsFloat(map, "wz");
-	        m.ww = Configuration.getPropertyAsFloat(map, "ww");
+	        m.xx = Config.getPropertyAsFloat(map, "xx");
+	        m.xy = Config.getPropertyAsFloat(map, "xy");
+	        m.xz = Config.getPropertyAsFloat(map, "xz");
+	        m.xw = Config.getPropertyAsFloat(map, "xw");
+	        m.yx = Config.getPropertyAsFloat(map, "yx");
+	        m.yy = Config.getPropertyAsFloat(map, "yy");
+	        m.yz = Config.getPropertyAsFloat(map, "yz");
+	        m.yw = Config.getPropertyAsFloat(map, "yw");
+	        m.zx = Config.getPropertyAsFloat(map, "zx");
+	        m.zy = Config.getPropertyAsFloat(map, "zy");
+	        m.zz = Config.getPropertyAsFloat(map, "zz");
+	        m.zw = Config.getPropertyAsFloat(map, "zw");
+	        m.wx = Config.getPropertyAsFloat(map, "wx");
+	        m.wy = Config.getPropertyAsFloat(map, "wy");
+	        m.wz = Config.getPropertyAsFloat(map, "wz");
+	        m.ww = Config.getPropertyAsFloat(map, "ww");
 		}	    
 	    return m;
 	}
