@@ -253,14 +253,14 @@ public class Stage extends Module {
 			MODULE.scene.onKeyUp(key);
 	}
 	
-	public static Box<?> canvas() {
+	public static Region2 canvas() {
 		return new Region2(
 			MODULE.canvas_w,
 			MODULE.canvas_h
 		);
 	}
 	
-	public static Box<?> window() {
+	public static Region2 window() {
 		return new Region2(
 			MODULE.window_w,
 			MODULE.window_h
